@@ -1,0 +1,54 @@
+{
+    "name": "sourcery",
+    "displayName": "Sourcery (alpha)",
+    "description": "Refactor Python instantly with Sourcery",
+    "author": "Sourcery AI",
+    "repository": "https://github.com/sourcery-ai/sourcery-vscode",
+    "bugs": {"url": "https://github.com/sourcery-ai/public/issues"},
+    "license": "MIT",
+    "version": "0.1.0",
+    "sourceryVersion": "0.5.15",
+    "publisher": "sourcery",
+    "icon": "sourcery-icon.png",
+    "keywords": ["Python", "refactoring"],
+    "engines": {
+        "vscode": "^1.41.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "contributes": {
+        "configuration": {
+            "title": "Sourcery Configuration",
+            "type": "object",
+            "properties": {
+                "sourcery.token": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Sourcery token"
+                }
+            }
+        }
+    },
+    "main": "./out/extension",
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance $VSCODE --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*"
+    },
+    "devDependencies": {
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.11.7",
+        "@types/vscode": "^1.41.0",
+        "mocha": "^2.3.3",
+        "tslint": "^5.16.0",
+        "typescript": "^3.6.4",
+        "vscode-test": "^1.3.0"
+    },
+    "dependencies": {
+        "vscode-languageclient": "^6.0.1"
+    }
+}
