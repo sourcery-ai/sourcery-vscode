@@ -7,7 +7,7 @@
     "bugs": {"url": "https://github.com/sourcery-ai/public/issues"},
     "license": "MIT",
     "version": "0.2.0",
-    "sourceryVersion": "0.6.0",
+    "sourceryVersion": "0.6.1",
     "publisher": "sourcery",
     "icon": "sourcery-icon.png",
     "keywords": ["Python", "refactoring"],
