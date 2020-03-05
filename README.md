@@ -1,4 +1,4 @@
-# Sourcery VS Code Client
+# Sourcery VS Code Extension
 
 [Sourcery](https://sourcery.ai) is an AI-powered coding assistant which helps you write better Python code faster.
  It works by providing refactoring suggestions on the fly that you can instantly integrate into your code.

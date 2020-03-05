@@ -1,19 +1,19 @@
 
-# Sourcery VS Code Client
+# Sourcery VS Code Extension
 
 Sourcery is an AI-powered coding assistant which helps you write better Python
 code faster. It works by providing refactoring suggestions on the fly that you
 can instantly integrate into your code.
 
 This extension is currently in beta - please raise any problems or feedback as
-issues.
+issues at https://github.com/sourcery-ai/sourcery-vscode/issues.
 
 # Installation
 
 1. Go to https://sourcery.ai/download to get a free token and copy it to your 
    clipboard.
 2. Enter the token into the box above, or search for `sourcery` in the 
-   VS Code settings and enter the token into the `Sourcery Token` field.
+   settings and enter the token into the `Sourcery Token` field.
 
 # How it works
 
