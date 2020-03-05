@@ -1,10 +1,10 @@
 'use strict';
 
 import * as path from 'path';
-import {workspace, Disposable, ExtensionContext, version, extensions} from 'vscode';
+import {Uri, workspace, window, Disposable, ExtensionContext, version, extensions} from 'vscode';
 import {LanguageClient, LanguageClientOptions, ServerOptions} from 'vscode-languageclient';
 
-function startLangServer(args: string[], documentSelector: string[]): Disposable {
+function startLangServer(args: string[], documentSelector: string[], context: ExtensionContext): Disposable {
 
     const token = workspace.getConfiguration("sourcery").get<string>("token");
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
@@ -29,6 +29,21 @@ function startLangServer(args: string[], documentSelector: string[]): Disposable
         }
     }
 
+    if (!token) {
+        const readmePath = Uri.file(
+            path.join(context.extensionPath, "INSTALL.md")
+        );
+        window.showTextDocument(readmePath);
+        const result = window.showInputBox({
+            placeHolder: 'Sourcery Token',
+            prompt: 'Please sign up via our website and then enter your token here.',
+            ignoreFocusOut: true
+        });
+        result.then(function (value) {
+            workspace.getConfiguration("sourcery").update('token', value, true)
+        });
+    }
+
 
     return new LanguageClient(command, serverOptions, clientOptions).start();
 }
@@ -46,6 +61,6 @@ function getOperatingSystem(): string {
 }
 
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(startLangServer(["--lsp"], ["python"]));
+    context.subscriptions.push(startLangServer(["--lsp"], ["python"], context));
 }
 
