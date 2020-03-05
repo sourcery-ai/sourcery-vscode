@@ -1,12 +1,12 @@
 {
     "name": "sourcery",
-    "displayName": "Sourcery (alpha)",
+    "displayName": "Sourcery",
     "description": "Refactor Python instantly with Sourcery",
     "author": "Sourcery AI",
     "repository": "https://github.com/sourcery-ai/sourcery-vscode",
     "bugs": {"url": "https://github.com/sourcery-ai/public/issues"},
     "license": "MIT",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "sourceryVersion": "0.5.16",
     "publisher": "sourcery",
     "icon": "sourcery-icon.png",
@@ -43,7 +43,7 @@
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.11.7",
         "@types/vscode": "^1.41.0",
-        "mocha": "^2.3.3",
+        "mocha": "^7.0.0",
         "tslint": "^5.16.0",
         "typescript": "^3.6.4",
         "vscode-test": "^1.3.0"
