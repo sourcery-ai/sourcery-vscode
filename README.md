@@ -3,12 +3,12 @@
 [Sourcery](https://sourcery.ai) is an AI-powered coding assistant which helps you write better Python code faster.
  It works by providing refactoring suggestions on the fly that you can instantly integrate into your code.
 
-This extension is currently in alpha - please raise any problems or feedback as issues.
+This extension is currently in beta - please raise any problems or feedback as issues.
 
 ## Installation
 
 1. Search for `sourcery` in VS Code's built-in extension marketplace and install from there.
-2. Click [here](https://sourcery.ai/pricing) to get a token and copy it to your clipboard.
+2. Click [here](https://sourcery.ai/download) to get a free token and copy it to your clipboard.
 3. Search for `sourcery` in the VS Code settings and enter the token into the ```Sourcery Token``` field.
 
 ## How it works
