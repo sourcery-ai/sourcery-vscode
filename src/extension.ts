@@ -36,7 +36,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
             placeHolder: 'Sourcery Token',
-            prompt: 'Please sign up via our website and then enter your token here.',
+            prompt: 'Follow the instructions below to get your token.',
             ignoreFocusOut: true
         });
         result.then(function (value) {
