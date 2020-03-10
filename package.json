@@ -6,7 +6,7 @@
     "repository": "https://github.com/sourcery-ai/sourcery-vscode",
     "bugs": {"url": "https://github.com/sourcery-ai/public/issues"},
     "license": "MIT",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "sourceryVersion": "0.6.1",
     "publisher": "sourcery",
     "icon": "sourcery-icon.png",
