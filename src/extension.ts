@@ -18,8 +18,8 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
         args,
         options: {
           env: {
-            PATH: process.env.PATH,
-            PYTHONHASHSEED: "0"
+            PYTHONHASHSEED: "0",
+            ...process.env
           }
         }
     };
