@@ -16,7 +16,14 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
     const serverOptions: ServerOptions = {
         command,
         args,
+        options: {
+          env: {
+            PYTHONHASHSEED: "0",
+            ...process.env
+          }
+        }
     };
+
     const clientOptions: LanguageClientOptions = {
         documentSelector: documentSelector,
         synchronize: {
