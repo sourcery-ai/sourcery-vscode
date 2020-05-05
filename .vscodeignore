@@ -1,0 +1,9 @@
+**/*.ts
+**/tsconfig.json
+.gitignore
+.idea/**
+.vscode/**
+.vscode-dev/**
+yarn.lock
+.git/**
+.pytest_cache/**
