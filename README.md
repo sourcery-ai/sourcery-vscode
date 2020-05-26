@@ -26,7 +26,7 @@ If you don't like the suggestion there is a quick fix to disable Sourcery for th
 ## GitHub Integration
 
 Sourcery is also available as a Github bot that can automatically refactor pull requests on selected repositories.
-[Try it out now!](https://sourcery.ai/gh/).
+[Try it out now!](https://sourcery.ai/github/).
 
 ## About us
 
