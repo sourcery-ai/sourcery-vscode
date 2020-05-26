@@ -23,7 +23,7 @@
         "Other"
     ],
     "activationEvents": [
-        "*"
+        "onLanguage:python"
     ],
     "contributes": {
         "configuration": {
