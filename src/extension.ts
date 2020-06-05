@@ -31,7 +31,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
         },
         initializationOptions: {
             'token': token,
-            'vscode_version': 'vscode ' + version,
+            'editor_version': 'vscode ' + version,
             'extension_version': extensionVersion
         }
     }
