@@ -1,4 +1,1 @@
-*.exe filter=lfs diff=lfs merge=lfs -text
-binaries/sourcery-0.7.0-linux/sourcery filter=lfs diff=lfs merge=lfs -text
-binaries/sourcery-0.7.0-mac/sourcery filter=lfs diff=lfs merge=lfs -text
-binaries/sourcery-0.7.0-win/sourcery.exe filter=lfs diff=lfs merge=lfs -text
+binaries/**/sourcery* filter=lfs diff=lfs merge=lfs -text
