@@ -60,10 +60,9 @@ function getOperatingSystem(): string {
         return 'win/sourcery.exe'
     } else if (process.platform == 'darwin') {
         return 'mac/sourcery'
-    } else if (process.platform == 'linux') {
-        return 'linux/sourcery'
     } else {
-        throw new Error(`Sorry, the platform '${process.platform}' is not supported by Sourcery.`)
+        // Assume everything else is linux compatible
+        return 'linux/sourcery'
     }
 }
 
