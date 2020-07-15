@@ -41,6 +41,23 @@ refactor:
   skip:
     - merge-nested-ifs
 
+Sourcery can also display code metrics right in your IDE. 
+This can be enabled with the following config options:
+
+# Code Metrics configuration (may be subject to change)
+metrics:
+  # This enables showing Sourcery code metrics in the plugin.
+  #
+  # These are shown at the method level when hovering the mouse
+  # over the method name.
+  #
+  enabled: true
+  # The quality score is a mark out of 10.
+  #
+  # Methods with a quality lower than this threshold will be flagged
+  # as warnings.
+  #
+  quality_threshold: 5.0
 
 This extension is currently in beta - please raise any problems or feedback as
 issues at https://github.com/sourcery-ai/sourcery-vscode/issues.
