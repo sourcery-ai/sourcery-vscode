@@ -27,7 +27,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
     const clientOptions: LanguageClientOptions = {
         documentSelector: documentSelector,
         synchronize: {
-            configurationSection: "sourcery.token"
+            configurationSection: "sourcery"
         },
         initializationOptions: {
             'token': token,
