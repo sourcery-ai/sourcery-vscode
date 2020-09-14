@@ -38,7 +38,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
 
     if (!token) {
         const readmePath = Uri.file(
-            path.join(context.extensionPath, "INSTALL.md")
+            path.join(context.extensionPath, "INSTALL.py")
         );
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
