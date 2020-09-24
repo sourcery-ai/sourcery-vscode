@@ -4,8 +4,7 @@ import * as path from 'path';
 import {Uri, workspace, window, Disposable, ExtensionContext, version, extensions} from 'vscode';
 import {LanguageClient, LanguageClientOptions, ServerOptions} from 'vscode-languageclient';
 
-function startLangServer(args: string[], documentSelector: string[], context: ExtensionContext): Disposable {
-
+function startLangServer(context: ExtensionContext): Disposable {
     const token = workspace.getConfiguration("sourcery").get<string>("token");
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
@@ -15,7 +14,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
 
     const serverOptions: ServerOptions = {
         command,
-        args,
+        args: ['lsp'],
         options: {
           env: {
             PYTHONHASHSEED: "0",
@@ -25,7 +24,7 @@ function startLangServer(args: string[], documentSelector: string[], context: Ex
     };
 
     const clientOptions: LanguageClientOptions = {
-        documentSelector: documentSelector,
+        documentSelector: ['python'],
         synchronize: {
             configurationSection: "sourcery.token"
         },
@@ -67,6 +66,6 @@ function getOperatingSystem(): string {
 }
 
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(startLangServer(["--lsp"], ["python"], context));
+    context.subscriptions.push(startLangServer(context));
 }
 
