@@ -1,25 +1,37 @@
 'use strict';
 
 import * as path from 'path';
-import {Uri, workspace, window, Disposable, ExtensionContext, version, extensions} from 'vscode';
-import {LanguageClient, LanguageClientOptions, ServerOptions} from 'vscode-languageclient';
+import {Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions} from 'vscode';
+import {
+    LanguageClient,
+    LanguageClientOptions,
+    ServerOptions,
+    RequestType,
+    ExecuteCommandRequest,
+    ExecuteCommandParams
+} from 'vscode-languageclient';
 
-function startLangServer(context: ExtensionContext): Disposable {
+
+const REFACTOR_WORKSPACE_REQUEST = new RequestType('refactor_workspace');
+
+function createLangServer(context: ExtensionContext): LanguageClient {
+
     const token = workspace.getConfiguration("sourcery").get<string>("token");
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
     const sourceryVersion = packageJson.sourceryVersion;
 
-    const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    //const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    const command = "/home/nick/source/sourcery-prototype/run-sourcery.sh";
 
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
         options: {
-          env: {
-            PYTHONHASHSEED: "0",
-            ...process.env
-          }
+            env: {
+                PYTHONHASHSEED: "0",
+                ...process.env
+            }
         }
     };
 
@@ -51,7 +63,7 @@ function startLangServer(context: ExtensionContext): Disposable {
     }
 
 
-    return new LanguageClient(command, serverOptions, clientOptions).start();
+    return new LanguageClient(command, serverOptions, clientOptions);
 }
 
 function getOperatingSystem(): string {
@@ -65,7 +77,25 @@ function getOperatingSystem(): string {
     }
 }
 
+let languageClient: LanguageClient;
+
 export function activate(context: ExtensionContext) {
-    context.subscriptions.push(startLangServer(context));
+
+    const command = 'sourcery.refactor.workspace';
+
+    languageClient = createLangServer(context)
+
+    const commandHandler = (resource: Uri) => {
+        let request: ExecuteCommandParams = {
+            command: "refactor_workspace",
+            arguments: [{
+                'uri': resource
+            }]
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    };
+
+    context.subscriptions.push(commands.registerCommand(command, commandHandler));
+    context.subscriptions.push(languageClient.start());
 }
 
