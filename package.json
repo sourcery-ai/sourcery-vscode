@@ -1,31 +1,4 @@
 {
-<<<<<<< HEAD
-    "name": "sourcery",
-    "displayName": "Sourcery",
-    "description": "Refactor Python instantly with Sourcery",
-    "author": "Sourcery AI",
-    "repository": "https://github.com/sourcery-ai/sourcery-vscode",
-    "bugs": {
-        "url": "https://github.com/sourcery-ai/public/issues"
-    },
-    "license": "MIT",
-    "version": "0.8.0",
-    "sourceryVersion": "0.8.0",
-    "publisher": "sourcery",
-    "icon": "sourcery-icon.png",
-    "keywords": [
-        "Python",
-        "refactoring"
-    ],
-    "engines": {
-        "vscode": "^1.30.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onLanguage:python"
-=======
   "name": "sourcery",
   "displayName": "Sourcery",
   "description": "Refactor Python instantly with Sourcery",
@@ -35,8 +8,8 @@
     "url": "https://github.com/sourcery-ai/public/issues"
   },
   "license": "MIT",
-  "version": "0.7.12",
-  "sourceryVersion": "0.7.12",
+  "version": "0.8.0",
+  "sourceryVersion": "0.8.0",
   "publisher": "sourcery",
   "icon": "sourcery-icon.png",
   "keywords": [
@@ -59,7 +32,6 @@
         "title": "Refactor folder",
         "category": "Sourcery"
       }
->>>>>>> first draft of full project refactoring
     ],
     "menus": {
       "explorer/context": [
