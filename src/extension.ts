@@ -21,9 +21,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const extensionVersion = packageJson.version;
     const sourceryVersion = packageJson.sourceryVersion;
 
-    //const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
-    const command = "/home/nick/source/sourcery-prototype/run-sourcery.sh";
-
+    const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
