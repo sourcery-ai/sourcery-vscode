@@ -29,7 +29,7 @@
     "commands": [
       {
         "command": "sourcery.refactor.workspace",
-        "title": "Refactor folder",
+        "title": "Scan with Sourcery",
         "category": "Sourcery"
       }
     ],
