@@ -36,9 +36,8 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "explorerResourceIsFolder == true",
           "command": "sourcery.refactor.workspace",
-          "group": "navigation"
+          "group": "1_modification"
         }
       ]
     },
