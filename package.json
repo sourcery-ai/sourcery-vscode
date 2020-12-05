@@ -31,13 +31,22 @@
         "command": "sourcery.refactor.workspace",
         "title": "Scan with Sourcery",
         "category": "Sourcery"
+      },
+      {
+        "command": "sourcery.clones.workspace",
+        "title": "Detect clones",
+        "category": "Sourcery"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "command": "sourcery.refactor.workspace",
-          "group": "1_modification"
+          "group": "1_modification@1"
+        },
+        {
+          "command": "sourcery.clones.workspace",
+          "group": "1_modification@2"
         }
       ]
     },
