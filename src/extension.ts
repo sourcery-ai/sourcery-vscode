@@ -22,7 +22,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const sourceryVersion = packageJson.sourceryVersion;
 
     const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
-    
+
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
@@ -80,21 +80,23 @@ function getOperatingSystem(): string {
 export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
 
-    context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
             command: 'refactor_workspace',
             arguments: [{
-                'uri': resource
+                'uri': resource,
+                'all_uris': selected
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
             command: 'detect_clones',
             arguments: [{
-                'uri': resource
+                'uri': resource,
+                'all_uris': selected
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
