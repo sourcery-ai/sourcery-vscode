@@ -16,19 +16,19 @@ const REFACTOR_WORKSPACE_REQUEST = new RequestType('refactor_workspace');
 
 function createLangServer(context: ExtensionContext): LanguageClient {
 
-    const token = workspace.getConfiguration("sourcery").get<string>("token");
+    const token = workspace.getConfiguration('sourcery').get<string>('token');
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
     const sourceryVersion = packageJson.sourceryVersion;
 
     const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
-    
+
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
         options: {
             env: {
-                PYTHONHASHSEED: "0",
+                PYTHONHASHSEED: '0',
                 ...process.env
             }
         }
@@ -37,7 +37,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const clientOptions: LanguageClientOptions = {
         documentSelector: ['python'],
         synchronize: {
-            configurationSection: "sourcery"
+            configurationSection: 'sourcery'
         },
         initializationOptions: {
             'token': token,
@@ -48,7 +48,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 
     if (!token) {
         const readmePath = Uri.file(
-            path.join(context.extensionPath, "INSTALL.py")
+            path.join(context.extensionPath, 'INSTALL.py')
         );
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
@@ -57,13 +57,13 @@ function createLangServer(context: ExtensionContext): LanguageClient {
             ignoreFocusOut: true
         });
         result.then(function (value) {
-            workspace.getConfiguration("sourcery").update('token', value, true)
+            workspace.getConfiguration('sourcery').update('token', value, true)
         });
     }
 
-
     return new LanguageClient(command, serverOptions, clientOptions);
 }
+
 
 function getOperatingSystem(): string {
     if (process.platform == 'win32') {
@@ -76,25 +76,32 @@ function getOperatingSystem(): string {
     }
 }
 
-let languageClient: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+    const languageClient = createLangServer(context)
 
-    const command = 'sourcery.refactor.workspace';
-
-    languageClient = createLangServer(context)
-
-    const commandHandler = (resource: Uri) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
-            command: "refactor_workspace",
+            command: 'refactor_workspace',
             arguments: [{
-                'uri': resource
+                'uri': resource,
+                'all_uris': selected
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    };
+    }));
 
-    context.subscriptions.push(commands.registerCommand(command, commandHandler));
+    context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri, selected?: Uri[]) => {
+        let request: ExecuteCommandParams = {
+            command: 'detect_clones',
+            arguments: [{
+                'uri': resource,
+                'all_uris': selected
+            }]
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    }));
+
     context.subscriptions.push(languageClient.start());
 }
 
