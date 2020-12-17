@@ -29,7 +29,7 @@
     "commands": [
       {
         "command": "sourcery.refactor.workspace",
-        "title": "Scan with Sourcery",
+        "title": "Scan for refactorings",
         "category": "Sourcery"
       },
       {
@@ -38,8 +38,20 @@
         "category": "Sourcery"
       }
     ],
+    "submenus": [
+      {
+        "id": "sourcery.scans",
+        "label": "Sourcery"
+      }
+    ],
     "menus": {
       "explorer/context": [
+        {
+          "submenu": "sourcery.scans",
+          "group": "1_modification@1"
+        }
+      ],
+      "sourcery.scans": [
         {
           "command": "sourcery.refactor.workspace",
           "group": "1_modification@1"
