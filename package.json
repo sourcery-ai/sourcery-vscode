@@ -23,7 +23,8 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:*.py"
+    "onLanguage:python",
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
