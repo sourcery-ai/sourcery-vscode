@@ -82,7 +82,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
-            command: 'refactor_workspace',
+            command: 'refactoring/scan',
             arguments: [{
                 'uri': resource,
                 'all_uris': selected
@@ -93,7 +93,7 @@ export function activate(context: ExtensionContext) {
 
     context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
-            command: 'detect_clones',
+            command: 'clone/scan',
             arguments: [{
                 'uri': resource,
                 'all_uris': selected
