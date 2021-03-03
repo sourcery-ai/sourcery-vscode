@@ -21,7 +21,7 @@ Sourcery is your personal coding assistant that helps you write better, cleaner,
 
 Sourcery runs in the background whenever you're working on Python files. Keep an eye out for sections of your code underlined in blue - that means Sourcery has a suggestion!
 
-Hover over a Sourcery suggestion to see a description of what Sourcery wants you to change along with the diff of the proposed changes. Then either use the quickfix menu (`Ctrl+` or `Cmd+` for most people) or click on the lightbulb icon to bring up the Sourcery menu and choose to accept or reject the changes.
+Hover over a Sourcery suggestion to see a description of what Sourcery wants you to change along with the diff of the proposed changes. Then either use the quickfix menu (`Ctrl+.` or `Cmd+.` for most people) or click on the lightbulb icon to bring up the Sourcery menu and choose to accept or reject the changes.
 
 Sourcery also provides quality metrics for every function you write (plus warnings for really bad code).
 
