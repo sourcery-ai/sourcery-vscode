@@ -61,7 +61,17 @@
           "command": "sourcery.clones.workspace",
           "group": "1_modification@2"
         }
-      ]
+      ],
+      "commandPalette": [
+        {
+            "command": "sourcery.refactor.workspace",
+            "when": "false"
+        },
+        {
+            "command": "sourcery.clones.workspace",
+            "when": "false"
+        }
+    ]
     },
     "configuration": {
       "title": "Sourcery Configuration",
