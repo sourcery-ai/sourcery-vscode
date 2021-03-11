@@ -7,3 +7,4 @@
 yarn.lock
 .git/**
 .pytest_cache/**
+assets/**
