@@ -7,41 +7,28 @@
 #    settings and enter the token into the `Sourcery Token` field.
 
 
-# To check Sourcery is working, save this file and then look for the underlined
-# `new_list = []` in the function below.
-# If you hover over it you should see a diff, with Sourcery suggesting the 
-# `list-comprehension` refactoring. You can apply the suggestion by taking the
-# associated quick-fix action. Put the cursor on the line and either click on
-# the lightbulb icon or use the hot-key (Cmd+. or Ctrl+. by default).
+# Welcome to Sourcery! Once you've added the token, look for the
+# underlined `result = []` below. This is a suggestion from Sourcery.
+# Hover over it to see details of the changes including a diff. 
+
+def refactoring_example(spellbook):
+    result = []
+    for spell in spellbook:
+        if spell.is_awesome:
+          result.append(spell)
+    return result
+
+# Apply the suggestion by taking the quick-fix action:
+#   Put the cursor on the line and either click the lightbulb or use the 
+#   hotkey (Ctrl/Cmd+. by default). Take the 'Convert for loop...' option.
 #
-# All of the suggestions Sourcery has found
-# will also appear in the Problems pane.
+# All of Sourcery's suggestions are shown in the Problems pane (Ctrl/Cmd+Shift+M).
 
-def filter_list(list, filter, func):
-    new_list = []
-    for i in list:
-        if filter(i):
-            new_list.append(func(i))
-    print("List filtered")
-    return new_list
+# Sourcery also provides code metrics for each function to give you insight into
+# code quality - hover over the function definition above to see this report.
 
-# Sourcery also provides code metrics for each function to give you insight on
-# code quality - hover over the `filter_list` definition above to see this report.
-
-
-# Sourcery can also chain together several changes to make a larger one.
-def enable_local(self, opt):
-  if opt == ECHO:
-    return True
-  elif opt == SGA:
-    return True
-  else:
-    return False
-
-
-
-
-
-# For more detail you can check out our documentation here:
+# For more details check out our documentation here:
 # https://github.com/sourcery-ai/sourcery/wiki/Sourcery-Tutorial
+
+# Now open up some Python files and look out for the suggestions!
 
