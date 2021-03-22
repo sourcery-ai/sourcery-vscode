@@ -21,7 +21,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const extensionVersion = packageJson.version;
     const sourceryVersion = packageJson.sourceryVersion;
 
-    const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    //const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    const command = "/home/nick/source/sourcery-prototype/run-sourcery.sh";
 
     const serverOptions: ServerOptions = {
         command,
@@ -79,6 +80,19 @@ function getOperatingSystem(): string {
 
 export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
+
+    context.subscriptions.push(commands.registerCommand('sourcery.refactor.skip_forever', (refactoring_id: string) =>
+    {
+
+        let ignored = workspace.getConfiguration('sourcery').get('ignored')
+        if (ignored.toString() == "") {
+            ignored = refactoring_id
+        } else {
+            ignored = ignored + ', ' + refactoring_id
+        }
+
+        workspace.getConfiguration('sourcery').update('ignored', ignored, true)
+    }))
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
