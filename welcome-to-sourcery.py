@@ -15,12 +15,12 @@ def refactoring_example(spellbook):
     result = []
     for spell in spellbook:
         if spell.is_awesome:
-          result.append(spell)
+            result.append(spell)
     return result
 
 # Apply the suggestion by taking the quick-fix action:
-#   Put the cursor on the line and either click the lightbulb or use the hotkey:
-#   (Ctrl + .) or (Cmd + .) by default. Take the 'Convert for loop...' option.
+#   Put the cursor on the highlighted line and click the lightbulb or use the hotkey
+#   (Ctrl + .) or (Cmd + .), then take the 'Convert for loop...' option.
 #
 # All of Sourcery's suggestions are shown in the Problems pane (Ctrl/Cmd+Shift+M).
 
