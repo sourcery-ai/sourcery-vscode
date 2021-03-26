@@ -48,7 +48,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 
     if (!token) {
         const readmePath = Uri.file(
-            path.join(context.extensionPath, 'INSTALL.py')
+            path.join(context.extensionPath, 'welcome-to-sourcery.py')
         );
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
