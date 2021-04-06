@@ -1,6 +1,7 @@
 'use strict';
 
 import * as path from 'path';
+import * as fs from 'fs';
 import {Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions} from 'vscode';
 import {
     LanguageClient,
@@ -19,9 +20,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const token = workspace.getConfiguration('sourcery').get<string>('token');
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
-    const sourceryVersion = packageJson.sourceryVersion;
 
-    const command = path.join(__dirname, "..", "binaries/sourcery-" + sourceryVersion + "-" + getOperatingSystem());
+    const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
 
     const serverOptions: ServerOptions = {
         command,
@@ -65,16 +65,30 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 }
 
 
-function getOperatingSystem(): string {
-    if (process.platform == 'win32') {
-        return 'win/sourcery.exe'
-    } else if (process.platform == 'darwin') {
-        return 'mac/sourcery'
+
+function getExecutablePath(): string {
+    const activePath = path.join(__dirname, "..", "sourcery_binaries/active");
+    if (fs.existsSync(activePath)) {
+        if (process.platform == 'win32') {
+            return 'active/sourcery.exe'
+        } else if (process.platform == 'darwin') {
+            return 'active/sourcery'
+        } else {
+            // Assume everything else is linux compatible
+            return 'active/sourcery'
+        }
     } else {
-        // Assume everything else is linux compatible
-        return 'linux/sourcery'
+        if (process.platform == 'win32') {
+            return 'install/win/sourcery.exe'
+        } else if (process.platform == 'darwin') {
+            return 'install/mac/sourcery'
+        } else {
+            // Assume everything else is linux compatible
+            return 'install/linux/sourcery'
+        }
     }
 }
+
 
 
 export function activate(context: ExtensionContext) {
