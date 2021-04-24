@@ -1,24 +1,12 @@
 'use strict';
 
 import * as path from 'path';
-import {Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions} from 'vscode';
 const { exec } = require('child_process');
 import * as fs from 'fs';
 
-//const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
+const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath() + " uninstall");
 
-const command = "/home/nick/source/sourcery-prototype/run-sourcery.sh uninstall";
-
-exec(command, (err, stdout, stderr) => {
-  if (err) {
-    // node couldn't execute the command
-    return;
-  }
-
-  // the *entire* stdout and stderr (buffered)
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
-});
+exec(command);
 
 function getExecutablePath(): string {
     const activePath = path.join(__dirname, "..", "sourcery_binaries/active");
