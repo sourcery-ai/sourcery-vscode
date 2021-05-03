@@ -1,7 +1,8 @@
 'use strict';
 
 import * as path from 'path';
-import * as fs from 'fs';
+import { getExecutablePath } from './executable';
+
 import {Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions} from 'vscode';
 import {
     LanguageClient,
@@ -22,6 +23,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const extensionVersion = packageJson.version;
 
     const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
+
 
     const serverOptions: ServerOptions = {
         command,
@@ -65,29 +67,6 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 }
 
 
-
-function getExecutablePath(): string {
-    const activePath = path.join(__dirname, "..", "sourcery_binaries/active");
-    if (fs.existsSync(activePath)) {
-        if (process.platform == 'win32') {
-            return 'active/sourcery.exe'
-        } else if (process.platform == 'darwin') {
-            return 'active/sourcery'
-        } else {
-            // Assume everything else is linux compatible
-            return 'active/sourcery'
-        }
-    } else {
-        if (process.platform == 'win32') {
-            return 'install/win/sourcery.exe'
-        } else if (process.platform == 'darwin') {
-            return 'install/mac/sourcery'
-        } else {
-            // Assume everything else is linux compatible
-            return 'install/linux/sourcery'
-        }
-    }
-}
 
 
 
