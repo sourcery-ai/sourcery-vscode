@@ -1,10 +1,11 @@
 name: Publish VSIX
 
 on:
-  pull_request: {}
-
-env:
-  RELEASE: 0.9.2
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
 
 jobs:
   linux-build:
@@ -28,26 +29,26 @@ jobs:
         rm -rf sourcery_binaries/install/{linux,mac,win}/*
 
         # Get release asset json
-        ASSETS=$( curl https://api.github.com/repos/sourcery-ai/sourcery/releases | jq ".[] | select(.tag_name == \"v$RELEASE\") | .assets" )
-        echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-linux.tar.gz\") | .browser_download_url" 
+        ASSETS=$( curl https://api.github.com/repos/sourcery-ai/sourcery/releases | jq -e '.[] | select(.tag_name == "v${{ github.event.inputs.version }}") | .assets' )
+        echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-linux.tar.gz") | .browser_download_url' 
 
         # Download linux binary
-        curl -L -o linux.tar.gz $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-linux.tar.gz\") | .browser_download_url" )
+        curl -L -o linux.tar.gz $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-linux.tar.gz") | .browser_download_url' )
         tar -xzf linux.tar.gz -C sourcery_binaries/install/linux
         rm linux.tar.gz
 
         # Download mac binary
-        curl -L -o mac.tar.gz $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-mac.tar.gz\") | .browser_download_url" )
+        curl -L -o mac.tar.gz $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-mac.tar.gz") | .browser_download_url' )
         tar -xf mac.tar.gz -C sourcery_binaries/install/mac
         rm mac.tar.gz
 
         # Download windows binary
-        curl -L -o win.zip $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-win.zip\") | .browser_download_url" )
+        curl -L -o win.zip $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-win.zip") | .browser_download_url' )
         unzip win.zip -d sourcery_binaries/install/win
         rm win.zip
 
     - name: Update package.json version number
-      run: jq ".version = \"$RELEASE\"" package.json > TMP && mv TMP package.json
+      run: jq '.version = "${{ github.event.inputs.version }}"' package.json > TMP && mv TMP package.json
 
     - name: Commit to master, tag release, and push
       run: |
@@ -55,20 +56,28 @@ jobs:
         git status
         git config --global user.name sourcery-ai-bot
         git config --global user.email 60611498+sourcery-ai-bot@users.noreply.github.com
-        git commit -m"Update sourcery_binaries to release v$RELEASE"
-        git tag v$RELEASE
-        # git push origin v$RELEASE master
+        git commit -m'Update sourcery_binaries to release v${{ github.event.inputs.version }}'
+        git push origin master
 
-    - name: Publish VSCode extension
+    - name: Package and publish VSCode extension
       run: |
-        yarn add vsce ovsx --dev
         yarn run vsce package
-
-        # yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
-        # ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
+        yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
+        ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
 
     - name: Upload archive
       uses: actions/upload-artifact@v2
       with:
-        path: sourcery-0.9.2.vsix
+        path: sourcery-${{ github.event.inputs.version }}.vsix
 
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: v${{ github.event.inputs.version }}
+        name: Sourcery ${{ github.event.inputs.version }}
+        body: v${{ github.event.inputs.version }}
+        prerelease: false
+        artifacts: sourcery-${{ github.event.inputs.version }}-vsix
+        artifactContentType: raw
+        artifactErrorsFailBuild: true
+        token: ${{ secrets.GITHUB_TOKEN }}
