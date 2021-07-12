@@ -61,5 +61,12 @@ jobs:
 
     - name: Publish VSCode extension
       run: |
-        yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
-        ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
+        yarn run vsce package -p ${{ secrets.VSCE_TOKEN }}
+
+        # ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
+
+    - name: Upload archive
+      uses: actions/upload-artifact@v2
+      with:
+        path: sourcery-$RELEASE.vsix
+
