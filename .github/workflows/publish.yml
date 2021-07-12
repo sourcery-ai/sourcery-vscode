@@ -1,0 +1,60 @@
+name: Publish VSIX
+
+on:
+  pull_request: {}
+
+env:
+  RELEASE: 0.9.2
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - run: yarn install --frozen-lockfile
+
+    - name: Update binaries
+      run: |
+        # Delete existing binaries
+        rm -rf sourcery_binaries/install/{linux,mac,win}/*
+
+        # Get release asset json
+        ASSETS=$( curl https://api.github.com/repos/sourcery-ai/sourcery/releases | jq ".[] | select(.tag_name == \"v$RELEASE\") | .assets" )
+        echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-linux.tar.gz\") | .browser_download_url" 
+
+        # Download linux binary
+        curl -L -o linux.tar.gz $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-linux.tar.gz\") | .browser_download_url" )
+        tar -xzf linux.tar.gz -C sourcery_binaries/install/linux
+        rm linux.tar.gz
+
+        # Download mac binary
+        curl -L -o mac.tar.gz $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-mac.tar.gz\") | .browser_download_url" )
+        tar -xf mac.tar.gz -C sourcery_binaries/install/mac
+        rm mac.tar.gz
+
+        # Download windows binary
+        curl -L -o win.zip $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$RELEASE-win.zip\") | .browser_download_url" )
+        unzip win.zip -d sourcery_binaries/install/win
+        rm win.zip
+
+    - name: Update package.json version number
+      run: jq ".version = \"$RELEASE\"" package.json > TMP && mv TMP package.json
+
+    - name: Commit to master, tag release, and push
+      run: |
+        git add package.json sourcery_binaries/install
+        git status
+        git commit -m"Update sourcery_binaries to release v$RELEASE"
+        git tag v$RELEASE
+        # git push v$RELEASE master
+
+#     - name: Publish VSCode extension
+#       run: |
+#         yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
+#         ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
