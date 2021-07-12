@@ -70,5 +70,5 @@ jobs:
     - name: Upload archive
       uses: actions/upload-artifact@v2
       with:
-        path: sourcery-$RELEASE.vsix
+        path: sourcery-0.9.2.vsix
 
