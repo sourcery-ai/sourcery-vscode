@@ -57,9 +57,9 @@ jobs:
         git config --global user.email 60611498+sourcery-ai-bot@users.noreply.github.com
         git commit -m"Update sourcery_binaries to release v$RELEASE"
         git tag v$RELEASE
-        # git push v$RELEASE master
+        git push v$RELEASE master
 
-#     - name: Publish VSCode extension
-#       run: |
-#         yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
-#         ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
+    - name: Publish VSCode extension
+      run: |
+        yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
+        ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
