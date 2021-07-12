@@ -53,6 +53,8 @@ jobs:
       run: |
         git add package.json sourcery_binaries/install
         git status
+        git config --global user.name sourcery-ai-bot
+        git config --global user.email 60611498+sourcery-ai-bot@users.noreply.github.com
         git commit -m"Update sourcery_binaries to release v$RELEASE"
         git tag v$RELEASE
         # git push v$RELEASE master
