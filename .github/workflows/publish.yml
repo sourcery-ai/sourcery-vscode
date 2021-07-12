@@ -61,6 +61,7 @@ jobs:
 
     - name: Publish VSCode extension
       run: |
+        yarn run
         yarn run vsce package
 
         # yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
