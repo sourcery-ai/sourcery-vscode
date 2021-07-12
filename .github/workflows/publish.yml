@@ -12,6 +12,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      # TODO Remove
+      with:
+        ref: master
 
     - uses: actions/setup-node@v2
       with:
