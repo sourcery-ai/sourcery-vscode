@@ -22,39 +22,19 @@ jobs:
 
     - name: Update binaries
       run: |
-        # Delete existing binaries
-        rm -rf sourcery_binaries/install/{linux,mac,win}/*
+        ./download-binaries.sh ${{ github.event.inputs.version }}
 
-        # Get release asset json
-        ASSETS=$( curl https://api.github.com/repos/sourcery-ai/sourcery/releases | jq -e '.[] | select(.tag_name == "v${{ github.event.inputs.version }}") | .assets' )
-        echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-linux.tar.gz") | .browser_download_url' 
+    - name: Update version number
+      run: yarn run bump ${{ github.event.inputs.version }}
 
-        # Download linux binary
-        curl -L -o linux.tar.gz $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-linux.tar.gz") | .browser_download_url' )
-        tar -xzf linux.tar.gz -C sourcery_binaries/install/linux
-        rm linux.tar.gz
-
-        # Download mac binary
-        curl -L -o mac.tar.gz $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-mac.tar.gz") | .browser_download_url' )
-        tar -xf mac.tar.gz -C sourcery_binaries/install/mac
-        rm mac.tar.gz
-
-        # Download windows binary
-        curl -L -o win.zip $( echo $ASSETS | jq -r '.[] | select(.name == "sourcery-${{ github.event.inputs.version }}-win.zip") | .browser_download_url' )
-        unzip win.zip -d sourcery_binaries/install/win
-        rm win.zip
-
-    - name: Update package.json version number
-      run: jq '.version = "${{ github.event.inputs.version }}"' package.json > TMP && mv TMP package.json
-
-    - name: Commit to master, tag release, and push
+    - name: Commit to master, create tag, and push
       run: |
-        git add package.json sourcery_binaries/install
-        git status
-        git config --global user.name sourcery-ai-bot
-        git config --global user.email 60611498+sourcery-ai-bot@users.noreply.github.com
-        git commit -m'Update sourcery_binaries to release v${{ github.event.inputs.version }}'
-        git push origin master
+        git add .
+        git config --global user.name ${{ github.actor }}
+        git config --global user.email ${{ github.actor }}@users.noreply.github.com
+        git commit -m 'Update sourcery_binaries to release v${{ github.event.inputs.version }}'
+        git tag v${{ github.event.inputs.version }}
+        git push origin master v${{ github.event.inputs.version }}
 
     - name: Package and publish VSCode extension
       run: |
@@ -78,3 +58,9 @@ jobs:
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update version number to dev
+      run: |
+        yarn run bump prepatch --preid dev
+        git commit -am 'Bump version to dev'
+        git push origin master
