@@ -125,4 +125,5 @@ temp/
 
 .vscode-dev/
 out/
+*.vsix
 
