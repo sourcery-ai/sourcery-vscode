@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -e
+#!/usr/bin/env bash
 
 VERSION=$1
 if [[ -z "$VERSION" ]]; then
@@ -29,5 +29,6 @@ curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-ma
   | tar -xz -C sourcery_binaries/install/mac
 
 echo Downloading windows binary
-curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-win.zip\") | .browser_download_url" ) \
-  | tar -xz -C sourcery_binaries/install/win
+curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-win.zip\") | .browser_download_url" ) -o temp.zip
+unzip temp.zip -d sourcery_binaries/install/win/
+rm temp.zip
