@@ -126,4 +126,5 @@ temp/
 .vscode-dev/
 out/
 *.vsix
+sourcery_binaries/
 
