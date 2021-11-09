@@ -32,7 +32,7 @@ jobs:
         git add .
         git config --global user.name ${{ github.actor }}
         git config --global user.email ${{ github.actor }}@users.noreply.github.com
-        git commit -m 'Update sourcery_binaries to release v${{ github.event.inputs.version }}'
+        git commit -m 'Update version number to v${{ github.event.inputs.version }}'
         git tag v${{ github.event.inputs.version }}
         git push origin master v${{ github.event.inputs.version }}
 
