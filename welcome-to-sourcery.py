@@ -28,7 +28,7 @@ def refactoring_example(spellbook):
 # code quality - hover over the function definition above to see this report.
 
 # For more details check out our documentation here:
-# https://github.com/sourcery-ai/sourcery/wiki/Sourcery-Tutorial
+# https://docs.sourcery.ai/IDEs/VSCode/
 
 # Now open up some Python files and look out for the suggestions!
 
