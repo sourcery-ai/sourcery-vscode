@@ -2,7 +2,7 @@
 
 # Sourcery Installation
 
-# 1. Go to https://sourcery.ai/dashboard to get a free token.
+# 1. Go to https://sourcery.ai/signup to get a free token.
 # 2. Enter the token into the box above, or search for `sourcery` in the
 #    settings and enter the token into the `Sourcery Token` field.
 

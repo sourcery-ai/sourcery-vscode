@@ -55,7 +55,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
             placeHolder: 'Sourcery Token',
-            prompt: 'Get your token from https://sourcery.ai/dashboard',
+            prompt: 'Get your token from https://sourcery.ai/signup',
             ignoreFocusOut: true
         });
         result.then(function (value) {
