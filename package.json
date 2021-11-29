@@ -79,7 +79,7 @@
         "sourcery.token": {
           "type": "string",
           "default": "",
-          "description": "Sourcery token"
+          "description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
         },
         "sourcery.metricsEnabled": {
           "type": "boolean",

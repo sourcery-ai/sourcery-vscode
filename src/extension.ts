@@ -3,7 +3,7 @@
 import * as path from 'path';
 import { getExecutablePath } from './executable';
 
-import {Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions} from 'vscode';
+import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions } from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -55,7 +55,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
         window.showTextDocument(readmePath);
         const result = window.showInputBox({
             placeHolder: 'Sourcery Token',
-            prompt: 'Follow the instructions below to get your token.',
+            prompt: 'Get your token from https://sourcery.ai/dashboard',
             ignoreFocusOut: true
         });
         result.then(function (value) {
