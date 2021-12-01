@@ -2,7 +2,7 @@
 
 # Sourcery Installation
 
-# 1. Go to https://sourcery.ai/download/?editor=vscode to get a free token.
+# 1. Go to https://sourcery.ai/signup to get a free token.
 # 2. Enter the token into the box above, or search for `sourcery` in the
 #    settings and enter the token into the `Sourcery Token` field.
 
@@ -28,7 +28,7 @@ def refactoring_example(spellbook):
 # code quality - hover over the function definition above to see this report.
 
 # For more details check out our documentation here:
-# https://github.com/sourcery-ai/sourcery/wiki/Sourcery-Tutorial
+# https://docs.sourcery.ai/
 
 # Now open up some Python files and look out for the suggestions!
 
