@@ -22,8 +22,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
 
-    const command = path.join(__dirname, "..", "..", "core", "run-sourcery.sh");
-
+    const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
 
     const serverOptions: ServerOptions = {
         command,
@@ -96,7 +95,7 @@ export function activate(context: ExtensionContext) {
     }));
 
     languageClient.onReady().then(() => {
-        languageClient.onNotification('vscode/viewProblems', () => {
+        languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
         });
     });
