@@ -49,10 +49,11 @@ To make the change, just bring up the quick fix menu and choose to accept the ch
 The commands to bring up the quick fix menu depend on your OS & region, but generally they are:
 
 
-| VS Code | Mac | Command . |
-| --- | --- | --- |
-| VS Code  | Windows | Ctrl . |
-| VS Code | Linux | Ctrl . |
+ | OS | Keyboard Shortcut  |
+| --- | --- |
+| Mac | Command . |
+| Windows | Ctrl . |
+| Linux | Ctrl . |
 
 Sourcery reviews all of the Python files you have open. You can get an overview of all the suggestions Sourcery has in the Problem window.
 
