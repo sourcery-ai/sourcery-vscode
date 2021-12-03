@@ -64,7 +64,7 @@ Sourcery reviews all of the Python files you have open. You can get an overview 
 
 ![Code Quality Metrics in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Metrics_VS_Code.gif)
 
-Sourcery gives each of your functions a quality score ranging from 0%(bad) - 100% (good) and also gives you sub-scores on Method Length, Complexity, and Working Memory so that you can figure out how to structure your code as cleanly as possible.
+Sourcery gives each of your functions a quality score ranging from 0% (bad) - 100% (good) and also gives you sub-scores on Method Length, Complexity, and Working Memory so that you can figure out how to structure your code as cleanly as possible.
 
 **Method Length** is a metric is a measure of how long each method is on average. It is based on the number of nodes in the method's Abstract Syntax Tree.
 
