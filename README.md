@@ -30,7 +30,7 @@ Here are some of the features Sourcery offers to help improve your code:
 - [GitHub Pull Request reviews](#github-pull-request-review)
 - [Sourcery CLI, CI, & Pre-Commit Hook options](#sourcery-cli)
 
-To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/).
+To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/getting-started/).
 
 ---
 
