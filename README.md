@@ -38,7 +38,7 @@ To start using Sourcery on your code, check out our [Getting Started guide](http
 
 ### Real-time refactoring suggestions
 
-![Refactoring Code with Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_VS_Code_Example_2.gif)
+![Refactoring Code with Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_VS_Code_Refactoring.gif)
 
 While you work, Sourcery will review all of the Python files you have open and look for opportunities to clean up and refactor your code. Once Sourcery finds a potential refactoring it will underline that section of your code.
 
