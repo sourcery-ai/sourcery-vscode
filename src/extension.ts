@@ -24,7 +24,6 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 
     const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
 
-
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
@@ -94,6 +93,12 @@ export function activate(context: ExtensionContext) {
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
+
+    languageClient.onReady().then(() => {
+        languageClient.onNotification('sourcery/vscode/viewProblems', () => {
+            commands.executeCommand('workbench.actions.view.problems');
+        });
+    });
 
     context.subscriptions.push(languageClient.start());
 }
