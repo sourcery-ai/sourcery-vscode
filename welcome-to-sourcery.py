@@ -18,10 +18,18 @@ def refactoring_example(spellbook):
 # (Ctrl .) or (Cmd .)  and then choose "Sourcery - Convert for loop...".
 # This will instantly replace the code with the improved version.
 
-# Bring up the Problems pane (Ctrl/Cmd+Shift+M) to see all of Sourcery's suggestions.
+# The Problems pane (Ctrl/Cmd+Shift+M) shows all of Sourcery's suggestions.
 
 # Sourcery also provides code metrics for each function to give you insight into
-# code quality - hover over the function definition above to see this report.
+# code quality - hover over the function definition below to see this report.
+
+def magical_hoist(magic):
+    if is_powerful(magic):
+        result = 'Magic'
+    else:
+        print("Not powerful.")
+        result = 'Magic'
+    print(result)
 
 # What if we don't want to make the change Sourcery suggests?
 
@@ -46,15 +54,9 @@ def refactoring_example(spellbook):
 
 # Now open up some Python files and look out for the suggestions!
 
-# Or if you want to play around a bit more, here are some more examples:
-
-def magical_hoist(magic):
-    if is_powerful(magic):
-        result = 'Magic'
-    else:
-        print("Not powerful.")
-        result = 'Magic'
-    return result
+# Or if you want to play around a bit more, here are some more examples.
+# These include cases where Sourcery has chained together suggestions to come
+# up with more powerful refactorings.
 
 def find_more(magicks):
     powerful_magic = []
@@ -72,3 +74,7 @@ def is_powerful(magic):
         return True
     else:
         return False
+
+def print_all(spells: list):
+    for i in range(len(spells)):
+        print(spells[i])
