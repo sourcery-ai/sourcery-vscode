@@ -14,9 +14,11 @@ def refactoring_example(spellbook):
 # Hover over the underlined code to see details of the changes including a diff.
 
 # You can accept Sourcery's changes with the quick fix action. Put your cursor
-# on the highlighted line and click on the lightbulb. Or use the quick-fix hotkey
-# (Ctrl .) or (Cmd .)  and then choose "Sourcery - Convert for loop...".
-# This will instantly replace the code with the improved version.
+# on the highlighted line and click on the lightbulb. 
+# 
+# Or use the quick-fix hotkey (Ctrl .) or (Cmd .)  and then choose 
+# "Sourcery - Convert for loop...". This will instantly replace the code with 
+# the improved version.
 
 # The Problems pane (Ctrl/Cmd+Shift+M) shows all of Sourcery's suggestions.
 
@@ -34,8 +36,10 @@ def magical_hoist(magic):
 # What if we don't want to make the change Sourcery suggests?
 
 # You can skip/ignore changes from Sourcery in a few ways:
+
 # 1) In the quick fix menu choose "Sourcery - Skip suggested refactoring"
 #    This adds a comment to the function telling Sourcery not to make the change.
+
 # 2) In the quick fix menu choose "Sourcery - Never show me this refactoring"
 #    This tells Sourcery to never suggest this type of refactoring. This config
 #    is stored in a configuration file on your machine.
