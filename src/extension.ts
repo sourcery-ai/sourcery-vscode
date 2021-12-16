@@ -87,7 +87,7 @@ export function activate(context: ExtensionContext) {
             window.showTextDocument(readmePath);
             const result = window.showInputBox({
                 placeHolder: 'Sourcery Token',
-                prompt: 'Get your token from https://sourcery.ai/signup',
+                prompt: 'Get advanced Sourcery features by creating a free account and adding your token above. Visit https://sourcery.ai/signup to get started.',
                 ignoreFocusOut: true
             });
             result.then(function (value) {
