@@ -3,7 +3,7 @@
 import * as path from 'path';
 import { getExecutablePath } from './executable';
 
-import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions } from 'vscode';
+import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions, env } from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -78,6 +78,14 @@ export function activate(context: ExtensionContext) {
     languageClient.onReady().then(() => {
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
+        });
+
+        languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
+            env.openExternal(Uri.parse(params['url']));
+        });
+
+        languageClient.onNotification('sourcery/vscode/showSettings', () => {
+            commands.executeCommand( 'workbench.action.openSettings', 'sourcery' );
         });
 
         languageClient.onNotification('sourcery/vscode/afterInstall', () => {
