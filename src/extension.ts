@@ -85,10 +85,10 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/showSettings', () => {
-            commands.executeCommand( 'workbench.action.openSettings', 'sourcery' );
+            commands.executeCommand('workbench.action.openSettings', 'sourcery');
         });
 
-        languageClient.onNotification('sourcery/vscode/afterInstall', () => {
+        languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
             const readmePath = Uri.file(
                 path.join(context.extensionPath, 'welcome-to-sourcery.py')
             );
