@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
     - uses: actions/setup-node@v2
       with:
@@ -35,6 +37,8 @@ jobs:
         git commit -m 'Update version number to v${{ github.event.inputs.version }}'
         git tag v${{ github.event.inputs.version }}
         git push origin master v${{ github.event.inputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
     - name: Package and publish VSCode extension
       run: |
@@ -57,10 +61,12 @@ jobs:
         artifacts: sourcery-${{ github.event.inputs.version }}.vsix
         artifactContentType: raw
         artifactErrorsFailBuild: true
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
     - name: Update version number to dev
       run: |
         yarn run bump prepatch --preid dev
         git commit -am 'Bump version to dev'
         git push origin master
+      env:
+        GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
