@@ -3,7 +3,7 @@
 import * as path from 'path';
 import { getExecutablePath } from './executable';
 
-import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions } from 'vscode';
+import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions, env } from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -12,6 +12,7 @@ import {
     ExecuteCommandRequest,
     ExecuteCommandParams
 } from 'vscode-languageclient';
+import { allowedNodeEnvironmentFlags } from 'process';
 
 
 const REFACTOR_WORKSPACE_REQUEST = new RequestType('refactor_workspace');
@@ -47,28 +48,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
         }
     }
 
-    if (!token) {
-        const readmePath = Uri.file(
-            path.join(context.extensionPath, 'welcome-to-sourcery.py')
-        );
-        window.showTextDocument(readmePath);
-        const result = window.showInputBox({
-            placeHolder: 'Sourcery Token',
-            prompt: 'Get your token from https://sourcery.ai/signup',
-            ignoreFocusOut: true
-        });
-        result.then(function (value) {
-            workspace.getConfiguration('sourcery').update('token', value, true)
-        });
-    }
-
     return new LanguageClient(command, serverOptions, clientOptions);
 }
-
-
-
-
-
 export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
 
@@ -97,6 +78,29 @@ export function activate(context: ExtensionContext) {
     languageClient.onReady().then(() => {
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
+        });
+
+        languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
+            env.openExternal(Uri.parse(params['url']));
+        });
+
+        languageClient.onNotification('sourcery/vscode/showSettings', () => {
+            commands.executeCommand('workbench.action.openSettings', 'sourcery');
+        });
+
+        languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
+            const readmePath = Uri.file(
+                path.join(context.extensionPath, 'welcome-to-sourcery.py')
+            );
+            window.showTextDocument(readmePath);
+            const result = window.showInputBox({
+                placeHolder: 'Sourcery Token',
+                prompt: 'Get advanced Sourcery features by creating a free account and adding your token above. Visit https://sourcery.ai/signup to get started.',
+                ignoreFocusOut: true
+            });
+            result.then(function (value) {
+                workspace.getConfiguration('sourcery').update('token', value, true)
+            });
         });
     });
 
