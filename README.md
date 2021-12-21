@@ -9,7 +9,7 @@
 [![VSCode Plugin][vscode-shield]][vscode-url]
 [![Twitter Follow][twitter-shield]][twitter-url]
 
-![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Logo_VS_Code_Description.svg)
+![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Logo_VS_Code_Description.png)
 
 Sourcery is the **pair programmer** who will help you improve your code anytime you're working in Python. It **reviews and refactors** your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
 
