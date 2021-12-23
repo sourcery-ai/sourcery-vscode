@@ -9,11 +9,11 @@
 [![VSCode Plugin][vscode-shield]][vscode-url]
 [![Twitter Follow][twitter-shield]][twitter-url]
 
-![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Logo_VS_Code_Description.png)
+![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Logo_VS_Code_Description.png)
 
 Sourcery is the **pair programmer** who will help you improve your code anytime you're working in Python. It **reviews and refactors** your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
 
-![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_VS_Code_Example.gif)
+![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Example.gif)
 
 ---
 
@@ -38,7 +38,7 @@ To start using Sourcery on your code, check out our [Getting Started guide](http
 
 ### Real-time refactoring suggestions
 
-![Refactoring Code with Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_VS_Code_Refactoring.gif)
+![Refactoring Code with Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Refactoring.gif)
 
 While you work, Sourcery will review all of the Python files you have open and look for opportunities to clean up and refactor your code. Once Sourcery finds a potential refactoring it will underline that section of your code.
 
@@ -63,7 +63,7 @@ Sourcery reviews all of the Python files you have open. You can get an overview 
 
 ### Continuous code quality feedback
 
-![Code Quality Metrics in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Metrics_VS_Code.gif)
+![Code Quality Metrics in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Metrics_VS_Code.gif)
 
 Sourcery gives each of your functions a quality score ranging from 0% (bad) - 100% (good) and also gives you sub-scores on Method Length, Complexity, and Working Memory so that you can figure out how to structure your code as cleanly as possible.
 
@@ -80,7 +80,7 @@ Sourcery will warn you if your overall quality score for a function falls below 
 
 ### Multi-File Analysis
 
-![Multi-File Analysis & Refactoring in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Example_Full_Project_Scan_VS_Code.gif)
+![Multi-File Analysis & Refactoring in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Example_Full_Project_Scan_VS_Code.gif)
 
 You can use Sourcery to refactor a single file, a folder, or your whole project at once. 
 
@@ -90,7 +90,7 @@ Multi-File Analysis requires a Sourcery Pro subscription. To get a month free ac
 
 ### Duplicate Code Detection
 
-![Duplicate Code Detection in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_Example_Duplicates_VS_Code.gif)
+![Duplicate Code Detection in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Example_Duplicates_VS_Code.gif)
 
 Sourcery can help you find duplicate code and near-duplicate code across your whole project. 
 
@@ -102,7 +102,7 @@ Duplicate Code Detection requires a Sourcery Pro subscription. To get a month fr
 
 ### GitHub Pull Request Review
 
-![Sourcery Reviewing GitHub PRs](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery_GitHub-Refactor-Branch.gif)
+![Sourcery Reviewing GitHub PRs](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_GitHub-Refactor-Branch.gif)
 
 Sourcery can help you speed up code reviews and clean up every new commit by automatically reviewing each of your GitHub pull requests.
 
@@ -119,7 +119,7 @@ With Sourcery CLI, you can also integrate Sourcery with your favorite tools.
 
 #### CI / Pre-Commit Hook options: 
 
-![Sourcery CLI](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/master/assets/Sourcery-CLI.gif)
+![Sourcery CLI](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery-CLI.gif)
 
 You can use Sourcery to review every new bit of code you and your team are working on by adding Sourcery into your CI or running it as a Pre-Commit Hook. 
 

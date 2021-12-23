@@ -29,14 +29,14 @@ jobs:
     - name: Update version number
       run: yarn run bump ${{ github.event.inputs.version }}
 
-    - name: Commit to master, create tag, and push
+    - name: Commit to main, create tag, and push
       run: |
         git add .
         git config --global user.name ${{ github.actor }}
         git config --global user.email ${{ github.actor }}@users.noreply.github.com
         git commit -m 'Update version number to v${{ github.event.inputs.version }}'
         git tag v${{ github.event.inputs.version }}
-        git push origin master v${{ github.event.inputs.version }}
+        git push origin main v${{ github.event.inputs.version }}
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
@@ -67,6 +67,6 @@ jobs:
       run: |
         yarn run bump prepatch --preid dev
         git commit -am 'Bump version to dev'
-        git push origin master
+        git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
