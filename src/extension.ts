@@ -4,14 +4,8 @@ import * as path from 'path';
 import { getExecutablePath } from './executable';
 
 import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions, env } from 'vscode';
-import {
-    LanguageClient,
-    LanguageClientOptions,
-    ServerOptions,
-    RequestType,
-    ExecuteCommandRequest,
-    ExecuteCommandParams
-} from 'vscode-languageclient';
+
+import { LanguageClient, ExecuteCommandRequest, LanguageClientOptions, RequestType, ExecuteCommandParams, ServerOptions } from 'vscode-languageclient/node';
 import { allowedNodeEnvironmentFlags } from 'process';
 
 
@@ -23,7 +17,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
 
-    const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
+    //const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
+    const command = '/Users/nick/source/core/run-sourcery.sh'
 
     const serverOptions: ServerOptions = {
         command,
@@ -45,7 +40,9 @@ function createLangServer(context: ExtensionContext): LanguageClient {
             'token': token,
             'editor_version': 'vscode ' + version,
             'extension_version': extensionVersion
-        }
+        },
+        markdown: {isTrusted:true}
+
     }
 
     return new LanguageClient(command, serverOptions, clientOptions);
@@ -74,6 +71,16 @@ export function activate(context: ExtensionContext) {
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
+
+    context.subscriptions.push(commands.registerCommand('sourcery.suggestions.toggle', () => {
+        let request: ExecuteCommandParams = {
+            command: 'refactoring/toggle_suggestions',
+            arguments: []
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    }));
+
+
 
     languageClient.onReady().then(() => {
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
