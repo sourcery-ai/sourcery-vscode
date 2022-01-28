@@ -38,8 +38,8 @@
         "category": "Sourcery"
       },
       {
-        "command": "sourcery.suggestions.toggle",
-        "title": "Toggle Suggestion Mode",
+        "command": "sourcery.level.toggle",
+        "title": "Toggle Sourcery Recommendation Level",
         "category": "Sourcery"
       }
     ],

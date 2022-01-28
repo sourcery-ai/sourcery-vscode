@@ -72,9 +72,9 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.suggestions.toggle', () => {
+    context.subscriptions.push(commands.registerCommand('sourcery.level.toggle', () => {
         let request: ExecuteCommandParams = {
-            command: 'refactoring/toggle_suggestions',
+            command: 'refactoring/toggle_level',
             arguments: []
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
