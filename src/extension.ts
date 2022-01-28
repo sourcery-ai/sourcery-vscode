@@ -17,8 +17,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
 
-    //const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
-    const command = '/Users/nick/source/core/run-sourcery.sh'
+    const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
 
     const serverOptions: ServerOptions = {
         command,
