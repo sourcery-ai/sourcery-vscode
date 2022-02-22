@@ -86,6 +86,21 @@
           "default": "",
           "description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
         },
+        "sourcery.ruleType.refactorings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show refactorings."
+        },
+        "sourcery.ruleType.suggestions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show suggestions."
+        },
+        "sourcery.ruleType.reviewComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show review comments."
+        },
         "sourcery.metricsEnabled": {
           "type": "boolean",
           "default": true,
