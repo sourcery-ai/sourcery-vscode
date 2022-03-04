@@ -36,11 +36,6 @@
         "command": "sourcery.clones.workspace",
         "title": "Detect clones",
         "category": "Sourcery"
-      },
-      {
-        "command": "sourcery.level.toggle",
-        "title": "Toggle Sourcery Recommendation Level",
-        "category": "Sourcery"
       }
     ],
     "submenus": [
@@ -85,6 +80,21 @@
           "type": "string",
           "default": "",
           "description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
+        },
+        "sourcery.ruleType.refactorings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show refactorings."
+        },
+        "sourcery.ruleType.suggestions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show suggestions."
+        },
+        "sourcery.ruleType.comments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show comments."
         },
         "sourcery.metricsEnabled": {
           "type": "boolean",
