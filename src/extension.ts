@@ -24,7 +24,6 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const extensionVersion = packageJson.version;
 
     const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
-
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
@@ -37,7 +36,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     };
 
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{language: 'python', scheme: 'file'}, {language: 'python', scheme: 'untitled'}],
+        documentSelector: [{language: 'python', scheme: 'file'}, {language: 'python', scheme: 'untitled'},
+            { scheme: 'vscode-notebook-cell', language: 'python' }],
         synchronize: {
             configurationSection: 'sourcery'
         },
