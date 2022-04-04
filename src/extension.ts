@@ -23,7 +23,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
     const extensionVersion = packageJson.version;
 
-    const command = path.join(__dirname, "..", "sourcery_binaries/" + getExecutablePath());
+    const command = getExecutablePath();
+
     const serverOptions: ServerOptions = {
         command,
         args: ['lsp'],
@@ -36,8 +37,12 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     };
 
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{language: 'python', scheme: 'file'}, {language: 'python', scheme: 'untitled'},
-            { scheme: 'vscode-notebook-cell', language: 'python' }],
+        documentSelector: [
+            {language: 'python', scheme: 'file'},
+            {language: 'python', scheme: 'untitled'},
+            {language: 'python', scheme: 'vscode-notebook-cell' },
+            {language: 'yaml', pattern: '**/.sourcery.yaml'}
+        ],
         synchronize: {
             configurationSection: 'sourcery'
         },
