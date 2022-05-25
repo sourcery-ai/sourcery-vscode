@@ -58,6 +58,10 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
 
+    context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
+        openWelcomeFile(context)
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {
             command: 'refactoring/scan',
@@ -102,10 +106,7 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
-            const readmePath = Uri.file(
-                path.join(context.extensionPath, 'welcome-to-sourcery.py')
-            );
-            window.showTextDocument(readmePath);
+            openWelcomeFile(context);
             const result = window.showInputBox({
                 placeHolder: 'Sourcery Token',
                 prompt: 'Get advanced Sourcery features by creating a free account and adding your token above. Visit https://sourcery.ai/signup to get started.',
@@ -120,3 +121,9 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(languageClient.start());
 }
 
+function openWelcomeFile(context: ExtensionContext) {
+        const readmePath = Uri.file(
+                path.join(context.extensionPath, 'welcome-to-sourcery.py')
+            );
+            window.showTextDocument(readmePath);
+}

@@ -16,7 +16,7 @@
     "refactoring"
   ],
   "engines": {
-    "vscode": "^1.30.0"
+    "vscode": "^1.65.0"
   },
   "categories": [
     "Other"
@@ -26,6 +26,38 @@
     "onStartupFinished"
   ],
   "contributes": {
+            "walkthroughs": [
+              {
+                "id": "sourceryWelcome",
+                "title": "Get started with Sourcery",
+                "description": "Your first steps to try out the powerful tools and features that the Sourcery extension has to offer!",
+                "when": "workspacePlatform != webworker",
+                "steps": [
+                  {
+                    "id": "sourcery.welcomeFile",
+                    "title": "Open our sample file",
+                    "description": "Open our sample file to try out Sourcery.\n[Open welcome file](command:toSide:sourcery.welcome.open)\n",
+                    "media": {
+                            "markdown": "welcome-to-sourcery.md"
+                        },
+                    "command": "sourcery.welcome.open",
+                    "when": ""
+                  },
+                  {
+                    "id": "sourcery.acceptRule",
+                    "title": "Accept a suggestion",
+                    "description": "Hover over a suggestion, and take the quick fix code action to accept it",
+                    "media": {
+                            "markdown": "welcome-to-sourcery.md"
+                        },
+                    "when": "",
+                    "completionEvents": [
+                            "onCommand:sourcery.refactoring.accept"
+                        ]
+                  }
+                ]
+              }
+              ],
     "commands": [
       {
         "command": "sourcery.refactor.workspace",
@@ -35,6 +67,11 @@
       {
         "command": "sourcery.clones.workspace",
         "title": "Detect clones",
+        "category": "Sourcery"
+      },
+      {
+        "command": "sourcery.welcome.open",
+        "title": "Open welcome file",
         "category": "Sourcery"
       }
     ],
