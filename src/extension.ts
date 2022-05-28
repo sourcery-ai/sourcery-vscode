@@ -59,7 +59,11 @@ export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
 
     context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
-        openWelcomeFile(context)
+        openWelcomeFile(context);
+    }));
+
+    context.subscriptions.push(commands.registerCommand('sourcery.config.open', () => {
+        openConfigFile(context);
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
@@ -84,17 +88,14 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.level.toggle', () => {
-        let request: ExecuteCommandParams = {
-            command: 'refactoring/toggle_level',
-            arguments: []
-        };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    }));
 
     languageClient.onReady().then(() => {
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
+        });
+
+        languageClient.onNotification('sourcery/vscode/accept_recommendation', () => {
+            commands.executeCommand('setContext', 'acceptRecommendationContextKey', true);
         });
 
         languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
@@ -126,4 +127,9 @@ function openWelcomeFile(context: ExtensionContext) {
                 path.join(context.extensionPath, 'welcome-to-sourcery.py')
             );
             window.showTextDocument(readmePath);
+}
+
+async function openConfigFile(context: ExtensionContext) {
+        const newFile = await this.workspaceService.openTextDocument({ language: 'python' });
+        this.appShell.showTextDocument(newFile);
 }
