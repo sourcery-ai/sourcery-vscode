@@ -1,131 +1,125 @@
 {
-	"name": "sourcery",
-	"displayName": "Sourcery",
-	"description": "Refactor Python instantly with Sourcery",
-	"author": "Sourcery AI",
-	"repository": "https://github.com/sourcery-ai/sourcery-vscode",
-	"bugs": {
-		"url": "https://github.com/sourcery-ai/public/issues"
-	},
-	"license": "MIT",
-	"version": "0.11.6-dev.1",
-	"publisher": "sourcery",
-	"icon": "sourcery-icon.png",
-	"keywords": [
-		"Python",
-		"refactoring"
-	],
-	"engines": {
-		"vscode": "^1.30.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onLanguage:python",
-		"onStartupFinished"
-	],
-	"contributes": {
-		"commands": [
-			{
-				"command": "sourcery.refactor.workspace",
-				"title": "Scan for refactorings",
-				"category": "Sourcery"
-			},
-			{
-				"command": "sourcery.clones.workspace",
-				"title": "Detect clones",
-				"category": "Sourcery"
-			}
-		],
-		"submenus": [
-			{
-				"id": "sourcery.scans",
-				"label": "Sourcery"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"submenu": "sourcery.scans",
-					"group": "1_modification@1"
-				}
-			],
-			"sourcery.scans": [
-				{
-					"command": "sourcery.refactor.workspace",
-					"group": "1_modification@1"
-				},
-				{
-					"command": "sourcery.clones.workspace",
-					"group": "1_modification@2"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "sourcery.refactor.workspace",
-					"when": "false"
-				},
-				{
-					"command": "sourcery.clones.workspace",
-					"when": "false"
-				}
-			]
-		},
-		"configuration": {
-			"title": "Sourcery Configuration",
-			"type": "object",
-			"properties": {
-				"sourcery.token": {
-					"type": "string",
-					"default": "",
-					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
-				},
-				"sourcery.ruleType.refactorings": {
-					"type": "boolean",
-					"default": true,
-					"description": "Show refactorings."
-				},
-				"sourcery.ruleType.suggestions": {
-					"type": "boolean",
-					"default": true,
-					"description": "Show suggestions."
-				},
-				"sourcery.ruleType.comments": {
-					"type": "boolean",
-					"default": true,
-					"description": "Show comments."
-				}
-			}
-		}
-	},
-	"main": "./out/extension",
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"vscode:uninstall": "node ./out/uninstall",
-		"compile": "tsc -watch -p ./",
-		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
-		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
-	},
-	"devDependencies": {
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.30.0",
-		"mocha": "^7.0.0",
-		"ovsx": "^0.2.0",
-		"tslint": "^6.1.0",
-		"typescript": "^3.8.3",
-		"version-bump-prompt": "^6.1.0",
-		"vsce": "^1.95.1",
-		"vscode-test": "^1.3.0"
-	},
-	"dependencies": {
-		"vscode-languageclient": "^5.2.1"
-	},
-	"__metadata": {
-		"id": "0bb8a841-96c3-4e2d-ab43-cffee71480a4",
-		"publisherDisplayName": "sourcery",
-		"publisherId": "076dffab-0485-4bcd-bc6c-62c3a0c7502a",
-		"isPreReleaseVersion": false
-	}
+  "name": "sourcery",
+  "displayName": "Sourcery",
+  "description": "Refactor Python instantly with Sourcery",
+  "author": "Sourcery AI",
+  "repository": "https://github.com/sourcery-ai/sourcery-vscode",
+  "bugs": {
+    "url": "https://github.com/sourcery-ai/public/issues"
+  },
+  "license": "MIT",
+  "version": "0.11.6-dev.1",
+  "publisher": "sourcery",
+  "icon": "sourcery-icon.png",
+  "keywords": [
+    "Python",
+    "refactoring"
+  ],
+  "engines": {
+    "vscode": "^1.30.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "sourcery.refactor.workspace",
+        "title": "Scan for refactorings",
+        "category": "Sourcery"
+      },
+      {
+        "command": "sourcery.clones.workspace",
+        "title": "Detect clones",
+        "category": "Sourcery"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "sourcery.scans",
+        "label": "Sourcery"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "submenu": "sourcery.scans",
+          "group": "1_modification@1"
+        }
+      ],
+      "sourcery.scans": [
+        {
+          "command": "sourcery.refactor.workspace",
+          "group": "1_modification@1"
+        },
+        {
+          "command": "sourcery.clones.workspace",
+          "group": "1_modification@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sourcery.refactor.workspace",
+          "when": "false"
+        },
+        {
+          "command": "sourcery.clones.workspace",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Sourcery Configuration",
+      "type": "object",
+      "properties": {
+        "sourcery.token": {
+          "type": "string",
+          "default": "",
+          "description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
+        },
+        "sourcery.ruleType.refactorings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show refactorings."
+        },
+        "sourcery.ruleType.suggestions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show suggestions."
+        },
+        "sourcery.ruleType.comments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show comments."
+        }
+      }
+    }
+  },
+  "main": "./out/extension",
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "vscode:uninstall": "node ./out/uninstall",
+    "compile": "tsc -watch -p ./",
+    "vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
+    "vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.30.0",
+    "mocha": "^7.0.0",
+    "ovsx": "^0.2.0",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3",
+    "version-bump-prompt": "^6.1.0",
+    "vsce": "^1.95.1",
+    "vscode-test": "^1.3.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^5.2.1"
+  }
 }
