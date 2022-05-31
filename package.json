@@ -95,11 +95,6 @@
           "type": "boolean",
           "default": true,
           "description": "Show comments."
-        },
-        "sourcery.metricsEnabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show code metrics in the editor."
         }
       }
     }
