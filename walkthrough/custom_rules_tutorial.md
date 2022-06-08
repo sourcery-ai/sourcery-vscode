@@ -3,10 +3,6 @@
 By the end of this tutorial you will have written two custom Sourcery rules and
 used them to review your code.
 
-## Prerequisites
-
-- You have installed Sourcery in your [IDE](../getting-started.md)
-
 ## Introduction
 
 Have you ever seen the same code smell come up again and again in different code
@@ -37,7 +33,7 @@ class ExampleBaseClass:
 Sourcery highlights the line where this issue occurs. Hover your mouse on the
 highlight to see the problem:
 
-![NotImplemented Comment](../img/NotImplemented-Comment.png)
+![NotImplemented Comment](NotImplemented-Comment.png)
 
 ## Including a replacement in your rule
 
@@ -54,7 +50,7 @@ rules:
 
 Save this file, return to the example code and hover over the highlight:
 
-![NotImplemented Suggestion](../img/NotImplemented-Suggestion.png)
+![NotImplemented Suggestion](NotImplemented-Suggestion.png)
 
 Not only is the issue highlighted but the fix is suggested too!
 
@@ -64,11 +60,11 @@ Let's accept the suggestion:
 2. Click the lightbulb to show Sourcery options
 3. Select the first option
 
-![NotImplemented Quickfix](../img/NotImplemented-Quickfix.png)
+![NotImplemented Quickfix](NotImplemented-Quickfix.png)
 
 and Sourcery fixes our code:
 
-![NotImplemented Fixed](../img/NotImplemented-Fixed.png)
+![NotImplemented Fixed](NotImplemented-Fixed.png)
 
 Congratulations, you've written your first rule!
 
@@ -127,14 +123,14 @@ def print_sourcery_yaml():
 
 Now hover over the highlighted line:
 
-![Hover remove open r](../img/RemoveOpenR-Hover.png)
+![Hover remove open r](RemoveOpenR-Hover.png)
 
 Here we can see that `${file}` has captured `"sourcery.yaml"` and used it in the
 replacement.
 
 Finally use the quickfix lightbulb to fix your code.
 
-![Fixed remove open r](../img/RemoveOpenR-Fixed.png)
+![Fixed remove open r](RemoveOpenR-Fixed.png)
 
 Beautiful!
 
@@ -148,5 +144,5 @@ Now go forth and write your own rules. Enjoy!
 ## Next Steps
 
 - Check out our
-  [rules documentation](../Configuration/Project-Settings.md#add-custom-rules)
-- Run these rules on the [command line](../Command-Line-Interface/index.md)
+  [rules documentation](https://docs.sourcery.ai/Configuration/Project-Settings#add-custom-rules)
+- Run these rules on the [command line](https://docs.sourcery.ai/Command-Line-Interface/)

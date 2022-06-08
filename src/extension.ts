@@ -62,8 +62,14 @@ export function activate(context: ExtensionContext) {
         openWelcomeFile(context);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.config.open', () => {
-        openConfigFile(context);
+    context.subscriptions.push(commands.registerCommand('sourcery.config.create', () => {
+        let request: ExecuteCommandParams = {
+            command: 'config/create',
+            arguments: []
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
+            openDocument(path.join(workspace.rootPath, '.sourcery.yaml'));
+        });
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
@@ -123,13 +129,12 @@ export function activate(context: ExtensionContext) {
 }
 
 function openWelcomeFile(context: ExtensionContext) {
-        const readmePath = Uri.file(
-                path.join(context.extensionPath, 'welcome-to-sourcery.py')
-            );
-            window.showTextDocument(readmePath);
+        openDocument(path.join(context.extensionPath, 'welcome-to-sourcery.py'));
 }
 
-async function openConfigFile(context: ExtensionContext) {
-        const newFile = await this.workspaceService.openTextDocument({ language: 'python' });
-        this.appShell.showTextDocument(newFile);
+function openDocument(document_path: string) {
+        const openPath = Uri.file(document_path);
+        workspace.openTextDocument(openPath).then(doc => {
+            window.showTextDocument(doc);
+        });
 }
