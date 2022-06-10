@@ -71,7 +71,7 @@
 					{
 						"id": "sourcery.customRules",
 						"title": "Add custom rules",
-						"description": "You can add your own custom rules to Sourcery!",
+						"description": "You can add your own custom rules to Sourcery!\nFollow the tutorial to find out how.",
 						"media": {
 							"markdown": "walkthrough/custom_rules_tutorial.md"
 						}
