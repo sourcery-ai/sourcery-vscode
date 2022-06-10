@@ -79,7 +79,7 @@
 					{
 						"id": "sourcery.enterToken",
 						"title": "Enter your token",
-						"description": "Sign up for a Sourcery token to get a free trial of Sourcery Pro for 30 days\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery\")",
+						"description": "Sign up for a Sourcery token to get a free trial of Sourcery Pro for 30 days\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery:\")",
 						"media": {
 							"markdown": "walkthrough/enter_token.md"
 						},
@@ -89,7 +89,7 @@
 					},
 					{
 						"id": "sourcery.scanRefactorings",
-						"title": "Do a scan for suggestions",
+						"title": "Scan a directory for suggestions",
 						"description": "Right click on a folder and choose 'Sourcery - Scan for refactorings' (requires Pro trial)\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code",
 						"media": {
 							"markdown": "walkthrough/refactoring_scan.md"
