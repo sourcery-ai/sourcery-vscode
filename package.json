@@ -1,125 +1,221 @@
 {
-  "name": "sourcery",
-  "displayName": "Sourcery",
-  "description": "Refactor Python instantly with Sourcery",
-  "author": "Sourcery AI",
-  "repository": "https://github.com/sourcery-ai/sourcery-vscode",
-  "bugs": {
-    "url": "https://github.com/sourcery-ai/public/issues"
-  },
-  "license": "MIT",
-  "version": "0.12.1-dev.1",
-  "publisher": "sourcery",
-  "icon": "sourcery-icon.png",
-  "keywords": [
-    "Python",
-    "refactoring"
-  ],
-  "engines": {
-    "vscode": "^1.30.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onLanguage:python",
-    "onStartupFinished"
-  ],
-  "contributes": {
-    "commands": [
-      {
-        "command": "sourcery.refactor.workspace",
-        "title": "Scan for refactorings",
-        "category": "Sourcery"
-      },
-      {
-        "command": "sourcery.clones.workspace",
-        "title": "Detect clones",
-        "category": "Sourcery"
-      }
-    ],
-    "submenus": [
-      {
-        "id": "sourcery.scans",
-        "label": "Sourcery"
-      }
-    ],
-    "menus": {
-      "explorer/context": [
-        {
-          "submenu": "sourcery.scans",
-          "group": "1_modification@1"
-        }
-      ],
-      "sourcery.scans": [
-        {
-          "command": "sourcery.refactor.workspace",
-          "group": "1_modification@1"
-        },
-        {
-          "command": "sourcery.clones.workspace",
-          "group": "1_modification@2"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "sourcery.refactor.workspace",
-          "when": "false"
-        },
-        {
-          "command": "sourcery.clones.workspace",
-          "when": "false"
-        }
-      ]
-    },
-    "configuration": {
-      "title": "Sourcery Configuration",
-      "type": "object",
-      "properties": {
-        "sourcery.token": {
-          "type": "string",
-          "default": "",
-          "description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
-        },
-        "sourcery.ruleType.refactorings": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show refactorings."
-        },
-        "sourcery.ruleType.suggestions": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show suggestions."
-        },
-        "sourcery.ruleType.comments": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show comments."
-        }
-      }
-    }
-  },
-  "main": "./out/extension",
-  "scripts": {
-    "vscode:prepublish": "tsc -p ./",
-    "vscode:uninstall": "node ./out/uninstall",
-    "compile": "tsc -watch -p ./",
-    "vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
-    "vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
-  },
-  "devDependencies": {
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^12.11.7",
-    "@types/vscode": "^1.30.0",
-    "mocha": "^7.0.0",
-    "ovsx": "^0.2.0",
-    "tslint": "^6.1.0",
-    "typescript": "^3.8.3",
-    "version-bump-prompt": "^6.1.0",
-    "vsce": "^1.95.1",
-    "vscode-test": "^1.3.0"
-  },
-  "dependencies": {
-    "vscode-languageclient": "^5.2.1"
-  }
+	"name": "sourcery",
+	"displayName": "Sourcery",
+	"description": "Refactor Python instantly with Sourcery",
+	"author": "Sourcery AI",
+	"repository": "https://github.com/sourcery-ai/sourcery-vscode",
+	"bugs": {
+		"url": "https://github.com/sourcery-ai/public/issues"
+	},
+	"license": "MIT",
+	"version": "0.12.1-dev.1",
+	"publisher": "sourcery",
+	"icon": "sourcery-icon.png",
+	"keywords": [
+		"Python",
+		"refactoring"
+	],
+	"engines": {
+		"vscode": "^1.65.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:python",
+		"onStartupFinished"
+	],
+	"contributes": {
+		"walkthroughs": [
+			{
+				"id": "sourceryWelcome",
+				"title": "Get started with Sourcery",
+				"description": "Your first steps to try out the powerful tools and features that the Sourcery extension has to offer!",
+				"when": "workspacePlatform != webworker",
+				"steps": [
+					{
+						"id": "sourcery.openWelcomeFile",
+						"title": "Get your first recommendation",
+						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Put the cursor over the underlined code to see the refactoring suggestion. \n You can see all Sourcery's recommendations in the [Problems Pane](command:workbench.actions.view.problems)",
+						"media": {
+							"markdown": "walkthrough/view_welcome_file.md"
+						},
+						"when": "",
+						"completionEvents": [
+							"onCommand:sourcery.welcome.open"
+						]
+					},
+					{
+						"id": "sourcery.acceptRecommendation",
+						"title": "Accept your first recommendation",
+						"description": "Put the cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n Take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
+						"media": {
+							"markdown": "walkthrough/accept_recommendation.md"
+						},
+						"when": "",
+						"completionEvents": [
+							"onContext:acceptRecommendationContextKey"
+						]
+					},
+					{
+						"id": "sourcery.configuration",
+						"title": "Configure Sourcery to your needs.",
+						"description": "Create a configuration file in your project to customise Sourcery.\n[Create config file](command:toSide:sourcery.config.create)\nA very useful setting to start with is the Python version, which lets you tell Sourcery which version you are using.",
+						"media": {
+							"markdown": "walkthrough/configuration.md"
+						},
+						"completionEvents": [
+							"onCommand:sourcery.config.create"
+						]
+					},
+					{
+						"id": "sourcery.customRules",
+						"title": "Add custom rules",
+						"description": "You can add your own custom rules to Sourcery!\nFollow the tutorial to find out how.",
+						"media": {
+							"markdown": "walkthrough/custom_rules_tutorial.md"
+						}
+					},
+					{
+						"id": "sourcery.enterToken",
+						"title": "Enter your token",
+						"description": "Get your free token to unlock all of Sourcery's features, including 30 days of Sourcery Pro\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery:\")",
+						"media": {
+							"markdown": "walkthrough/enter_token.md"
+						},
+						"completionEvents": [
+							"onSettingChanged:sourcery.token"
+						]
+					},
+					{
+						"id": "sourcery.advancedFeatures",
+						"title": "Advanced Features",
+						"description": "Once you have entered your token you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
+						"media": {
+							"markdown": "walkthrough/refactoring_scan.md"
+						},
+						"completionEvents": [
+							"onCommand:sourcery.refactor.workspace"
+						]
+					}
+				]
+			}
+		],
+		"commands": [
+			{
+				"command": "sourcery.refactor.workspace",
+				"title": "Scan for refactorings",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.clones.workspace",
+				"title": "Detect clones",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.welcome.open",
+				"title": "Open welcome file",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.config.create",
+				"title": "Create a default Sourcery configuration file for your project",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.config.open",
+				"title": "Open the Sourcery configuration file for your project",
+				"category": "Sourcery"
+			}
+		],
+		"submenus": [
+			{
+				"id": "sourcery.scans",
+				"label": "Sourcery"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"submenu": "sourcery.scans",
+					"group": "1_modification@1"
+				}
+			],
+			"sourcery.scans": [
+				{
+					"command": "sourcery.refactor.workspace",
+					"group": "1_modification@1"
+				},
+				{
+					"command": "sourcery.clones.workspace",
+					"group": "1_modification@2"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "sourcery.refactor.workspace",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.clones.workspace",
+					"when": "false"
+				}
+			]
+		},
+		"configuration": {
+			"title": "Sourcery Configuration",
+			"type": "object",
+			"properties": {
+				"sourcery.token": {
+					"type": "string",
+					"default": "",
+					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
+				},
+				"sourcery.ruleType.refactorings": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show refactorings."
+				},
+				"sourcery.ruleType.suggestions": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show suggestions."
+				},
+				"sourcery.ruleType.comments": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show comments."
+				}
+			}
+		}
+	},
+	"main": "./out/extension",
+	"scripts": {
+		"vscode:prepublish": "tsc -p ./",
+		"vscode:uninstall": "node ./out/uninstall",
+		"compile": "tsc -watch -p ./",
+		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
+		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
+	},
+	"devDependencies": {
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.11.7",
+		"@types/vscode": "^1.30.0",
+		"mocha": "^7.0.0",
+		"ovsx": "^0.2.0",
+		"tslint": "^6.1.0",
+		"typescript": "^3.8.3",
+		"version-bump-prompt": "^6.1.0",
+		"vsce": "^1.95.1",
+		"vscode-test": "^1.3.0"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^6.1.4"
+	},
+	"__metadata": {
+		"id": "0bb8a841-96c3-4e2d-ab43-cffee71480a4",
+		"publisherDisplayName": "sourcery",
+		"publisherId": "076dffab-0485-4bcd-bc6c-62c3a0c7502a",
+		"isPreReleaseVersion": false
+	}
 }
