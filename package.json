@@ -88,9 +88,9 @@
 						]
 					},
 					{
-						"id": "sourcery.scanRefactorings",
-						"title": "Scan a directory for suggestions",
-						"description": "Right click on a folder and choose 'Sourcery - Scan for refactorings' (requires Pro trial)\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code",
+						"id": "sourcery.freeTrial",
+						"title": "Sourcery Pro free trial",
+						"description": "Once you have entered your token you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
 						"media": {
 							"markdown": "walkthrough/refactoring_scan.md"
 						},
