@@ -60,7 +60,7 @@
 					{
 						"id": "sourcery.configuration",
 						"title": "Configure Sourcery to your needs.",
-						"description": "Create a configuration file in your project to customise Sourcery\n[Create config file](command:toSide:sourcery.config.create)\n ",
+						"description": "Create a configuration file in your project to customise Sourcery.\n[Create config file](command:toSide:sourcery.config.create)\nA very useful setting to start with is the Python version, which lets you tell Sourcery which version you are using.",
 						"media": {
 							"markdown": "walkthrough/configuration.md"
 						},
@@ -79,7 +79,7 @@
 					{
 						"id": "sourcery.enterToken",
 						"title": "Enter your token",
-						"description": "Sign up for a Sourcery token to get a free trial of Sourcery Pro for 30 days\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery:\")",
+						"description": "Get your free token to unlock all of Sourcery's features, including 30 days of Sourcery Pro\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery:\")",
 						"media": {
 							"markdown": "walkthrough/enter_token.md"
 						},
@@ -88,8 +88,8 @@
 						]
 					},
 					{
-						"id": "sourcery.freeTrial",
-						"title": "Sourcery Pro free trial",
+						"id": "sourcery.advancedFeatures",
+						"title": "Advanced Features",
 						"description": "Once you have entered your token you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
 						"media": {
 							"markdown": "walkthrough/refactoring_scan.md"
