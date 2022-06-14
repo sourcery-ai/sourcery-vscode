@@ -121,11 +121,6 @@
 				"command": "sourcery.config.create",
 				"title": "Create a default Sourcery configuration file for your project",
 				"category": "Sourcery"
-			},
-			{
-				"command": "sourcery.config.open",
-				"title": "Open the Sourcery configuration file for your project",
-				"category": "Sourcery"
 			}
 		],
 		"submenus": [
