@@ -121,6 +121,11 @@
 				"command": "sourcery.config.create",
 				"title": "Create a default Sourcery configuration file for your project",
 				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.rule.create",
+				"title": "Create a custom rule for Sourcery",
+				"category": "Sourcery"
 			}
 		],
 		"submenus": [
