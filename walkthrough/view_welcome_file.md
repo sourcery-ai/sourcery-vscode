@@ -8,7 +8,7 @@ underline or highlight any section of code where it can make a refactoring.
 
 Once you open the tutorial you should see this example:
 
-```
+```python
 def refactoring_example(spellbook):
     result = []
     for spell in spellbook:
