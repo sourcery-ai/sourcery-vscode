@@ -3,7 +3,7 @@
 import * as path from 'path';
 import { getExecutablePath } from './executable';
 
-import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, extensions, env } from 'vscode';
+import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, Range, ViewColumn, TextDocumentShowOptions, extensions, env } from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
@@ -69,6 +69,22 @@ export function activate(context: ExtensionContext) {
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
             openDocument(path.join(workspace.rootPath, '.sourcery.yaml'));
+        });
+    }));
+
+    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
+        let request: ExecuteCommandParams = {
+            command: 'config/rule/create',
+            arguments: []
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
+            const openPath = Uri.file(path.join(workspace.rootPath, '.sourcery.yaml'));
+            workspace.openTextDocument(openPath).then(doc => {
+                const opts: TextDocumentShowOptions = {
+                    selection: new Range(doc.lineCount - 1, 0, doc.lineCount - 1, 0)
+                };
+                window.showTextDocument(doc, opts);
+            });
         });
     }));
 
