@@ -65,9 +65,6 @@ function getValidInput(): string | null {
 
         // Get the text within the selection
         let text = document.getText(selection);
-
-
-
         return text;
     }
 
@@ -92,7 +89,7 @@ export function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
-		const input = getValidInput();
+        const input = getValidInput();
 
         let request: ExecuteCommandParams = {
             command: 'config/rule/create',
