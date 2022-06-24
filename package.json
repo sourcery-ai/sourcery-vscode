@@ -124,7 +124,7 @@
 			},
 			{
 				"command": "sourcery.rule.create",
-				"title": "Create a custom rule for Sourcery",
+				"title": "Create custom rule",
 				"category": "Sourcery"
 			}
 		],
@@ -132,13 +132,30 @@
 			{
 				"id": "sourcery.scans",
 				"label": "Sourcery"
+			},
+			{
+				"id": "sourcery.editor",
+				"label": "Sourcery"
 			}
 		],
 		"menus": {
+			"editor/context": [
+				{
+					"submenu": "sourcery.editor",
+					"group": "z_commands@2"
+				}
+			],
 			"explorer/context": [
 				{
 					"submenu": "sourcery.scans",
 					"group": "1_modification@1"
+				}
+			],
+			"sourcery.editor": [
+				{
+					"command": "sourcery.rule.create",
+					"title": "Create Sourcery rule with this pattern",
+					"when": "editorLangId==python && editorHasSelection"
 				}
 			],
 			"sourcery.scans": [

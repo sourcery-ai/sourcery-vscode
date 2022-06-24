@@ -55,6 +55,22 @@ function createLangServer(context: ExtensionContext): LanguageClient {
 
     return new LanguageClient(command, serverOptions, clientOptions);
 }
+
+function getValidInput(): string | null {
+    const editor = window.activeTextEditor;
+
+    if (editor) {
+        const document = editor.document;
+        const selection = editor.selection;
+
+        // Get the text within the selection
+        let text = document.getText(selection);
+        return text;
+    }
+
+    return null;
+};
+
 export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context)
 
@@ -73,9 +89,11 @@ export function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
+        const input = getValidInput();
+
         let request: ExecuteCommandParams = {
             command: 'config/rule/create',
-            arguments: []
+            arguments: [{'selected': input}]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
             const openPath = Uri.file(path.join(workspace.rootPath, '.sourcery.yaml'));
