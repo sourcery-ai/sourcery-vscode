@@ -15,8 +15,6 @@ import {
 import { allowedNodeEnvironmentFlags } from 'process';
 
 
-const REFACTOR_WORKSPACE_REQUEST = new RequestType('refactor_workspace');
-
 function createLangServer(context: ExtensionContext): LanguageClient {
 
     const token = workspace.getConfiguration('sourcery').get<string>('token');
@@ -49,7 +47,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
         initializationOptions: {
             'token': token,
             'editor_version': 'vscode ' + version,
-            'extension_version': extensionVersion
+            'extension_version': extensionVersion,
+            'telemetry_enabled': env.isTelemetryEnabled
         }
     }
 

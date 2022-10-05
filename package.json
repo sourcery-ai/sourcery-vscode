@@ -215,15 +215,15 @@
 		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
 	},
 	"devDependencies": {
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.30.0",
-		"mocha": "^7.0.0",
+		"@types/mocha": "^10.0.0",
+		"@types/node": "^18.8.1",
+		"@types/vscode": "^1.71.0",
+		"mocha": "^10.0.0",
 		"ovsx": "^0.2.0",
-		"tslint": "^6.1.0",
-		"typescript": "^3.8.3",
+		"tslint": "^6.1.3",
+		"typescript": "^4.8.4",
 		"version-bump-prompt": "^6.1.0",
-		"vsce": "^1.95.1",
+		"vsce": "^2.11.0",
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
