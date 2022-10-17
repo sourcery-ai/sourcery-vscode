@@ -177,7 +177,10 @@ export function activate(context: ExtensionContext) {
       const panel = window.createWebviewPanel(
         "sourceryhub",
         "Sourcery Hub",
-        ViewColumn.Active
+        ViewColumn.Active,
+          {
+            enableScripts: true,
+          }
       );
       panel.webview.html = `<!DOCTYPE html>
         <head>
