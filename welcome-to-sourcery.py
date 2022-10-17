@@ -68,7 +68,7 @@ def find_more(magicks):
     for magic in magicks:
         if not is_powerful(magic):
             continue
-        powerful_magic.append(magicks)
+        powerful_magic.append(magic)
     return powerful_magic
 
 
