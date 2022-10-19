@@ -168,7 +168,7 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.open", () => {
       let request: ExecuteCommandParams = {
-        command: "hub/open",
+        command: "sourcery.openHub",
         arguments: [],
       };
       languageClient
