@@ -103,6 +103,11 @@
 		],
 		"commands": [
 			{
+				"command": "sourcery.login",
+				"title": "Login",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.refactor.workspace",
 				"title": "Scan for refactorings",
 				"category": "Sourcery"
