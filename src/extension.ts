@@ -1,32 +1,29 @@
 "use strict";
 
 import * as path from "path";
-import { getExecutablePath } from "./executable";
+import {getExecutablePath} from "./executable";
 
 import {
-  Uri,
-  workspace,
-  window,
-  Disposable,
-  ExtensionContext,
   commands,
-  version,
-  Range,
-  ViewColumn,
-  TextDocumentShowOptions,
-  extensions,
   env,
+  ExtensionContext,
+  extensions,
+  Range,
   StatusBarAlignment,
+  TextDocumentShowOptions,
+  Uri,
+  version,
+  ViewColumn,
+  window,
+  workspace,
 } from "vscode";
 import {
+  ExecuteCommandParams,
+  ExecuteCommandRequest,
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
-  RequestType,
-  ExecuteCommandRequest,
-  ExecuteCommandParams,
 } from "vscode-languageclient";
-import { allowedNodeEnvironmentFlags } from "process";
 
 function createLangServer(context: ExtensionContext): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -167,12 +164,13 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.open", () => {
-      let request: ExecuteCommandParams = {
-        command: "sourcery.openHub",
-        arguments: [],
-      };
+
+      // Command is handled by the language server
       languageClient
-        .sendRequest(ExecuteCommandRequest.type, request);
+        .sendRequest(ExecuteCommandRequest.type, {
+          command: "sourcery.openHub",
+          arguments: [],
+        });
 
       const panel = window.createWebviewPanel(
         "sourceryhub",
