@@ -15,7 +15,7 @@ import {
     TextDocumentShowOptions,
     extensions,
     env,
-    StatusBarAlignment
+    StatusBarAlignment, WebviewPanel
 } from 'vscode';
 import {
     LanguageClient,
@@ -25,6 +25,7 @@ import {
     ExecuteCommandParams
 } from 'vscode-languageclient';
 import {readFileSync} from "fs";
+import * as vscode from "vscode";
 
 
 function createLangServer(context: ExtensionContext): LanguageClient {
@@ -83,7 +84,8 @@ function getValidInput(): string | null {
 };
 
 export function activate(context: ExtensionContext) {
-    const languageClient = createLangServer(context)
+    const languageClient = createLangServer(context);
+    let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
     context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
         openWelcomeFile(context);
@@ -142,28 +144,41 @@ export function activate(context: ExtensionContext) {
     // Create the "open hub" command
     // This is activated from the status bar (see below)
     context.subscriptions.push(
-    commands.registerCommand("sourcery.hub.open", () => {
-
-      // Instruct the language server to start the hub server
-      // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
-      languageClient
-        .sendRequest(ExecuteCommandRequest.type, {
+      commands.registerCommand("sourcery.hub.open", async () => {
+        // Instruct the language server to start the hub server
+        // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
+        languageClient.sendRequest(ExecuteCommandRequest.type, {
           command: "sourcery.openHub",
           arguments: [],
         });
 
-      // Open a webview panel and fill it with a static empty page
-      // The iframe handles loading the actual content
-      const panel = window.createWebviewPanel(
-        "sourceryhub",
-        "Sourcery Hub",
-        ViewColumn.Active,
-          {
-            enableScripts: true,
-          }
-      );
-      panel.webview.html = readFileSync(path.join(context.extensionPath, 'assets', 'hubContainer.html')).toString();
-    })
+        // reopen the hub panel if it exists
+        // otherwise create it
+        if (hubWebviewPanel) {
+          hubWebviewPanel.reveal();
+        } else {
+          // Open a webview panel and fill it with a static empty page
+          // The iframe handles loading the actual content
+          hubWebviewPanel = window.createWebviewPanel(
+            "sourceryhub",
+            "Sourcery Hub",
+            ViewColumn.Active,
+            {
+              enableScripts: true,
+            }
+          );
+          hubWebviewPanel.webview.html = readFileSync(
+            path.join(context.extensionPath, "assets", "hubContainer.html")
+          ).toString();
+          hubWebviewPanel.onDidDispose(
+            () => {
+              hubWebviewPanel = undefined;
+            },
+            null,
+            context.subscriptions
+          );
+        }
+      })
     );
 
     // Create the status bar
