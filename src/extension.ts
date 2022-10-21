@@ -221,6 +221,7 @@ export function activate(context: ExtensionContext) {
   const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
   myStatusBarItem.command = "sourcery.hub.open";
   myStatusBarItem.text = "Sourcery Hub";
+  myStatusBarItem.tooltip = "Manage your Sourcery account"
   context.subscriptions.push(myStatusBarItem);
   myStatusBarItem.show();
 
