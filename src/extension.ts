@@ -3,16 +3,27 @@
 import * as path from 'path';
 import { getExecutablePath } from './executable';
 
-import { Uri, workspace, window, Disposable, ExtensionContext, commands, version, Range, ViewColumn, TextDocumentShowOptions, extensions, env } from 'vscode';
+import {
+    Uri,
+    workspace,
+    window,
+    ExtensionContext,
+    commands,
+    version,
+    Range,
+    ViewColumn,
+    TextDocumentShowOptions,
+    extensions,
+    env,
+    StatusBarAlignment
+} from 'vscode';
 import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    RequestType,
     ExecuteCommandRequest,
     ExecuteCommandParams
 } from 'vscode-languageclient';
-import { allowedNodeEnvironmentFlags } from 'process';
 
 
 function createLangServer(context: ExtensionContext): LanguageClient {
@@ -127,6 +138,73 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
+    // Create the "open hub" command
+    // This is activated from the status bar (see below)
+    context.subscriptions.push(
+    commands.registerCommand("sourcery.hub.open", () => {
+
+      // Command is handled by the language server
+      languageClient
+        .sendRequest(ExecuteCommandRequest.type, {
+          command: "sourcery.openHub",
+          arguments: [],
+        });
+
+      // Open a webview panel and fill it with a static empty page
+      // The iframe handles loading the actual content
+      const panel = window.createWebviewPanel(
+        "sourceryhub",
+        "Sourcery Hub",
+        ViewColumn.Active,
+          {
+            enableScripts: true,
+          }
+      );
+      panel.webview.html = `<!DOCTYPE html>
+        <head>
+          <style>
+          body,
+          html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            overflow: hidden;
+          }
+          #theFrame {
+            flex-grow: 1;
+            border: none;
+            margin: 0;
+            padding: 0;
+          }
+        </style>
+      </head>
+      <html lang="en" style="height: 100%; width: 100%; margin: 0; padding: 0">
+        <body style="height: 100%; width: 100%; margin: 0; padding: 0">
+          <div class="container">
+            <iframe
+              id="theFrame"
+              src="http://127.0.0.1:61816/home"
+            ></iframe>
+          </div>
+        </body>
+      </html>`;
+    })
+    );
+
+    // Create the status bar
+    const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    myStatusBarItem.command = "sourcery.hub.open";
+    myStatusBarItem.text = "Sourcery Hub";
+    myStatusBarItem.tooltip = "Manage your Sourcery account"
+    context.subscriptions.push(myStatusBarItem);
+    myStatusBarItem.show();
 
     languageClient.onReady().then(() => {
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
