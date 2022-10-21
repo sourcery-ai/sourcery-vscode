@@ -143,7 +143,8 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(
     commands.registerCommand("sourcery.hub.open", () => {
 
-      // Command is handled by the language server
+      // Instruct the language server to start the hub server
+      // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
       languageClient
         .sendRequest(ExecuteCommandRequest.type, {
           command: "sourcery.openHub",
