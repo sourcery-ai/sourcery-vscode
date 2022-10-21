@@ -162,6 +162,8 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  // Create the "open hub" command
+  // This is activated from the status bar (see below)
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.open", () => {
 
@@ -172,6 +174,8 @@ export function activate(context: ExtensionContext) {
           arguments: [],
         });
 
+      // Open a webview panel and fill it with a static empty page
+      // The iframe handles loading the actual content
       const panel = window.createWebviewPanel(
         "sourceryhub",
         "Sourcery Hub",
@@ -218,6 +222,7 @@ export function activate(context: ExtensionContext) {
     })
   );
 
+  // Create the status bar
   const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
   myStatusBarItem.command = "sourcery.hub.open";
   myStatusBarItem.text = "Sourcery Hub";
