@@ -126,6 +126,11 @@
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.hub.open",
+				"title": "Open Sourcery Hub",
+				"category": "Sourcery"
 			}
 		],
 		"submenus": [
