@@ -92,6 +92,11 @@ export function activate(context: ExtensionContext) {
         openWelcomeFile(context);
     }));
 
+    context.subscriptions.push(commands.registerCommand('sourcery.walkthrough.open', () => {
+        openWelcomeFile(context);
+        commands.executeCommand('workbench.action.openWalkthrough', 'sourcery.sourcery#sourcery.walkthrough', true);
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.config.create', () => {
         let request: ExecuteCommandParams = {
             command: 'config/create',
@@ -192,6 +197,12 @@ export function activate(context: ExtensionContext) {
     myStatusBarItem.show();
 
     languageClient.onReady().then(() => {
+        languageClient.onNotification('sourcery/vscode/executeCommand', (params) => {
+            const command = params['command']
+            const args = params['arguments'] || []
+            commands.executeCommand(command, ...args)
+        });
+
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
         });
@@ -210,14 +221,6 @@ export function activate(context: ExtensionContext) {
 
         languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
             openWelcomeFile(context);
-            const result = window.showInputBox({
-                placeHolder: 'Sourcery Token',
-                prompt: 'Get advanced Sourcery features by creating a free account and adding your token above. Visit https://sourcery.ai/signup to get started.',
-                ignoreFocusOut: true
-            });
-            result.then(function (value) {
-                workspace.getConfiguration('sourcery').update('token', value, true)
-            });
         });
     });
 

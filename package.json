@@ -28,7 +28,7 @@
 	"contributes": {
 		"walkthroughs": [
 			{
-				"id": "sourceryWelcome",
+				"id": "sourcery.walkthrough",
 				"title": "Get started with Sourcery",
 				"description": "Your first steps to try out the powerful tools and features that the Sourcery extension has to offer!",
 				"when": "workspacePlatform != webworker",
@@ -40,7 +40,6 @@
 						"media": {
 							"markdown": "walkthrough/view_welcome_file.md"
 						},
-						"when": "",
 						"completionEvents": [
 							"onCommand:sourcery.welcome.open"
 						]
@@ -52,7 +51,6 @@
 						"media": {
 							"markdown": "walkthrough/accept_recommendation.md"
 						},
-						"when": "",
 						"completionEvents": [
 							"onContext:acceptRecommendationContextKey"
 						]
@@ -77,20 +75,20 @@
 						}
 					},
 					{
-						"id": "sourcery.enterToken",
-						"title": "Enter your token",
-						"description": "Get your free token to unlock all of Sourcery's features, including 30 days of Sourcery Pro\n[Sign up for token](https://sourcery.ai/signup)\n[Enter token](command:toSide:workbench.action.openSettings?\"sourcery:\")",
+						"id": "sourcery.login",
+						"title": "Login",
+						"description": "Unlock all of Sourcery's features, including 30 days of Sourcery Pro\n[Login](command:sourcery.login)",
 						"media": {
-							"markdown": "walkthrough/enter_token.md"
+							"markdown": "walkthrough/login.md"
 						},
 						"completionEvents": [
-							"onSettingChanged:sourcery.token"
+							"onContext:sourcery.is_authenticated"
 						]
 					},
 					{
 						"id": "sourcery.advancedFeatures",
 						"title": "Advanced Features",
-						"description": "Once you have entered your token you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
+						"description": "Once you have logged in you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
 						"media": {
 							"markdown": "walkthrough/refactoring_scan.md"
 						},
@@ -108,6 +106,21 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.hub.open",
+				"title": "Open Sourcery Hub",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.walkthrough.open",
+				"title": "Open Walkthough",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.welcome.open",
+				"title": "Open welcome file",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.refactor.workspace",
 				"title": "Scan for refactorings",
 				"category": "Sourcery"
@@ -115,11 +128,6 @@
 			{
 				"command": "sourcery.clones.workspace",
 				"title": "Detect clones",
-				"category": "Sourcery"
-			},
-			{
-				"command": "sourcery.welcome.open",
-				"title": "Open welcome file",
 				"category": "Sourcery"
 			},
 			{
@@ -198,7 +206,7 @@
 				"sourcery.token": {
 					"type": "string",
 					"default": "",
-					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
+					"description": "DEPRECATED - Run the \"Sourcery: Login\" command instead"
 				},
 				"sourcery.ruleType.refactorings": {
 					"type": "boolean",
