@@ -26,6 +26,7 @@ import {
 } from 'vscode-languageclient';
 import {readFileSync} from "fs";
 import * as vscode from "vscode";
+import { getHubSrc } from './hub';
 
 
 function createLangServer(context: ExtensionContext): LanguageClient {
@@ -167,9 +168,8 @@ export function activate(context: ExtensionContext) {
               enableScripts: true,
             }
           );
-          hubWebviewPanel.webview.html = readFileSync(
-            path.join(context.extensionPath, "assets", "hubContainer.html")
-          ).toString();
+
+          hubWebviewPanel.webview.html = getHubSrc();
           hubWebviewPanel.onDidDispose(
             () => {
               hubWebviewPanel = undefined;
