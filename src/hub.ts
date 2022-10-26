@@ -3,7 +3,6 @@ export function getHubSrc() {
 <head>
 <meta charset="UTF-8" />
 <title>Sourcery Hub</title>
-<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <style>
     body,
     html {
