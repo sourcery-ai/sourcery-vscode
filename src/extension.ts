@@ -148,9 +148,13 @@ export function activate(context: ExtensionContext) {
       commands.registerCommand("sourcery.hub.open", async () => {
         // Instruct the language server to start the hub server
         // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
+
+      const workspacePath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.path : "";
         languageClient.sendRequest(ExecuteCommandRequest.type, {
           command: "sourcery.openHub",
-          arguments: [],
+          arguments: [{
+              "workspacePath": workspacePath
+          }],
         });
 
         // reopen the hub panel if it exists
@@ -168,6 +172,7 @@ export function activate(context: ExtensionContext) {
               enableScripts: true,
             }
           );
+
 
           hubWebviewPanel.webview.html = getHubSrc();
           hubWebviewPanel.onDidDispose(
