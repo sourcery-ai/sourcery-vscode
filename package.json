@@ -133,8 +133,8 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.hub.open",
-				"title": "Open Sourcery Hub",
+				"command": "sourcery.hub.start",
+				"title": "Start Sourcery Hub",
 				"category": "Sourcery"
 			}
 		],

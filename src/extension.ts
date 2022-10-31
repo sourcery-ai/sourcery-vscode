@@ -145,13 +145,13 @@ export function activate(context: ExtensionContext) {
     // Create the "open hub" command
     // This is activated from the status bar (see below)
     context.subscriptions.push(
-      commands.registerCommand("sourcery.hub.open", async () => {
+      commands.registerCommand("sourcery.hub.start", async () => {
         // Instruct the language server to start the hub server
         // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
 
       const workspacePath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.path : "";
         languageClient.sendRequest(ExecuteCommandRequest.type, {
-          command: "sourcery.openHub",
+          command: "sourcery.startHub",
           arguments: [{
               "workspacePath": workspacePath
           }],
@@ -188,7 +188,7 @@ export function activate(context: ExtensionContext) {
 
     // Create the status bar
     const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
-    myStatusBarItem.command = "sourcery.hub.open";
+    myStatusBarItem.command = "sourcery.hub.start";
     myStatusBarItem.text = "Sourcery";
     myStatusBarItem.tooltip = "Manage Sourcery settings"
     context.subscriptions.push(myStatusBarItem);
