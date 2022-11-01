@@ -149,12 +149,9 @@ export function activate(context: ExtensionContext) {
         // Instruct the language server to start the hub server
         // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
 
-      const workspacePath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.path : "";
         languageClient.sendRequest(ExecuteCommandRequest.type, {
           command: "sourcery.startHub",
-          arguments: [{
-              "workspacePath": workspacePath
-          }],
+          arguments: [],
         });
 
         // reopen the hub panel if it exists
