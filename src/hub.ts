@@ -29,7 +29,7 @@ export function getHubSrc() {
 <html lang="en" style="height: 100%; width: 100%; margin: 0; padding: 0">
 <body style="height: 100%; width: 100%; margin: 0; padding: 0">
     <div class="container">
-    <iframe id="theFrame" src="http://127.0.0.1:61816/home"></iframe>
+    <iframe id="theFrame" src="http://127.0.0.1:61816/"></iframe>
     </div>
 </body>
 </html>`
