@@ -134,7 +134,7 @@
 			},
 			{
 				"command": "sourcery.hub.start",
-				"title": "Start Sourcery Hub",
+				"title": "Open Sourcery Hub",
 				"category": "Sourcery"
 			}
 		],
