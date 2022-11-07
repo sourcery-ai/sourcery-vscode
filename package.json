@@ -106,7 +106,7 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.hub.open",
+				"command": "sourcery.hub.start",
 				"title": "Open Sourcery Hub",
 				"category": "Sourcery"
 			},
@@ -138,11 +138,6 @@
 			{
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
-				"category": "Sourcery"
-			},
-			{
-				"command": "sourcery.hub.start",
-				"title": "Open Sourcery Hub",
 				"category": "Sourcery"
 			}
 		],
@@ -206,7 +201,8 @@
 				"sourcery.token": {
 					"type": "string",
 					"default": "",
-					"description": "DEPRECATED - Run the \"Sourcery: Login\" command instead"
+					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard",
+          "markdownDeprecationMessage": "Run the `Sourcery: Login` command instead"
 				},
 				"sourcery.ruleType.refactorings": {
 					"type": "boolean",
