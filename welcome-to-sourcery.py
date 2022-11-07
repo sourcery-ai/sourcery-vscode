@@ -50,9 +50,8 @@ def magical_hoist(magic):
 # in the Explorer window, choose the Sourcery menu item and choose
 # "Scan for refactorings" or "Detect Clones".
 
-# Both of these advanced features require a Sourcery Pro subscription.
-# You can get a 30 day trial by creating a free account at
-# https://sourcery.ai/signup and entering your token into the Sourcery settings.
+# Both of these advanced features require you to login.
+# Open the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: login`.
 
 # For more details check out our documentation here:
 # https://docs.sourcery.ai/

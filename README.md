@@ -233,7 +233,9 @@ By default, Sourcery will show a warning if your quality score drops below 25. Y
 Do you like how Sourcery improves your code bit by bit?
 Sign up and get a 30 day free trial of the Pro features. (No automatic renewal, no credit card required.)
 
-After [signing up](https://sourcery.ai/signup/?utm_source=VS-Code), add your token in your VSCode configuration by going to the VS Code Settings → Extension Settings → Sourcery and adding it to the "Sourcery Token" field.
+After [signing up](https://sourcery.ai/signup/?utm_source=VS-Code), login by
+opening the command palette (Ctrl/Cmd+Shift+P) and executing the `Sourcery:
+Login` command.
 
 We also love to hear your feedback.
 
