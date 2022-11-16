@@ -65,7 +65,7 @@ Sourcery is widely extendable so that you can have it check for whatever types o
 
 Sourcery reads rules from a .sourcery.yaml configuration file that you can set up in your project directory - then it will look to apply those rules across the full project. To get started we’ve [set up a quick tutorial](https://docs.sourcery.ai/Tutorials/Custom-Rules/) and you can [dive deeper in our full documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/)
 
-[HOLD for GIF]
+![Sourcery Custom Rules](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/custom-rules.gif)
 
 You can also opt into publicly available sets of rules to help improve your code. [Check out the Google Python Style Guide](https://docs.sourcery.ai/Reference/Custom-Rules/gpsg/) and see how you can add it to Sourcery.
 
@@ -116,13 +116,11 @@ If you want to clean up a bigger portion of legacy code, Sourcery CLI comes in h
 - With the `sourcery review` command, you can scan multiple files or directories for refactorings.
 - With the `-in-place` option, you can apply the suggested refactorings immediately.
 
-[HOLD for GIF]
+![Sourcery CLI](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/sourcery-cli.gif)
 
 With Sourcery CLI, you can also integrate Sourcery with your favorite tools.
 
 #### CI / Pre-Commit Hook options: 
-
-![Sourcery CLI](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery-CLI.gif)
 
 You can use Sourcery to review every new bit of code you and your team are working on by adding Sourcery into your CI or running it as a Pre-Commit Hook.
 
