@@ -42,8 +42,12 @@ def magical_hoist(magic):
 #    This adds a comment to the function telling Sourcery not to make the change.
 
 # 2) In the quick fix menu choose "Sourcery - Never show me this refactoring"
-#    This tells Sourcery to never suggest this type of refactoring. This config
+#    This tells Sourcery to never suggest this type of suggestion. This config
 #    is stored in a configuration file on your machine.
+
+# 3) Click on the Sourcery button in the Status Bar (typically the bottom of
+#    the VS Code window) to bring up the Sourcery Hub. Click on "Settings" and
+#    then you can toggle individual rule types on or off
 
 # You can also have Sourcery review multiple files at once or check for
 # duplicate code across your project. Right click on any file or folder
@@ -52,6 +56,11 @@ def magical_hoist(magic):
 
 # Both of these advanced features require you to login.
 # Open the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: login`.
+
+# If you want to have Sourcery review more of your code at once you should check
+# out the Sourcery CLI. Run `pip install sourcery-cli` to get started, then run
+# `sourcery login` and finally run `sourcery review <path>` to have Sourcery 
+# check all of the files in that path
 
 # For more details check out our documentation here:
 # https://docs.sourcery.ai/
