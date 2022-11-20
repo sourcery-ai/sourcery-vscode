@@ -26,6 +26,26 @@
 		"onStartupFinished"
 	],
 	"contributes": {
+		  "viewsContainers": {
+			"activitybar": [
+			  {
+				"id": "sourcery-explorer",
+				"title": "Sourcery",
+				"icon": "sourcery-icon.png"
+			  }
+			]
+		  },
+		  "views": {
+			"sourcery-explorer": [
+			  {
+				"id": "rules",
+				"name": "Rules",
+				  "type": "webview",
+				"icon": "sourcery-icon.png",
+				"contextualTitle": "Rules"
+			  }
+			]
+		  },
 		"walkthroughs": [
 			{
 				"id": "sourcery.walkthrough",
