@@ -203,21 +203,10 @@ export function activate(context: ExtensionContext) {
             commands.executeCommand(command, ...args)
         });
 
-        languageClient.onNotification('sourcery/vscode/viewProblems', () => {
-            commands.executeCommand('workbench.actions.view.problems');
-        });
-
-        languageClient.onNotification('sourcery/vscode/accept_recommendation', () => {
-            commands.executeCommand('setContext', 'acceptRecommendationContextKey', true);
-        });
-
         languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
             env.openExternal(Uri.parse(params['url']));
         });
 
-        languageClient.onNotification('sourcery/vscode/showSettings', () => {
-            commands.executeCommand('workbench.action.openSettings', 'sourcery');
-        });
 
         languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
             openWelcomeFile(context);
