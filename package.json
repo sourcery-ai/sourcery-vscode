@@ -38,7 +38,7 @@
 		  "views": {
 			"sourcery-explorer": [
 			  {
-				"id": "rules",
+				"id": "sourcery.rules",
 				"name": "Rules",
 				  "type": "webview",
 				"icon": "sourcery-icon.png",
@@ -146,6 +146,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.rule",
+				"title": "Scan with specific rule",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.clones.workspace",
 				"title": "Detect clones",
 				"category": "Sourcery"
@@ -206,6 +211,10 @@
 			"commandPalette": [
 				{
 					"command": "sourcery.refactor.workspace",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.rule",
 					"when": "false"
 				},
 				{

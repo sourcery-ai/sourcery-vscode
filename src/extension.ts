@@ -27,7 +27,7 @@ import {
 import {readFileSync} from "fs";
 import * as vscode from "vscode";
 import { getHubSrc } from './hub';
-
+import {RuleInputProvider} from "./RuleInputProvider"
 
 function createLangServer(context: ExtensionContext): LanguageClient {
 
@@ -88,6 +88,17 @@ export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context);
     let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
+    const riProvider = new RuleInputProvider(
+		context,
+	);
+    
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(
+			RuleInputProvider.viewType, riProvider
+		)
+	);
+    
+
     context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
         openWelcomeFile(context);
     }));
@@ -131,6 +142,19 @@ export function activate(context: ExtensionContext) {
             arguments: [{
                 'uri': resource,
                 'all_uris': selected
+            }]
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    }));
+
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri, pattern: string, replacement: string, condition: string) => {
+        let request: ExecuteCommandParams = {
+            command: 'rule/scan',
+            arguments: [{
+                'uri': resource,
+                'pattern': pattern,
+                'replacement': replacement,
+                'condition': condition
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
