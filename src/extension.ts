@@ -103,6 +103,14 @@ export function activate(context: ExtensionContext) {
         openWelcomeFile(context);
     }));
 
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.open', () => {
+              // Create and show a new webview
+        vscode.commands.executeCommand('setContext',
+            'sourceryActive',
+            true);
+        vscode.commands.executeCommand("sourcery.rules.focus")
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.walkthrough.open', () => {
         openWelcomeFile(context);
         commands.executeCommand('workbench.action.openWalkthrough', 'sourcery.sourcery#sourcery.walkthrough', true);
@@ -118,8 +126,13 @@ export function activate(context: ExtensionContext) {
         });
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
-        const input = getValidInput();
+    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (pattern?: string, replacement?: string, condition?: string) => {
+        let input;
+        if (typeof pattern !== 'undefined') {
+            input = pattern;
+        } else {
+            input = getValidInput();
+        }
 
         let request: ExecuteCommandParams = {
             command: 'config/rule/create',
@@ -147,14 +160,15 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri, pattern: string, replacement: string, condition: string) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], pattern: string, replacement: string, condition: string, inplace:boolean) => {
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
                 'uri': resource,
                 'pattern': pattern,
                 'replacement': replacement,
-                'condition': condition
+                'condition': condition,
+                'inplace': inplace
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
@@ -227,6 +241,11 @@ export function activate(context: ExtensionContext) {
             commands.executeCommand(command, ...args)
         });
 
+        languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
+            const diag = params['diagnostics']
+            window.showInformationMessage(diag[0]["message"]);
+        });
+        
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
             commands.executeCommand('workbench.actions.view.problems');
         });

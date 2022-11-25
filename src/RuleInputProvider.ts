@@ -32,11 +32,19 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		};
 
 		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
-
+		let documents = vscode.window.visibleTextEditors.map(editor => editor.document.uri.fsPath);
 		webviewView.webview.onDidReceiveMessage(async data => {
 			switch (data.type) {
 				case "scanForPattern": {
-					vscode.commands.executeCommand("sourcery.scan.rule", vscode.window.activeTextEditor.document.uri.fsPath, data.pattern, data.replacement, data.condition);
+					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.pattern, data.replacement, data.condition, false);
+					break;
+				}
+				case "replacePattern": {
+					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.pattern, data.replacement, data.condition, true);
+					break;
+				}
+				case "savePattern": {
+					vscode.commands.executeCommand("sourcery.rule.create", data.pattern, data.replacement, data.condition);
 					break;
 				}
 			}
@@ -103,7 +111,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					<button class="scanner-button"}>Scan</button>
 				</div>
 				<div class="btnContainer">
-					<button class="replace-button"}>Replace</button>
+					<button class="replace-button" disabled}>Replace</button>
 				</div>
 				<div class="btnContainer">
 					<button class="save-button"}>Save as Rule</button>

@@ -42,7 +42,9 @@
 				"name": "Rules",
 				  "type": "webview",
 				"icon": "sourcery-icon.png",
-				"contextualTitle": "Rules"
+				"contextualTitle": "Rules",
+				  "when": "sourceryActive"
+
 			  }
 			]
 		  },
@@ -148,6 +150,11 @@
 			{
 				"command": "sourcery.scan.rule",
 				"title": "Scan with specific rule",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.scan.open",
+				"title": "Search using Sourcery custom rules",
 				"category": "Sourcery"
 			},
 			{

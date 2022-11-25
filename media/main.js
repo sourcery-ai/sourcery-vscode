@@ -11,6 +11,9 @@ window.alert("starting");
     document.querySelector('.scanner-button').addEventListener('click', () => {
         sendMessage('scanForPattern');
     });
+    document.querySelector('.save-button').addEventListener('click', () => {
+        sendMessage('savePattern');
+    });
     document.querySelector('.replace-button').addEventListener('click', () => {
         sendMessage('replacePattern');
     });
