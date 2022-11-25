@@ -53,7 +53,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
             {language: 'python', scheme: 'file'},
             {language: 'python', scheme: 'untitled'},
             {language: 'python', scheme: 'vscode-notebook-cell' },
-            {language: 'yaml', pattern: '**/.sourcery.yaml'}
+            {language: 'yaml', pattern: '**/.sourcery.yaml'},
+            {language: 'yaml', pattern: '**/sourcery.yaml'}
         ],
         synchronize: {
             configurationSection: 'sourcery'
