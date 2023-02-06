@@ -8,7 +8,7 @@
 		"url": "https://github.com/sourcery-ai/public/issues"
 	},
 	"license": "MIT",
-	"version": "1.0.4",
+	"version": "1.0.5-dev.1",
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
