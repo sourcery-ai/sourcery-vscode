@@ -51,6 +51,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const clientOptions: LanguageClientOptions = {
         documentSelector: [
             {language: 'python', scheme: 'file'},
+            {language: 'javascript', scheme: 'file'},
+            {language: 'typescript', scheme: 'file'},
             {language: 'python', scheme: 'untitled'},
             {language: 'python', scheme: 'vscode-notebook-cell' },
             {language: 'yaml', pattern: '**/.sourcery.yaml'},
