@@ -142,9 +142,14 @@ To get started, add [Sourcery to your GitHub repo](https://github.com/apps/sour
 
 Not everyone's coding style is the same, so we know you won't always want to accept every refactoring Sourcery suggests.
 
-Generally, for configurations, Sourcery uses configuration settings from `.sourcery.yaml` in the project directory.
+Sourcery reads [configuration settings from two sources](https://docs.sourcery.ai/Reference/Configuration/Sources/#configuration-sources):
 
-The config file uses YAML syntax. If you are new to YAML checkout "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
+- a [`.sourcery.yaml` file](https://docs.sourcery.ai/Reference/Configuration/sourcery-yaml/) in the project directory; and
+- a [user-specific config file](https://docs.sourcery.ai/Reference/Configuration/Sources/#user-configuration-file-system-locations).
+
+You can use the project-specific config file to set project-specific settings, and the user-specific config file to set settings that apply to all projects.
+
+The config file uses YAML syntax. If you are new to YAML check out "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
 
 Here is the default set of values set for the file. If a config file isn't set or if a setting isn't specified then Sourcery will use these values:
 
