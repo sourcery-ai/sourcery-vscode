@@ -153,25 +153,37 @@ The config file uses YAML syntax. If you are new to YAML check out "[Learn YAML 
 
 Here is the default set of values set for the file. If a config file isn't set or if a setting isn't specified then Sourcery will use these values:
 
-```
+```yaml
 ignore: []
 
-refactor:
-  skip: []
+rule_settings:
+  enable: [default]
+  disable: []
+  rule_types:
+    - refactoring
+    - suggestion
+    - comment
+  python_version: '3.9'
+
+rules: []
 
 metrics:
   quality_threshold: 25.0
+
+github:
+  labels: []
+  ignore_labels:
+    - sourcery-ignore
+  request_review: author
+  sourcery_branch: sourcery/{base_branch}
 
 clone_detection:
   min_lines: 3
   min_duplicates: 2
   identical_clones_only: false
 
-github:
-  labels: []
-  ignore_labels: [sourcery-ignore]
-  request_review: author
-  sourcery_branch: sourcery/{base_branch}
+proxy:
+  no_ssl_verify: false
 ```
 
 You can easily configure Sourcery to:
