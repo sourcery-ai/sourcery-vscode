@@ -11,6 +11,8 @@
 
 ![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Logo_VS_Code_Description.png)
 
+**[WEBSITE](https://sourcery.ai/) | [DOCS](https://docs.sourcery.ai/Welcome/) | [BUGS](https://github.com/sourcery-ai/sourcery/issues)**
+
 Sourcery is the pair programmer who will help you improve your code anytime you're working in Python. It reviews and improves your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
 
 ![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Example.gif)
@@ -126,7 +128,7 @@ You can use Sourcery to review every new bit of code you and your team are worki
 
 Sourcery will review every new change and you can set it up to either automatically make changes to your code when it detects opportunities to refactor, or you can just have it notify you when it finds refactorings.
 
-Sourcery is fully free for Open Source projects, the CI and Pre-Commit Hook options require a Sourcery Team subscription for private projects. **[You can sign up for a Team plan here**.](https://sourcery.ai/team/)
+Sourcery is fully free for Open Source projects, the CI and Pre-Commit Hook options require a Sourcery Team subscription for private projects. **[You can sign up for a Team plan here](https://sourcery.ai/team/)**.
 
 ### GitHub Pull Request Review
 
