@@ -36,6 +36,8 @@ Here are some of the features Sourcery offers to help improve your code:
 
 To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/getting-started/).
 
+Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more information on how to use Sourcery.
+
 ---
 
 ## Features
