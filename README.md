@@ -151,7 +151,7 @@ Sourcery reads [configuration settings from two sources](https://docs.sourcery.
 - a [`.sourcery.yaml` file](https://docs.sourcery.ai/Reference/Configuration/sourcery-yaml/) in the project directory; and
 - a [user-specific config file](https://docs.sourcery.ai/Reference/Configuration/Sources/#user-configuration-file-system-locations).
 
-You can use the project-specific config file to set project-specific settings, and the user-specific config file to set settings that apply to all projects.
+You can use the project-specific config file to set project-specific settings, and the user-specific config file to set settings that apply to all projects. The project-specific configuration takes precedence over the user configuration.
 
 The config file uses YAML syntax. If you are new to YAML check out "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
 
