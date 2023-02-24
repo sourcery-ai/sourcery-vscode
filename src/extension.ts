@@ -53,6 +53,8 @@ function createLangServer(context: ExtensionContext): LanguageClient {
             {language: 'python', scheme: 'file'},
             {language: 'javascript', scheme: 'file'},
             {language: 'typescript', scheme: 'file'},
+            {language: 'javascriptreact', scheme: 'file'},
+            {language: 'typescriptreact', scheme: 'file'},
             {language: 'python', scheme: 'untitled'},
             {language: 'python', scheme: 'vscode-notebook-cell' },
             {language: 'yaml', pattern: '**/.sourcery.yaml'},
