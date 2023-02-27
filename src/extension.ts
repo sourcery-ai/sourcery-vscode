@@ -51,9 +51,14 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     const clientOptions: LanguageClientOptions = {
         documentSelector: [
             {language: 'python', scheme: 'file'},
+            {language: 'javascript', scheme: 'file'},
+            {language: 'typescript', scheme: 'file'},
+            {language: 'javascriptreact', scheme: 'file'},
+            {language: 'typescriptreact', scheme: 'file'},
             {language: 'python', scheme: 'untitled'},
             {language: 'python', scheme: 'vscode-notebook-cell' },
-            {language: 'yaml', pattern: '**/.sourcery.yaml'}
+            {language: 'yaml', pattern: '**/.sourcery.yaml'},
+            {language: 'yaml', pattern: '**/sourcery.yaml'}
         ],
         synchronize: {
             configurationSection: 'sourcery'
@@ -254,13 +259,11 @@ export function activate(context: ExtensionContext) {
             commands.executeCommand('setContext', 'acceptRecommendationContextKey', true);
         });
 
+
         languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
             env.openExternal(Uri.parse(params['url']));
         });
 
-        languageClient.onNotification('sourcery/vscode/showSettings', () => {
-            commands.executeCommand('workbench.action.openSettings', 'sourcery');
-        });
 
         languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
             openWelcomeFile(context);

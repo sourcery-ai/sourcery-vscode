@@ -11,6 +11,8 @@
 
 ![Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Logo_VS_Code_Description.png)
 
+**[WEBSITE](https://sourcery.ai/) | [DOCS](https://docs.sourcery.ai/Welcome/) | [BUGS](https://github.com/sourcery-ai/sourcery/issues)**
+
 Sourcery is the pair programmer who will help you improve your code anytime you're working in Python. It reviews and improves your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
 
 ![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Example.gif)
@@ -33,6 +35,8 @@ Here are some of the features Sourcery offers to help improve your code:
 
 
 To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/getting-started/).
+
+Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more information on how to use Sourcery.
 
 ---
 
@@ -126,7 +130,7 @@ You can use Sourcery to review every new bit of code you and your team are worki
 
 Sourcery will review every new change and you can set it up to either automatically make changes to your code when it detects opportunities to refactor, or you can just have it notify you when it finds refactorings.
 
-Sourcery is fully free for Open Source projects, the CI and Pre-Commit Hook options require a Sourcery Team subscription for private projects. **[You can sign up for a Team plan here**.](https://sourcery.ai/team/)
+Sourcery is fully free for Open Source projects, the CI and Pre-Commit Hook options require a Sourcery Team subscription for private projects. **[You can sign up for a Team plan here](https://sourcery.ai/team/)**.
 
 ### GitHub Pull Request Review
 
@@ -142,31 +146,48 @@ To get started, add [Sourcery to your GitHub repo](https://github.com/apps/sour
 
 Not everyone's coding style is the same, so we know you won't always want to accept every refactoring Sourcery suggests.
 
-Generally, for configurations, Sourcery uses configuration settings from `.sourcery.yaml` in the project directory.
+Sourcery reads [configuration settings from two sources](https://docs.sourcery.ai/Reference/Configuration/Sources/#configuration-sources):
 
-The config file uses YAML syntax. If you are new to YAML checkout "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
+- a [`.sourcery.yaml` file](https://docs.sourcery.ai/Reference/Configuration/sourcery-yaml/) in the project directory; and
+- a [user-specific config file](https://docs.sourcery.ai/Reference/Configuration/Sources/#user-configuration-file-system-locations).
+
+You can use the project-specific config file to set project-specific settings, and the user-specific config file to set settings that apply to all projects. The project-specific configuration takes precedence over the user configuration.
+
+The config file uses YAML syntax. If you are new to YAML check out "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
 
 Here is the default set of values set for the file. If a config file isn't set or if a setting isn't specified then Sourcery will use these values:
 
-```
+```yaml
 ignore: []
 
-refactor:
-  skip: []
+rule_settings:
+  enable: [default]
+  disable: []
+  rule_types:
+    - refactoring
+    - suggestion
+    - comment
+  python_version: '3.9'
+
+rules: []
 
 metrics:
   quality_threshold: 25.0
+
+github:
+  labels: []
+  ignore_labels:
+    - sourcery-ignore
+  request_review: author
+  sourcery_branch: sourcery/{base_branch}
 
 clone_detection:
   min_lines: 3
   min_duplicates: 2
   identical_clones_only: false
 
-github:
-  labels: []
-  ignore_labels: [sourcery-ignore]
-  request_review: author
-  sourcery_branch: sourcery/{base_branch}
+proxy:
+  no_ssl_verify: false
 ```
 
 You can easily configure Sourcery to:

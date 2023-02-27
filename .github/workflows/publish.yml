@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
@@ -69,3 +69,12 @@ jobs:
         git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
+
+    - name: Notify Slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: Publish VS Code extension v${{ github.event.inputs.version }} - ${{ job.status }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASES_WEBHOOK_URL }}
+      if: always()
