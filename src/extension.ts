@@ -49,6 +49,7 @@ function createLangServer(context: ExtensionContext): LanguageClient {
     };
 
     const clientOptions: LanguageClientOptions = {
+        diagnosticCollectionName: "sourcery",
         documentSelector: [
             {language: 'python', scheme: 'file'},
             {language: 'javascript', scheme: 'file'},
