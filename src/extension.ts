@@ -176,7 +176,10 @@ export function activate(context: ExtensionContext) {
                 'inplace': inplace
             }]
         };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+        languageClient.sendRequest(ExecuteCommandRequest.type, request).then(result => {
+            ;
+        }
+        );
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri, selected?: Uri[]) => {
@@ -248,7 +251,7 @@ export function activate(context: ExtensionContext) {
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
             const diag = params['diagnostics']
-            window.showInformationMessage(diag[0]["message"]);
+            // window.showInformationMessage(diag[0]["message"]);
         });
         
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
