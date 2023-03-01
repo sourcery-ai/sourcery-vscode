@@ -24,7 +24,6 @@ import {
     ExecuteCommandRequest,
     ExecuteCommandParams
 } from 'vscode-languageclient';
-import {readFileSync} from "fs";
 import * as vscode from "vscode";
 import { getHubSrc } from './hub';
 import {RuleInputProvider} from "./RuleInputProvider"
@@ -99,7 +98,7 @@ export function activate(context: ExtensionContext) {
     
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(
-			RuleInputProvider.viewType, riProvider
+			RuleInputProvider.viewType, riProvider, {webviewOptions: {retainContextWhenHidden: true}}
 		)
 	);
     
