@@ -26,13 +26,13 @@ def refactoring_example(spellbook):
 # Sourcery also provides code metrics for each function to give you insight into
 # code quality - hover over the function definition below to see this report.
 
-
-
 def magical_hoist(magic):
-    with patch('...', return_value='whatever'):
-        with patch.object(LocalObj, 'get_...', return_value=expected_data) as mocked_x:
-            with patch('..', return_value=gen_link) as mocked_y:
-                print(result)
+    if is_powerful(magic):
+        result = 'Magic'
+    else:
+        print("Not powerful.")
+        result = 'Magic'
+    print(result)
 
 # What if we don't want to make the change Sourcery suggests?
 

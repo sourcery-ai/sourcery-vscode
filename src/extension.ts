@@ -169,7 +169,22 @@ export function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], pattern: string, replacement: string, condition: string, inplace:boolean) => {
-        tree.clear()
+        if (inplace) {
+            vscode.window
+              .showInformationMessage("Are you sure?", "Yes", "No")
+              .then(answer => {
+                if (answer === "Yes") {
+                    runScan(resource, pattern, replacement, condition, inplace);
+                }
+              })
+        } else {
+            runScan(resource, pattern, replacement, condition, inplace);
+        }
+
+    }));
+
+    function runScan(resource, pattern, replacement, condition, inplace) {
+        tree.clear();
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
@@ -180,11 +195,8 @@ export function activate(context: ExtensionContext) {
                 'inplace': inplace
             }]
         };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request).then(result => {
-            ;
-        }
-        );
-    }));
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    }
 
     context.subscriptions.push(commands.registerCommand('sourcery.clones.workspace', (resource: Uri, selected?: Uri[]) => {
         let request: ExecuteCommandParams = {

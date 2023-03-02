@@ -17,18 +17,12 @@
     document.querySelector('.replace-button').addEventListener('click', () => {
         sendMessage('replacePattern');
     });
-    // Handle messages sent from the extension to the webview
-    window.addEventListener('message', event => {
-        const message = event.data; // The json data that the extension sent
-        switch (message.type) {
-            case 'addColor':
-                {
-                    addColor();
-                    break;
-                }
 
-        }
-    });
+
+    let input = document.querySelector('textarea.patternInput');
+    if (input) {
+        input.focus();
+    }
 
 
     function sendMessage(message_type) {

@@ -1,17 +1,16 @@
 import * as vscode from 'vscode';
-import {Position, Uri, window} from "vscode";
+import {Position, Uri} from "vscode";
 
 
 
 class ScanResult extends vscode.TreeItem
 {
   children: undefined;
-  uri: Uri;
   position: Position;
 
   constructor(label: string, uri: Uri, position: Position) {
     super(label)
-    this.uri = uri;
+    this.resourceUri = uri;
     this.position = position;
   }
 }
@@ -19,7 +18,6 @@ class ScanResult extends vscode.TreeItem
 class FileResults extends vscode.TreeItem
 {
   children: ScanResult[] | undefined;
-  uri: Uri;
   position: Position;
 
   constructor(label: string, uri: Uri, children?: ScanResult[]) {
@@ -28,8 +26,9 @@ class FileResults extends vscode.TreeItem
         children === undefined ? vscode.TreeItemCollapsibleState.None :
                                  vscode.TreeItemCollapsibleState.Expanded);
     this.children = children;
-    this.uri = uri;
+    this.resourceUri = uri;
     this.position = new Position(0, 0);
+    this.description = true;
   }
 }
 
@@ -49,7 +48,7 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
 
           getTreeItem(element: FileResults|ScanResult): vscode.TreeItem|Thenable<vscode.TreeItem> {
             // element.command = {command: 'vscode.open', arguments: [element.uri], title: 'Open'}
-            element.command = {command: 'editor.action.goToLocations', title: "Open", arguments: [element.uri, element.position , [], "goto"] }
+            element.command = {command: 'editor.action.goToLocations', title: "Open", arguments: [element.resourceUri, element.position , [], "goto"] }
 
             return element;
           }
