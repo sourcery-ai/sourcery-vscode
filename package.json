@@ -45,6 +45,13 @@
 				"contextualTitle": "Rules",
 				  "when": "sourceryActive"
 
+			  },
+				{
+				"id": "sourcery.rules.treeview",
+				"name": "Results",
+				"contextualTitle": "Results",
+				  "when": "sourceryActive"
+
 			  }
 			]
 		  },

@@ -27,6 +27,7 @@ import {
 import * as vscode from "vscode";
 import { getHubSrc } from './hub';
 import {RuleInputProvider} from "./RuleInputProvider"
+import {DiagnosticTreeView} from "./RuleInputResults";
 
 function createLangServer(context: ExtensionContext): LanguageClient {
 
@@ -92,8 +93,11 @@ export function activate(context: ExtensionContext) {
     const languageClient = createLangServer(context);
     let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
+    let tree = new DiagnosticTreeView();
+	vscode.window.registerTreeDataProvider('sourcery.rules.treeview', tree);
+
     const riProvider = new RuleInputProvider(
-		context,
+        context,
 	);
     
 	context.subscriptions.push(
@@ -165,6 +169,7 @@ export function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], pattern: string, replacement: string, condition: string, inplace:boolean) => {
+        tree.clear()
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
@@ -249,8 +254,7 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
-            const diag = params['diagnostics']
-            // window.showInformationMessage(diag[0]["message"]);
+            tree.refresh(params);
         });
         
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
