@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {Position, Uri} from "vscode";
+import {Position, TreeItemLabel, Uri} from "vscode";
 
 
 
@@ -8,8 +8,8 @@ class ScanResult extends vscode.TreeItem
   children: undefined;
   position: Position;
 
-  constructor(label: string, uri: Uri, position: Position) {
-    super(label)
+  constructor(label: TreeItemLabel, uri: Uri, position: Position) {
+    super(label);
     this.resourceUri = uri;
     this.position = position;
   }
@@ -53,7 +53,7 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             return element;
           }
 
-          getChildren(element?: FileResults|ScanResult|undefined): vscode.ProviderResult<FileResults[]> {
+          getChildren(element?: FileResults|ScanResult|undefined): vscode.ProviderResult<FileResults[]|ScanResult[]> {
             if (element === undefined) {
               return this.data;
             }
@@ -64,7 +64,7 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             let uri = Uri.parse(params['uri']);
             let scanResults = []
             for (let result of params["diagnostics"]) {
-                scanResults.push(new ScanResult(result["first_line_code"], uri, new Position(result["range"]["start"]["line"], result["range"]["start"]["character"])));
+                scanResults.push(new ScanResult({label:result["first_line_code"], highlights:[result["first_line_highlight"]]}, uri, new Position(result["range"]["start"]["line"], result["range"]["start"]["character"])));
             }
             this.data.push(new FileResults(params["name"], uri, scanResults));
             this._onDidChangeTreeData.fire();
