@@ -94,7 +94,10 @@ export function activate(context: ExtensionContext) {
     let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
     let tree = new DiagnosticTreeView();
-	vscode.window.registerTreeDataProvider('sourcery.rules.treeview', tree);
+	//vscode.window.registerTreeDataProvider('sourcery.rules.treeview', tree);
+    let treeView = vscode.window.createTreeView('sourcery.rules.treeview', {
+      treeDataProvider: tree
+    });
 
     const riProvider = new RuleInputProvider(
         context,
@@ -267,6 +270,7 @@ export function activate(context: ExtensionContext) {
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
             tree.refresh(params);
+            treeView.title = "Results - " + params["results"] + " found in " + params["files"] + " files."
         });
         
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {

@@ -64,7 +64,9 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             let uri = Uri.parse(params['uri']);
             let scanResults = []
             for (let result of params["diagnostics"]) {
-                scanResults.push(new ScanResult({label:result["first_line_code"], highlights:[result["first_line_highlight"]]}, uri, new Position(result["range"]["start"]["line"], result["range"]["start"]["character"])));
+                scanResults.push(new ScanResult({label:result["first_line_code"], highlights:[result["first_line_highlight"]]},
+                                  uri,
+                                  new Position(result["range"]["start"]["line"], result["range"]["start"]["character"])));
             }
             this.data.push(new FileResults(params["name"], uri, scanResults));
             this._onDidChangeTreeData.fire();
