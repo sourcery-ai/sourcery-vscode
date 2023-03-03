@@ -15,7 +15,7 @@ import {
     TextDocumentShowOptions,
     extensions,
     env,
-    StatusBarAlignment, WebviewPanel
+    StatusBarAlignment, WebviewPanel, Position
 } from 'vscode';
 import {
     LanguageClient,
@@ -94,7 +94,7 @@ export function activate(context: ExtensionContext) {
     let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
     let tree = new DiagnosticTreeView();
-	//vscode.window.registerTreeDataProvider('sourcery.rules.treeview', tree);
+
     let treeView = vscode.window.createTreeView('sourcery.rules.treeview', {
       treeDataProvider: tree
     });
@@ -108,7 +108,23 @@ export function activate(context: ExtensionContext) {
 			RuleInputProvider.viewType, riProvider, {webviewOptions: {retainContextWhenHidden: true}}
 		)
 	);
-    
+
+    context.subscriptions.push(commands.registerCommand('sourcery.selectCode', (open_uri, start, end) => {
+        workspace.openTextDocument(open_uri).then(doc => {
+            window.showTextDocument(doc).then(e => {
+                e.selection = new vscode.Selection(start, end);
+                e.revealRange(new Range(start, end));
+            })
+        });
+
+    }));
+
+
+
+    context.subscriptions.push(commands.registerCommand('sourcery.toggle.advanced', () => {
+        // Tell the rules webview to toggle
+        riProvider.toggle();
+    }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
         openWelcomeFile(context);
@@ -171,30 +187,30 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], pattern: string, replacement: string, condition: string, inplace:boolean) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], rule, advanced: boolean, inplace:boolean) => {
         if (inplace) {
             vscode.window
               .showInformationMessage("Are you sure?", "Yes", "No")
               .then(answer => {
                 if (answer === "Yes") {
-                    runScan(resource, pattern, replacement, condition, inplace);
+                    runScan(resource, rule, advanced, inplace);
                 }
               })
         } else {
-            runScan(resource, pattern, replacement, condition, inplace);
+            runScan(resource, rule, advanced, inplace);
         }
 
     }));
 
-    function runScan(resource, pattern, replacement, condition, inplace) {
+    function runScan(resource, rule, advanced: boolean, inplace: boolean) {
         tree.clear();
+        treeView.title = "Results";
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
                 'uri': resource,
-                'pattern': pattern,
-                'replacement': replacement,
-                'condition': condition,
+                'rule': rule,
+                'advanced': advanced,
                 'inplace': inplace
             }]
         };

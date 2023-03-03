@@ -175,10 +175,16 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.toggle.advanced",
+				"title": "Toggle Advanced Mode",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
 			}
+
 		],
 		"submenus": [
 			{
@@ -191,6 +197,13 @@
 			}
 		],
 		"menus": {
+			"view/title": [
+			  {
+				"command": "sourcery.toggle.advanced",
+				"when": "view == sourcery.rules",
+				"group": "navigation"
+			  }
+			],
 			"editor/context": [
 				{
 					"submenu": "sourcery.editor",

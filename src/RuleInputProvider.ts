@@ -14,6 +14,9 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		this._extensionUri = _context.extensionUri;
 	}
 
+	public async toggle() {
+		this._view.webview.postMessage({ command: 'toggle' });
+	}
 
 	public async resolveWebviewView(
 		webviewView: vscode.WebviewView,
@@ -36,15 +39,15 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.onDidReceiveMessage(async data => {
 			switch (data.type) {
 				case "scanForPattern": {
-					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.pattern, data.replacement, data.condition, false);
+					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.rule, data.advanced, false);
 					break;
 				}
 				case "replacePattern": {
-					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.pattern, data.replacement, data.condition, true);
+					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.rule, data.advanced, true);
 					break;
 				}
 				case "savePattern": {
-					vscode.commands.executeCommand("sourcery.rule.create", data.pattern, data.replacement, data.condition);
+					vscode.commands.executeCommand("sourcery.rule.create", data.rule, data.advanced);
 					break;
 				}
 			}
@@ -89,32 +92,44 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 				<link href="${styleMainUri}" rel="stylesheet">
 			</head>
 			<body>
-				<label for="patternInput">Pattern</label>
-				<textarea
-					class="patternInput""
-					placeholder="Enter your pattern here...."
-					nonce="${nonce}"
-				></textarea>
-				<label for="replacementInput">Replacement</label>
-				<textarea
-					class="replacementInput""
-					placeholder="Enter your replacement here...."
-					nonce="${nonce}"
-				></textarea>
-				<label for="conditionInput">Condition</label>
-				<textarea
-					class="conditionInput""
-					placeholder="Enter your condition here...."
-					nonce="${nonce}"
-				></textarea>
-				<div class="btnContainer">
-					<button class="scanner-button"}>Scan</button>
+				<div class="matchesContainer">
+					<div id="patternContainer">
+						<label for="patternInput">Pattern</label>
+						<textarea
+							class="patternInput""
+							placeholder="Enter your pattern here...."
+							nonce="${nonce}"
+						></textarea>
+						<label for="replacementInput">Replacement</label>
+						<textarea
+							class="replacementInput""
+							placeholder="Enter your replacement here...."
+							nonce="${nonce}"
+						></textarea>
+						<label for="conditionInput">Condition</label>
+						<textarea
+							class="conditionInput""
+							placeholder="Enter your condition here...."
+							nonce="${nonce}"
+						></textarea>
+					</div>
+					<div id="advancedContainer" class="hidden">
+						<label for="ruleInput">Rule</label>
+						<textarea
+							class="ruleInput""
+							placeholder="Enter your rule here in yaml format...."
+							nonce="${nonce}"
+						></textarea>		
+					</div>
 				</div>
 				<div class="btnContainer">
-					<button class="replace-button" disabled}>Replace</button>
+					<button class="scanner-button" >Scan</button>
 				</div>
 				<div class="btnContainer">
-					<button class="save-button"}>Save as Rule</button>
+					<button class="replace-button" >Replace</button>
+				</div>
+				<div class="btnContainer">
+					<button class="save-button">Save as Rule</button>
 				</div>
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>

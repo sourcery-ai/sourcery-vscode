@@ -6,20 +6,22 @@ import {Position, TreeItemLabel, Uri} from "vscode";
 class ScanResult extends vscode.TreeItem
 {
   children: undefined;
-  position: Position;
+  startPosition: Position;
+  endPosition: Position;
 
-  constructor(label: TreeItemLabel, uri: Uri, position: Position) {
+  constructor(label: TreeItemLabel, uri: Uri, startPosition: Position, endPosition: Position) {
     super(label);
     this.resourceUri = uri;
-    this.position = position;
+    this.startPosition = startPosition;
+    this.endPosition = endPosition
   }
 }
 
 class FileResults extends vscode.TreeItem
 {
   children: ScanResult[] | undefined;
-  position: Position;
-
+  startPosition: Position
+  endPosition: Position
   constructor(label: string, uri: Uri, children?: ScanResult[]) {
     super(
         label,
@@ -27,7 +29,9 @@ class FileResults extends vscode.TreeItem
                                  vscode.TreeItemCollapsibleState.Expanded);
     this.children = children;
     this.resourceUri = uri;
-    this.position = new Position(0, 0);
+    this.startPosition = new Position(0, 0);
+    this.endPosition = new Position(0, 0);
+
     this.description = true;
   }
 }
@@ -48,7 +52,8 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
 
           getTreeItem(element: FileResults|ScanResult): vscode.TreeItem|Thenable<vscode.TreeItem> {
             // element.command = {command: 'vscode.open', arguments: [element.uri], title: 'Open'}
-            element.command = {command: 'editor.action.goToLocations', title: "Open", arguments: [element.resourceUri, element.position , [], "goto"] }
+            //element.command = {command: 'editor.action.goToLocations', title: "Open", arguments: [element.resourceUri, element.startPosition, element.endPosition , [], "goto"] }
+            element.command = {command: 'sourcery.selectCode', title: "Open", arguments: [element.resourceUri, element.startPosition, element.endPosition , [], "goto"] }
 
             return element;
           }
@@ -66,7 +71,10 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             for (let result of params["diagnostics"]) {
                 scanResults.push(new ScanResult({label:result["first_line_code"], highlights:[result["first_line_highlight"]]},
                                   uri,
-                                  new Position(result["range"]["start"]["line"], result["range"]["start"]["character"])));
+                                  new Position(result["range"]["start"]["line"], result["range"]["start"]["character"]),
+                                  new Position(result["range"]["end"]["line"], result["range"]["end"]["character"]),
+
+                ));
             }
             this.data.push(new FileResults(params["name"], uri, scanResults));
             this._onDidChangeTreeData.fire();
