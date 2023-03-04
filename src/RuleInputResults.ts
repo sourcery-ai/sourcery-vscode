@@ -22,7 +22,7 @@ class FileResults extends vscode.TreeItem
   children: ScanResult[] | undefined;
   startPosition: Position
   endPosition: Position
-  constructor(label: string, uri: Uri, children?: ScanResult[]) {
+  constructor(label: string | undefined, uri: Uri, children?: ScanResult[]) {
     super(
         label,
         children === undefined ? vscode.TreeItemCollapsibleState.None :
@@ -51,8 +51,6 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
           }
 
           getTreeItem(element: FileResults|ScanResult): vscode.TreeItem|Thenable<vscode.TreeItem> {
-            // element.command = {command: 'vscode.open', arguments: [element.uri], title: 'Open'}
-            //element.command = {command: 'editor.action.goToLocations', title: "Open", arguments: [element.resourceUri, element.startPosition, element.endPosition , [], "goto"] }
             element.command = {command: 'sourcery.selectCode', title: "Open", arguments: [element.resourceUri, element.startPosition, element.endPosition , [], "goto"] }
 
             return element;
@@ -76,7 +74,7 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
 
                 ));
             }
-            this.data.push(new FileResults(params["name"], uri, scanResults));
+            this.data.push(new FileResults(undefined, uri, scanResults));
             this._onDidChangeTreeData.fire();
           }
 

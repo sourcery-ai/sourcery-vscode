@@ -1,31 +1,33 @@
 'use strict';
 
 import * as path from 'path';
-import { getExecutablePath } from './executable';
+import {getExecutablePath} from './executable';
 
+import * as vscode from 'vscode';
 import {
-    Uri,
-    workspace,
-    window,
-    ExtensionContext,
     commands,
-    version,
-    Range,
-    ViewColumn,
-    TextDocumentShowOptions,
-    extensions,
     env,
-    StatusBarAlignment, WebviewPanel, Position
+    ExtensionContext,
+    extensions,
+    Range,
+    StatusBarAlignment,
+    TextDocumentShowOptions,
+    TextEditorRevealType,
+    Uri,
+    version,
+    ViewColumn,
+    WebviewPanel,
+    window,
+    workspace
 } from 'vscode';
 import {
+    ExecuteCommandParams,
+    ExecuteCommandRequest,
     LanguageClient,
     LanguageClientOptions,
-    ServerOptions,
-    ExecuteCommandRequest,
-    ExecuteCommandParams
+    ServerOptions
 } from 'vscode-languageclient';
-import * as vscode from "vscode";
-import { getHubSrc } from './hub';
+import {getHubSrc} from './hub';
 import {RuleInputProvider} from "./RuleInputProvider"
 import {DiagnosticTreeView} from "./RuleInputResults";
 
@@ -113,7 +115,7 @@ export function activate(context: ExtensionContext) {
         workspace.openTextDocument(open_uri).then(doc => {
             window.showTextDocument(doc).then(e => {
                 e.selection = new vscode.Selection(start, end);
-                e.revealRange(new Range(start, end));
+                e.revealRange(new Range(start, end), TextEditorRevealType.InCenter);
             })
         });
 
@@ -285,7 +287,9 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
-            tree.refresh(params);
+            if (params["results"] > 0) {
+                tree.refresh(params);
+            }
             treeView.title = "Results - " + params["results"] + " found in " + params["files"] + " files."
         });
         
