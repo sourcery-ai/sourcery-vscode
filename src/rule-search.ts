@@ -35,18 +35,18 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		};
 
 		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
-		let documents = vscode.window.visibleTextEditors.map(editor => editor.document.uri.fsPath);
+
 		webviewView.webview.onDidReceiveMessage(async data => {
 			switch (data.type) {
-				case "scanForPattern": {
-					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.rule, data.advanced, false);
+				case "scan": {
+					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false);
 					break;
 				}
-				case "replacePattern": {
-					vscode.commands.executeCommand("sourcery.scan.rule", documents, data.rule, data.advanced, true);
+				case "replace": {
+					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, true);
 					break;
 				}
-				case "savePattern": {
+				case "save": {
 					vscode.commands.executeCommand("sourcery.rule.create", data.rule, data.advanced);
 					break;
 				}

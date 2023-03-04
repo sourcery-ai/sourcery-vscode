@@ -7,17 +7,18 @@
     const vscode = acquireVsCodeApi();
 
     document.querySelector('.scanner-button').addEventListener('click', () => {
-        sendMessage('scanForPattern');
+        sendMessageToExtension('scan');
     });
     document.querySelector('.save-button').addEventListener('click', () => {
-        sendMessage('savePattern');
+        sendMessageToExtension('save');
     });
     document.querySelector('.replace-button').addEventListener('click', () => {
-        sendMessage('replacePattern');
+        sendMessageToExtension('replace');
     });
 
-    let basic = document.querySelector('#patternContainer');
-    let advanced = document.querySelector('#advancedContainer');
+    // Sort the height of the advanced rule input
+    const basic = document.querySelector('#patternContainer');
+    const advanced = document.querySelector('#advancedContainer');
     let advancedArea = document.querySelector('textarea.ruleInput');
 
     advanced.style.height = basic.offsetHeight + 'px';
@@ -25,29 +26,21 @@
 
     window.addEventListener('message', event => {
       const message = event.data;
-      console.log("received message");
 
       if (message.command === 'toggle') {
-        // do something with the data
-          console.log("received toggle message");
-
-          let basic = document.querySelector('#patternContainer');
-          let advanced = document.querySelector('#advancedContainer');
-          if (basic && advanced) {
-              basic.classList.toggle("hidden");
-              advanced.classList.toggle("hidden");
-          }
+          basic.classList.toggle("hidden");
+          advanced.classList.toggle("hidden");
       }
     });
 
-    let input = document.querySelector('textarea.patternInput');
+    const input = document.querySelector('textarea.patternInput');
     if (input) {
         input.focus();
     }
 
 
-    function sendMessage(message_type) {
-        let basic = document.querySelector('#patternContainer');
+    // This is handled by the RuleInputProvider
+    function sendMessageToExtension(message_type) {
         let rule;
         let advanced;
         if (basic.classList.contains("hidden")) {
@@ -55,10 +48,9 @@
             rule = {rule: ruleInput.value}
             advanced = true;
         } else {
-            const patternInput = document.querySelector('textarea.patternInput');
             const replacementInput = document.querySelector('textarea.replacementInput');
             const conditionInput = document.querySelector('textarea.conditionInput');
-            rule = {pattern: patternInput.value, replacement: replacementInput.value, condition: conditionInput.value};
+            rule = {pattern: input.value, replacement: replacementInput.value, condition: conditionInput.value};
             advanced = false;
         }
 

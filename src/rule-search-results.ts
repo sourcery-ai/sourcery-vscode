@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import {Position, TreeItemLabel, Uri} from "vscode";
 
-
-
 class ScanResult extends vscode.TreeItem
 {
   children: undefined;
@@ -52,7 +50,6 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
 
           getTreeItem(element: FileResults|ScanResult): vscode.TreeItem|Thenable<vscode.TreeItem> {
             element.command = {command: 'sourcery.selectCode', title: "Open", arguments: [element.resourceUri, element.startPosition, element.endPosition , [], "goto"] }
-
             return element;
           }
 
@@ -63,14 +60,14 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             return element.children;
           }
 
-          refresh(params): void {
-            let uri = Uri.parse(params['uri']);
+          update(params): void {
+            let uri = Uri.parse(params.uri);
             let scanResults = []
-            for (let result of params["diagnostics"]) {
-                scanResults.push(new ScanResult({label:result["first_line_code"], highlights:[result["first_line_highlight"]]},
+            for (let result of params.diagnostics) {
+                scanResults.push(new ScanResult({label:result.first_line_code, highlights:[result.first_line_highlight]},
                                   uri,
-                                  new Position(result["range"]["start"]["line"], result["range"]["start"]["character"]),
-                                  new Position(result["range"]["end"]["line"], result["range"]["end"]["character"]),
+                                  new Position(result.range.start.line, result.range.start.character),
+                                  new Position(result.range.end.line, result.range.end.character),
 
                 ));
             }

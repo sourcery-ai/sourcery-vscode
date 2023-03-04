@@ -28,8 +28,8 @@ import {
     ServerOptions
 } from 'vscode-languageclient';
 import {getHubSrc} from './hub';
-import {RuleInputProvider} from "./RuleInputProvider"
-import {DiagnosticTreeView} from "./RuleInputResults";
+import {RuleInputProvider} from "./rule-search"
+import {DiagnosticTreeView} from "./rule-search-results";
 
 function createLangServer(context: ExtensionContext): LanguageClient {
 
@@ -189,28 +189,27 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (resource: Uri[], rule, advanced: boolean, inplace:boolean) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace:boolean) => {
         if (inplace) {
             vscode.window
               .showInformationMessage("Are you sure?", "Yes", "No")
               .then(answer => {
                 if (answer === "Yes") {
-                    runScan(resource, rule, advanced, inplace);
+                    runScan(rule, advanced, inplace);
                 }
               })
         } else {
-            runScan(resource, rule, advanced, inplace);
+            runScan(rule, advanced, inplace);
         }
 
     }));
 
-    function runScan(resource, rule, advanced: boolean, inplace: boolean) {
+    function runScan(rule, advanced: boolean, inplace: boolean) {
         tree.clear();
         treeView.title = "Results";
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
-                'uri': resource,
                 'rule': rule,
                 'advanced': advanced,
                 'inplace': inplace
@@ -287,10 +286,10 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
-            if (params["results"] > 0) {
-                tree.refresh(params);
+            if (params.results > 0) {
+                tree.update(params);
             }
-            treeView.title = "Results - " + params["results"] + " found in " + params["files"] + " files."
+            treeView.title = "Results - " + params.results + " found in " + params.files + " files."
         });
         
         languageClient.onNotification('sourcery/vscode/viewProblems', () => {
