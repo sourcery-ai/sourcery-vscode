@@ -6,12 +6,17 @@ class ScanResult extends vscode.TreeItem
   children: undefined;
   startPosition: Position;
   endPosition: Position;
+  edits: any[];
 
-  constructor(label: TreeItemLabel, uri: Uri, startPosition: Position, endPosition: Position) {
+  constructor(label: TreeItemLabel, uri: Uri, startPosition: Position, endPosition: Position, edits) {
     super(label);
     this.resourceUri = uri;
     this.startPosition = startPosition;
-    this.endPosition = endPosition
+    this.endPosition = endPosition;
+    this.edits = edits;
+    if (edits.length > 0) {
+      this.contextValue = "editable";
+    }
   }
 }
 
@@ -64,11 +69,12 @@ export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
             const uri = Uri.parse(params.uri);
             let scanResults = []
             for (let result of params.diagnostics) {
-                scanResults.push(new ScanResult({label:result.first_line_code, highlights:[result.first_line_highlight]},
+                scanResults.push(new ScanResult(
+                            {label:result.first_line_code, highlights:[result.first_line_highlight]},
                                   uri,
                                   new Position(result.range.start.line, result.range.start.character),
                                   new Position(result.range.end.line, result.range.end.character),
-
+                                  result.text_edits
                 ));
             }
             this.data.push(new FileResults(undefined, uri, scanResults));

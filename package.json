@@ -166,6 +166,12 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.apply.rule",
+				"title": "Apply specific change from rule",
+				"category": "Sourcery",
+				"icon": "$(replace)"
+			},
+			{
 				"command": "sourcery.scan.open",
 				"title": "Search and Replace across workspace",
 				"category": "Sourcery"
@@ -210,6 +216,13 @@
 				"group": "navigation"
 			  }
 			],
+			"view/item/context": [
+			  {
+				"command": "sourcery.apply.rule",
+				"when": "view == sourcery.rules.treeview && viewItem == editable",
+				"group": "inline"
+			  }
+			],
 			"editor/context": [
 				{
 					"submenu": "sourcery.editor",
@@ -252,6 +265,10 @@
 				},
 				{
 					"command": "sourcery.clones.workspace",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.apply.rule",
 					"when": "false"
 				}
 			]

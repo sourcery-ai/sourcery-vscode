@@ -18,7 +18,7 @@ import {
     ViewColumn,
     WebviewPanel,
     window,
-    workspace
+    workspace, WorkspaceEdit
 } from 'vscode';
 import {
     ExecuteCommandParams,
@@ -124,6 +124,25 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(commands.registerCommand('sourcery.toggle.advanced', () => {
         // Tell the rules webview to toggle
         riProvider.toggle();
+    }));
+
+    context.subscriptions.push(commands.registerCommand('sourcery.apply.rule', (entry) => {
+        workspace.openTextDocument(entry.resourceUri).then(doc => {
+            window.showTextDocument(doc).then(e => {
+                e.revealRange(new Range(entry.startPosition, entry.endPosition), TextEditorRevealType.InCenter);
+                for (let edit of entry.edits) {
+                    const workspaceEdit = new vscode.WorkspaceEdit();
+
+                    const textEdit = new vscode.TextEdit(new vscode.Range(edit.range.start.line, edit.range.start.character, edit.range.end.line, edit.range.end.character), edit.newText);
+
+                    // Apply the edit to the current workspace
+                    workspaceEdit.set(entry.resourceUri, [textEdit]);
+
+                    workspace.applyEdit(workspaceEdit);
+                }
+            })
+        });
+
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.welcome.open', () => {
