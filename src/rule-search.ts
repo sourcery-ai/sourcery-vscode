@@ -97,19 +97,19 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="patternInput">Pattern</label>
 						<textarea
 							class="patternInput""
-							placeholder="Enter your pattern here...."
+							placeholder="Enter your pattern here..."
 							nonce="${nonce}"
 						></textarea>
 						<label for="replacementInput">Replacement</label>
 						<textarea
 							class="replacementInput""
-							placeholder="Enter your replacement here...."
+							placeholder="Enter your replacement here..."
 							nonce="${nonce}"
 						></textarea>
 						<label for="conditionInput">Condition</label>
 						<textarea
 							class="conditionInput""
-							placeholder="Enter your condition here...."
+							placeholder="Enter your condition here..."
 							nonce="${nonce}"
 						></textarea>
 					</div>
@@ -117,7 +117,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="ruleInput">Rule</label>
 						<textarea
 							class="ruleInput""
-							placeholder="Enter your rule here in yaml format.\nHere's an example:\nall:\n- pattern: typing.List\n- not:\n    inside:\n      kind: import_from_statement"
+							placeholder="Enter your rule here in yaml format.\nHere's an example:\nall:\n- pattern: typing.List\n  replacement: list\n- not:\n    inside:\n      kind: import_from_statement"
 							nonce="${nonce}"
 						></textarea>		
 					</div>

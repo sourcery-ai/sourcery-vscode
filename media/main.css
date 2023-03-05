@@ -5,3 +5,8 @@ body {
 .hidden {
   display: none;
 }
+
+textarea {
+	font-size: var(--vscode-editor-font-size);
+	font-family: var(--vscode-editor-font-family);
+}

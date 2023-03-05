@@ -131,7 +131,7 @@
 		"viewsWelcome": [
 		  {
 			"view": "sourcery.rules.treeview",
-			"contents": "Develop new Sourcery rules or perform powerful pattern based search/replace of your codebase.\n[Documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/#custom-rule-pattern-syntax)\n"
+			"contents": "Use this view to perform powerful pattern based search/replace of your codebase using Sourcery's rule syntax.\n[Documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/#custom-rule-pattern-syntax)\n"
 		  }
 		],
 		"commands": [
@@ -167,7 +167,7 @@
 			},
 			{
 				"command": "sourcery.scan.open",
-				"title": "Search using Sourcery custom rules",
+				"title": "Search and Replace across workspace",
 				"category": "Sourcery"
 			},
 			{
