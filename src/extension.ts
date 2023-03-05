@@ -121,8 +121,6 @@ export function activate(context: ExtensionContext) {
 
     }));
 
-
-
     context.subscriptions.push(commands.registerCommand('sourcery.toggle.advanced', () => {
         // Tell the rules webview to toggle
         riProvider.toggle();

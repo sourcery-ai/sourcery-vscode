@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import {window} from "vscode";
 
 export class RuleInputProvider implements vscode.WebviewViewProvider {
 
@@ -47,8 +48,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					break;
 				}
 				case "save": {
-					vscode.commands.executeCommand("sourcery.rule.create", data.rule, data.advanced);
-					break;
+					window.showInformationMessage("Saving rules directly not yet available.")
 				}
 			}
 		});
@@ -117,7 +117,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="ruleInput">Rule</label>
 						<textarea
 							class="ruleInput""
-							placeholder="Enter your rule here in yaml format...."
+							placeholder="Enter your rule here in yaml format.\nHere's an example:\nall:\n- pattern: typing.List\n- not:\n    inside:\n      kind: import_from_statement"
 							nonce="${nonce}"
 						></textarea>		
 					</div>
