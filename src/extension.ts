@@ -206,22 +206,22 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace:boolean) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace:boolean, language: string) => {
         if (inplace) {
             vscode.window
               .showInformationMessage("Are you sure?", "Yes", "No")
               .then(answer => {
                 if (answer === "Yes") {
-                    runScan(rule, advanced, inplace);
+                    runScan(rule, advanced, inplace, language);
                 }
               })
         } else {
-            runScan(rule, advanced, inplace);
+            runScan(rule, advanced, inplace, language);
         }
 
     }));
 
-    function runScan(rule, advanced: boolean, inplace: boolean) {
+    function runScan(rule, advanced: boolean, inplace: boolean, language: string) {
         tree.clear();
         treeView.title = "Results";
         let request: ExecuteCommandParams = {
@@ -229,7 +229,8 @@ export function activate(context: ExtensionContext) {
             arguments: [{
                 'rule': rule,
                 'advanced': advanced,
-                'inplace': inplace
+                'inplace': inplace,
+                "language": language
             }]
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {window} from "vscode";
+import {window} from 'vscode';
 
 export class RuleInputProvider implements vscode.WebviewViewProvider {
 
@@ -8,6 +8,8 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 	private _view?: vscode.WebviewView;
 
 	private _extensionUri: vscode.Uri;
+
+	private _languageId: string;
 
 	constructor(
 		private _context: vscode.ExtensionContext,
@@ -35,16 +37,19 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 			]
 		};
 
+		this._languageId = this._resolveLanguage();
+		this._setTitle();
+
 		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
 
 		webviewView.webview.onDidReceiveMessage(async data => {
 			switch (data.type) {
 				case "scan": {
-					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false);
+					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false, this._languageId);
 					break;
 				}
 				case "replace": {
-					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, true);
+					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, true, this._languageId);
 					break;
 				}
 				case "save": {
@@ -52,6 +57,41 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 				}
 			}
 		});
+	}
+
+	private _setTitle() {
+		this._view.title = "Rules - " + this._languageId;
+	}
+
+	private _resolveLanguage() {
+		// Get the active editor in the workspace
+		const activeEditor = vscode.window.activeTextEditor;
+
+		// Check if there's an active editor
+		if (activeEditor) {
+			const languageId = activeEditor.document.languageId;
+			switch (languageId) {
+				case "python": {
+					return languageId;
+				}
+				case "typescript": {
+					return "javascript";
+				}
+				case "typescriptreact": {
+					return "javascript";
+				}
+				case "javascriptreact": {
+					return "javascript";
+				}
+				case "javascript": {
+					return languageId;
+				}
+			}
+			return languageId;
+		}
+
+		// Default to python
+		return "python";
 	}
 
 	private async _getHtmlForWebview(webview: vscode.Webview) {
