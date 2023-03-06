@@ -304,7 +304,7 @@ export function activate(context: ExtensionContext) {
         });
 
         languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
-            if (params.results > 0) {
+            if (params.diagnostics.length > 0) {
                 tree.update(params);
             }
             treeView.title = "Results - " + params.results + " found in " + params.files + " files."
