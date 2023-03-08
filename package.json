@@ -43,14 +43,14 @@
 				  "type": "webview",
 				"icon": "sourcery-icon.png",
 				"contextualTitle": "Rules",
-				  "when": "sourceryActive"
+				  "when": "sourceryRulesActive"
 
 			  },
 				{
 				"id": "sourcery.rules.treeview",
 				"name": "Results",
 				"contextualTitle": "Results",
-				  "when": "sourceryActive"
+				  "when": "sourceryRulesActive"
 
 			  }
 			]
@@ -166,7 +166,7 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.apply.rule",
+				"command": "sourcery.scan.applyRule",
 				"title": "Apply specific change from rule",
 				"category": "Sourcery",
 				"icon": "$(replace)"
@@ -187,7 +187,7 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.toggle.advanced",
+				"command": "sourcery.scan.toggleAdvanced",
 				"title": "Toggle Advanced Mode",
 				"category": "Sourcery"
 			},
@@ -211,14 +211,14 @@
 		"menus": {
 			"view/title": [
 			  {
-				"command": "sourcery.toggle.advanced",
+				"command": "sourcery.scan.toggleAdvanced",
 				"when": "view == sourcery.rules",
 				"group": "navigation"
 			  }
 			],
 			"view/item/context": [
 			  {
-				"command": "sourcery.apply.rule",
+				"command": "sourcery.scan.applyRule",
 				"when": "view == sourcery.rules.treeview && viewItem == editable",
 				"group": "inline"
 			  }
@@ -268,7 +268,11 @@
 					"when": "false"
 				},
 				{
-					"command": "sourcery.apply.rule",
+					"command": "sourcery.scan.applyRule",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.toggleAdvanced",
 					"when": "false"
 				}
 			]

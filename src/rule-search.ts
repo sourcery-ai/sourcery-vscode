@@ -75,10 +75,10 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					return languageId;
 				}
 				case "typescript": {
-					return "javascript";
+					return languageId;
 				}
 				case "typescriptreact": {
-					return "javascript";
+					return "typescript";
 				}
 				case "javascriptreact": {
 					return "javascript";

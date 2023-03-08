@@ -151,12 +151,12 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
 
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.toggle.advanced', () => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.toggleAdvanced', () => {
         // Tell the rules webview to toggle
         riProvider.toggle();
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.apply.rule', (entry) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.applyRule', (entry) => {
         workspace.openTextDocument(entry.resourceUri).then(doc => {
             window.showTextDocument(doc).then(e => {
                 e.revealRange(new Range(entry.startPosition, entry.endPosition), TextEditorRevealType.InCenter);
@@ -180,9 +180,8 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.scan.open', () => {
-        // Create and show a new webview
         vscode.commands.executeCommand('setContext',
-            'sourceryActive',
+            'sourceryRulesActive',
             true);
         vscode.commands.executeCommand("sourcery.rules.focus")
     }));
