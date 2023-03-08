@@ -19,7 +19,7 @@
     // Sort the height of the advanced rule input
     const basic = document.querySelector('#patternContainer');
     const advanced = document.querySelector('#advancedContainer');
-    let advancedArea = document.querySelector('textarea.ruleInput');
+    const advancedArea = document.querySelector('textarea.ruleInput');
 
     advanced.style.height = basic.offsetHeight + 'px';
     advancedArea.style.height = basic.offsetHeight - 15 + 'px';

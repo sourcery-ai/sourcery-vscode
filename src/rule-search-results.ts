@@ -67,7 +67,7 @@ export class ScanResultProvider implements vscode.TreeDataProvider<FileResults>
 
           update(params): void {
             const uri = Uri.parse(params.uri);
-            let scanResults = []
+            const scanResults = []
             for (let result of params.diagnostics) {
                 scanResults.push(new ScanResult(
                             {label:result.first_line_code, highlights:[result.first_line_highlight]},
