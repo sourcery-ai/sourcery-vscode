@@ -26,6 +26,35 @@
 		"onStartupFinished"
 	],
 	"contributes": {
+		  "viewsContainers": {
+			"activitybar": [
+			  {
+				"id": "sourcery-explorer",
+				"title": "Sourcery",
+				"icon": "sourcery-icon.png"
+			  }
+			]
+		  },
+		  "views": {
+			"sourcery-explorer": [
+			  {
+				"id": "sourcery.rules",
+				"name": "Rules",
+				  "type": "webview",
+				"icon": "sourcery-icon.png",
+				"contextualTitle": "Rules",
+				  "when": "sourceryRulesActive"
+
+			  },
+				{
+				"id": "sourcery.rules.treeview",
+				"name": "Results",
+				"contextualTitle": "Results",
+				  "when": "sourceryRulesActive"
+
+			  }
+			]
+		  },
 		"walkthroughs": [
 			{
 				"id": "sourcery.walkthrough",
@@ -99,6 +128,12 @@
 				]
 			}
 		],
+		"viewsWelcome": [
+		  {
+			"view": "sourcery.rules.treeview",
+			"contents": "Use this view to perform powerful pattern based search/replace of your codebase using Sourcery's rule syntax.\n[Documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/#custom-rule-pattern-syntax)\n"
+		  }
+		],
 		"commands": [
 			{
 				"command": "sourcery.login",
@@ -126,6 +161,22 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.rule",
+				"title": "Scan with specific rule",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.scan.applyRule",
+				"title": "Apply specific change from rule",
+				"category": "Sourcery",
+				"icon": "$(replace)"
+			},
+			{
+				"command": "sourcery.scan.open",
+				"title": "Search and Replace across workspace",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.clones.workspace",
 				"title": "Detect clones",
 				"category": "Sourcery"
@@ -136,10 +187,16 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.toggleAdvanced",
+				"title": "Toggle Advanced Mode",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
 			}
+
 		],
 		"submenus": [
 			{
@@ -152,6 +209,20 @@
 			}
 		],
 		"menus": {
+			"view/title": [
+			  {
+				"command": "sourcery.scan.toggleAdvanced",
+				"when": "view == sourcery.rules",
+				"group": "navigation"
+			  }
+			],
+			"view/item/context": [
+			  {
+				"command": "sourcery.scan.applyRule",
+				"when": "view == sourcery.rules.treeview && viewItem == editable",
+				"group": "inline"
+			  }
+			],
 			"editor/context": [
 				{
 					"submenu": "sourcery.editor",
@@ -189,7 +260,19 @@
 					"when": "false"
 				},
 				{
+					"command": "sourcery.scan.rule",
+					"when": "false"
+				},
+				{
 					"command": "sourcery.clones.workspace",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.applyRule",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.toggleAdvanced",
 					"when": "false"
 				}
 			]
