@@ -40,7 +40,7 @@ class FileResults extends vscode.TreeItem
 }
 
 
-export class DiagnosticTreeView implements vscode.TreeDataProvider<FileResults>
+export class ScanResultProvider implements vscode.TreeDataProvider<FileResults>
     {
         // will hold our tree view data
         data : FileResults [] = [];

@@ -12,13 +12,13 @@ import {
     Range,
     StatusBarAlignment,
     TextDocumentShowOptions,
-    TextEditorRevealType,
+    TextEditorRevealType, TreeItem, TreeView,
     Uri,
     version,
     ViewColumn,
     WebviewPanel,
     window,
-    workspace, WorkspaceEdit
+    workspace
 } from 'vscode';
 import {
     ExecuteCommandParams,
@@ -29,9 +29,9 @@ import {
 } from 'vscode-languageclient';
 import {getHubSrc} from './hub';
 import {RuleInputProvider} from "./rule-search"
-import {DiagnosticTreeView} from "./rule-search-results";
+import {ScanResultProvider} from "./rule-search-results";
 
-function createLangServer(context: ExtensionContext): LanguageClient {
+function createLangServer(): LanguageClient {
 
     const token = workspace.getConfiguration('sourcery').get<string>('token');
     const packageJson = extensions.getExtension('sourcery.sourcery').packageJSON;
@@ -91,25 +91,55 @@ function getValidInput(): string | null {
     return null;
 };
 
-export function activate(context: ExtensionContext) {
-    const languageClient = createLangServer(context);
-    let hubWebviewPanel: WebviewPanel | undefined = undefined;
+function showSourceryStatusBarItem(context: ExtensionContext) {
+    // Create the status bar
+    const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    myStatusBarItem.command = "sourcery.hub.start";
+    myStatusBarItem.text = "Sourcery";
+    myStatusBarItem.tooltip = "Manage Sourcery settings"
+    context.subscriptions.push(myStatusBarItem);
+    myStatusBarItem.show();
+}
 
-    let tree = new DiagnosticTreeView();
-
-    let treeView = vscode.window.createTreeView('sourcery.rules.treeview', {
-      treeDataProvider: tree
+function registerNotifications(languageClient: LanguageClient, tree: ScanResultProvider, treeView: TreeView<TreeItem>, context: ExtensionContext) {
+    languageClient.onNotification('sourcery/vscode/executeCommand', (params) => {
+        const command = params['command']
+        const args = params['arguments'] || []
+        commands.executeCommand(command, ...args)
     });
 
-    const riProvider = new RuleInputProvider(
-        context,
-	);
-    
-	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(
-			RuleInputProvider.viewType, riProvider, {webviewOptions: {retainContextWhenHidden: true}}
-		)
-	);
+    languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
+        if (params.diagnostics.length > 0) {
+            tree.update(params);
+        }
+        treeView.title = "Results - " + params.results + " found in " + params.files + " files."
+    });
+
+    languageClient.onNotification('sourcery/vscode/viewProblems', () => {
+        commands.executeCommand('workbench.actions.view.problems');
+    });
+
+    languageClient.onNotification('sourcery/vscode/accept_recommendation', () => {
+        commands.executeCommand('setContext', 'acceptRecommendationContextKey', true);
+    });
+
+
+    languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
+        env.openExternal(Uri.parse(params['url']));
+    });
+
+
+    languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
+        openWelcomeFile(context);
+    });
+}
+
+function registerCommands(context: ExtensionContext, riProvider: RuleInputProvider, languageClient: LanguageClient, tree: ScanResultProvider, treeView: TreeView<TreeItem>, hubWebviewPanel: WebviewPanel) {
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(
+            RuleInputProvider.viewType, riProvider, {webviewOptions: {retainContextWhenHidden: true}}
+        )
+    );
 
     context.subscriptions.push(commands.registerCommand('sourcery.selectCode', (open_uri, start, end) => {
         workspace.openTextDocument(open_uri).then(doc => {
@@ -150,7 +180,7 @@ export function activate(context: ExtensionContext) {
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.scan.open', () => {
-              // Create and show a new webview
+        // Create and show a new webview
         vscode.commands.executeCommand('setContext',
             'sourceryActive',
             true);
@@ -206,15 +236,15 @@ export function activate(context: ExtensionContext) {
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace:boolean, language: string) => {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace: boolean, language: string) => {
         if (inplace) {
             vscode.window
-              .showInformationMessage("Are you sure?", "Yes", "No")
-              .then(answer => {
-                if (answer === "Yes") {
-                    runScan(rule, advanced, inplace, language);
-                }
-              })
+                .showInformationMessage("Are you sure?", "Yes", "No")
+                .then(answer => {
+                    if (answer === "Yes") {
+                        runScan(rule, advanced, inplace, language);
+                    }
+                })
         } else {
             runScan(rule, advanced, inplace, language);
         }
@@ -250,83 +280,64 @@ export function activate(context: ExtensionContext) {
     // Create the "open hub" command
     // This is activated from the status bar (see below)
     context.subscriptions.push(
-      commands.registerCommand("sourcery.hub.start", async () => {
-        // Instruct the language server to start the hub server
-        // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
+        commands.registerCommand("sourcery.hub.start", async () => {
+            // Instruct the language server to start the hub server
+            // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
 
-        languageClient.sendRequest(ExecuteCommandRequest.type, {
-          command: "sourcery.startHub",
-          arguments: [],
-        });
+            languageClient.sendRequest(ExecuteCommandRequest.type, {
+                command: "sourcery.startHub",
+                arguments: [],
+            });
 
-        // reopen the hub panel if it exists
-        // otherwise create it
-        if (hubWebviewPanel) {
-          hubWebviewPanel.reveal();
-        } else {
-          // Open a webview panel and fill it with a static empty page
-          // The iframe handles loading the actual content
-          hubWebviewPanel = window.createWebviewPanel(
-            "sourceryhub",
-            "Sourcery Hub",
-            ViewColumn.Active,
-            {
-              enableScripts: true,
+            // reopen the hub panel if it exists
+            // otherwise create it
+            if (hubWebviewPanel) {
+                hubWebviewPanel.reveal();
+            } else {
+                // Open a webview panel and fill it with a static empty page
+                // The iframe handles loading the actual content
+                hubWebviewPanel = window.createWebviewPanel(
+                    "sourceryhub",
+                    "Sourcery Hub",
+                    ViewColumn.Active,
+                    {
+                        enableScripts: true,
+                    }
+                );
+
+
+                hubWebviewPanel.webview.html = getHubSrc();
+                hubWebviewPanel.onDidDispose(
+                    () => {
+                        hubWebviewPanel = undefined;
+                    },
+                    null,
+                    context.subscriptions
+                );
             }
-          );
-
-
-          hubWebviewPanel.webview.html = getHubSrc();
-          hubWebviewPanel.onDidDispose(
-            () => {
-              hubWebviewPanel = undefined;
-            },
-            null,
-            context.subscriptions
-          );
-        }
-      })
+        })
     );
+}
 
-    // Create the status bar
-    const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
-    myStatusBarItem.command = "sourcery.hub.start";
-    myStatusBarItem.text = "Sourcery";
-    myStatusBarItem.tooltip = "Manage Sourcery settings"
-    context.subscriptions.push(myStatusBarItem);
-    myStatusBarItem.show();
+export function activate(context: ExtensionContext) {
+    const languageClient = createLangServer();
+    let hubWebviewPanel: WebviewPanel | undefined = undefined;
+
+    let tree = new ScanResultProvider();
+
+    let treeView = vscode.window.createTreeView('sourcery.rules.treeview', {
+      treeDataProvider: tree
+    });
+
+    const riProvider = new RuleInputProvider(
+        context,
+	);
+    registerCommands(context, riProvider, languageClient, tree, treeView, hubWebviewPanel);
+
+    showSourceryStatusBarItem(context);
 
     languageClient.onReady().then(() => {
-        languageClient.onNotification('sourcery/vscode/executeCommand', (params) => {
-            const command = params['command']
-            const args = params['arguments'] || []
-            commands.executeCommand(command, ...args)
-        });
-
-        languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
-            if (params.diagnostics.length > 0) {
-                tree.update(params);
-            }
-            treeView.title = "Results - " + params.results + " found in " + params.files + " files."
-        });
-        
-        languageClient.onNotification('sourcery/vscode/viewProblems', () => {
-            commands.executeCommand('workbench.actions.view.problems');
-        });
-
-        languageClient.onNotification('sourcery/vscode/accept_recommendation', () => {
-            commands.executeCommand('setContext', 'acceptRecommendationContextKey', true);
-        });
-
-
-        languageClient.onNotification('sourcery/vscode/showUrl', (params) => {
-            env.openExternal(Uri.parse(params['url']));
-        });
-
-
-        languageClient.onNotification('sourcery/vscode/showWelcomeFile', () => {
-            openWelcomeFile(context);
-        });
+        registerNotifications(languageClient, tree, treeView, context);
     });
 
     context.subscriptions.push(languageClient.start());
