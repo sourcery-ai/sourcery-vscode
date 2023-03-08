@@ -201,13 +201,8 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         });
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (pattern?: string, replacement?: string, condition?: string) => {
-        let input;
-        if (typeof pattern !== 'undefined') {
-            input = pattern;
-        } else {
-            input = getValidInput();
-        }
+    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
+        const input = getValidInput();
 
         let request: ExecuteCommandParams = {
             command: 'config/rule/create',
