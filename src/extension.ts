@@ -26,7 +26,7 @@ import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 import {getHubSrc} from './hub';
 import {RuleInputProvider} from "./rule-search"
 import {ScanResultProvider} from "./rule-search-results";
@@ -331,11 +331,9 @@ export function activate(context: ExtensionContext) {
 
     showSourceryStatusBarItem(context);
 
-    languageClient.onReady().then(() => {
+    languageClient.start().then(() => {
         registerNotifications(languageClient, tree, treeView, context);
     });
-
-    context.subscriptions.push(languageClient.start());
 }
 
 function openWelcomeFile(context: ExtensionContext) {
