@@ -157,6 +157,28 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         riProvider.toggle();
     }));
 
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.askForHelp', async () => {
+
+        let inputBoxOptions = {
+          ignoreFocusOut: true,
+          title: "What kind of rule would you like?",
+            "prompt": "Ask Sourcery to create a rule for you"
+        };
+
+        await vscode.window.showInputBox(inputBoxOptions)
+          .then(arg => {
+            let request: ExecuteCommandParams = {
+                command: 'rule/askForHelp',
+                arguments: [{
+                    'request': arg,
+                }]
+            };
+            languageClient.sendRequest(ExecuteCommandRequest.type, request);
+          });
+
+
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.scan.applyRule', (entry) => {
         workspace.openTextDocument(entry.resourceUri).then(doc => {
             window.showTextDocument(doc).then(e => {

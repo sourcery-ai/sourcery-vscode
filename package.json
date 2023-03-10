@@ -187,6 +187,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.askForHelp",
+				"title": "Ask Sourcery",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.scan.toggleAdvanced",
 				"title": "Toggle Advanced Mode",
 				"category": "Sourcery"
@@ -210,6 +215,11 @@
 		],
 		"menus": {
 			"view/title": [
+				{
+				"command": "sourcery.scan.askForHelp",
+				"when": "view == sourcery.rules",
+				"group": "navigation"
+			  },
 			  {
 				"command": "sourcery.scan.toggleAdvanced",
 				"when": "view == sourcery.rules",
