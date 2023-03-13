@@ -8,7 +8,7 @@
 		"url": "https://github.com/sourcery-ai/public/issues"
 	},
 	"license": "MIT",
-	"version": "1.0.7-dev.1",
+	"version": "1.0.7",
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
@@ -26,35 +26,33 @@
 		"onStartupFinished"
 	],
 	"contributes": {
-		  "viewsContainers": {
+		"viewsContainers": {
 			"activitybar": [
-			  {
-				"id": "sourcery-explorer",
-				"title": "Sourcery",
-				"icon": "sourcery-icon.png"
-			  }
-			]
-		  },
-		  "views": {
-			"sourcery-explorer": [
-			  {
-				"id": "sourcery.rules",
-				"name": "Rules",
-				  "type": "webview",
-				"icon": "sourcery-icon.png",
-				"contextualTitle": "Rules",
-				  "when": "sourceryRulesActive"
-
-			  },
 				{
-				"id": "sourcery.rules.treeview",
-				"name": "Results",
-				"contextualTitle": "Results",
-				  "when": "sourceryRulesActive"
-
-			  }
+					"id": "sourcery-explorer",
+					"title": "Sourcery",
+					"icon": "sourcery-icon.png"
+				}
 			]
-		  },
+		},
+		"views": {
+			"sourcery-explorer": [
+				{
+					"id": "sourcery.rules",
+					"name": "Rules",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Rules",
+					"when": "sourceryRulesActive"
+				},
+				{
+					"id": "sourcery.rules.treeview",
+					"name": "Results",
+					"contextualTitle": "Results",
+					"when": "sourceryRulesActive"
+				}
+			]
+		},
 		"walkthroughs": [
 			{
 				"id": "sourcery.walkthrough",
@@ -129,10 +127,10 @@
 			}
 		],
 		"viewsWelcome": [
-		  {
-			"view": "sourcery.rules.treeview",
-			"contents": "Use this view to perform powerful pattern based search/replace of your codebase using Sourcery's rule syntax.\n[Documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/#custom-rule-pattern-syntax)\n"
-		  }
+			{
+				"view": "sourcery.rules.treeview",
+				"contents": "Use this view to perform powerful pattern based search/replace of your codebase using Sourcery's rule syntax.\n[Documentation](https://docs.sourcery.ai/Reference/Custom-Rules/pattern-syntax/#custom-rule-pattern-syntax)\n"
+			}
 		],
 		"commands": [
 			{
@@ -196,7 +194,6 @@
 				"title": "Create custom rule",
 				"category": "Sourcery"
 			}
-
 		],
 		"submenus": [
 			{
@@ -210,18 +207,18 @@
 		],
 		"menus": {
 			"view/title": [
-			  {
-				"command": "sourcery.scan.toggleAdvanced",
-				"when": "view == sourcery.rules",
-				"group": "navigation"
-			  }
+				{
+					"command": "sourcery.scan.toggleAdvanced",
+					"when": "view == sourcery.rules",
+					"group": "navigation"
+				}
 			],
 			"view/item/context": [
-			  {
-				"command": "sourcery.scan.applyRule",
-				"when": "view == sourcery.rules.treeview && viewItem == editable",
-				"group": "inline"
-			  }
+				{
+					"command": "sourcery.scan.applyRule",
+					"when": "view == sourcery.rules.treeview && viewItem == editable",
+					"group": "inline"
+				}
 			],
 			"editor/context": [
 				{
