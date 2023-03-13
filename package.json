@@ -16,7 +16,7 @@
 		"refactoring"
 	],
 	"engines": {
-		"vscode": "^1.65.0"
+		"vscode": "^1.76.0"
 	},
 	"categories": [
 		"Other"
@@ -311,16 +311,18 @@
 		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode"
 	},
 	"devDependencies": {
-		"@types/mocha": "^10.0.0",
-		"@types/node": "^18.8.1",
-		"@types/vscode": "1.65.0",
-		"mocha": "^10.0.0",
-		"ovsx": "^0.2.0",
-		"tslint": "^6.1.3",
-		"typescript": "^4.8.4",
+		"@types/mocha": "^10.0.1",
+		"@types/node": "^18.15.1",
+		"@types/vscode": "^1.76.0",
+		"@typescript-eslint/eslint-plugin": "^5.55.0",
+		"@typescript-eslint/parser": "^5.55.0",
+		"@vscode/vsce": "^2.18.0",
+		"eslint": "^8.36.0",
+		"mocha": "^10.2.0",
+		"ovsx": "^0.8.0",
+		"typescript": "^4.9.5",
 		"version-bump-prompt": "^6.1.0",
-		"vsce": "^2.11.0",
-		"vscode-test": "^1.3.0"
+		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
 		"vscode-languageclient": "^8.1.0"
