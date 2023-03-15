@@ -46,7 +46,7 @@ jobs:
         yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
 
     - name: Upload archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         path: sourcery-${{ github.event.inputs.version }}.vsix
 
