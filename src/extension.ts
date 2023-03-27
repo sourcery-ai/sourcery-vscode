@@ -77,7 +77,7 @@ function createLangServer(): LanguageClient {
     return new LanguageClient(command, serverOptions, clientOptions);
 }
 
-function getValidInput(): string | null {
+export function getValidInput(): string | null {
     const editor = window.activeTextEditor;
 
     if (editor) {
@@ -184,7 +184,12 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         vscode.commands.executeCommand('setContext',
             'sourceryRulesActive',
             true);
-        vscode.commands.executeCommand("sourcery.rules.focus")
+
+        vscode.commands.executeCommand("sourcery.rules.focus").then( () => {
+            const input = getValidInput();
+            riProvider.setPattern(input);
+            }
+        );
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.walkthrough.open', () => {
@@ -202,22 +207,32 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         });
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
-        const input = getValidInput();
+    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (rule, advanced: boolean, language: string) => {
 
-        let request: ExecuteCommandParams = {
-            command: 'config/rule/create',
-            arguments: [{'selected': input}]
-        };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
-            const openPath = Uri.file(path.join(workspace.rootPath, '.sourcery.yaml'));
-            workspace.openTextDocument(openPath).then(doc => {
-                const opts: TextDocumentShowOptions = {
-                    selection: new Range(doc.lineCount - 1, 0, doc.lineCount - 1, 0)
-                };
-                window.showTextDocument(doc, opts);
+        vscode.window.showInputBox({
+          prompt: "What would you like to call your rule?"
+        }).then((name) => {
+          if (name) {
+            let request: ExecuteCommandParams = {
+                command: 'config/rule/create',
+                arguments: [{
+                    "name": name,
+                    'rule': rule,
+                    'advanced': advanced,
+                    "language": language
+                }
+                ]
+            };
+            languageClient.sendRequest(ExecuteCommandRequest.type, request).then((result) => {
+                window.showInformationMessage(result);
+                const openPath = Uri.file(result);
+                workspace.openTextDocument(openPath).then(doc => {
+                    window.showTextDocument(doc);
+                });
             });
+          }
         });
+
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
