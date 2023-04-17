@@ -61,7 +61,8 @@ function createLangServer(): LanguageClient {
             {language: 'python', scheme: 'untitled'},
             {language: 'python', scheme: 'vscode-notebook-cell' },
             {language: 'yaml', pattern: '**/.sourcery.yaml'},
-            {language: 'yaml', pattern: '**/sourcery.yaml'}
+            {language: 'yaml', pattern: '**/sourcery.yaml'},
+            {language: 'yaml', pattern: '**/.sourcery/rules/*.yaml'}
         ],
         synchronize: {
             configurationSection: 'sourcery'
