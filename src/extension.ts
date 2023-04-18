@@ -171,6 +171,22 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
 
     }));
 
+    // Enable/disable effects
+    context.subscriptions.push(
+      commands.registerCommand('sourcery.effects.enable', () => effects_set_enabled(true))
+    );
+    context.subscriptions.push(
+      commands.registerCommand('sourcery.effects.disable', () => effects_set_enabled(false))
+    );
+    function effects_set_enabled(enabled: boolean) {
+        vscode.commands.executeCommand('setContext', 'sourcery.effects.enabled', enabled);
+        let request: ExecuteCommandParams = {
+            command: 'sourcery.effects.set_enabled',
+            arguments: [enabled]
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    }
+
     context.subscriptions.push(commands.registerCommand('sourcery.scan.applyRule', (entry) => {
         workspace.openTextDocument(entry.resourceUri).then(doc => {
             window.showTextDocument(doc).then(e => {
