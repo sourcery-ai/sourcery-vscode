@@ -190,6 +190,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.selectLanguage",
+				"title": "Select Language",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
@@ -207,6 +212,11 @@
 		],
 		"menus": {
 			"view/title": [
+				{
+					"command": "sourcery.scan.selectLanguage",
+					"when": "view == sourcery.rules",
+					"group": "navigation"
+				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
@@ -270,6 +280,10 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.selectLanguage",
 					"when": "false"
 				},
 				{

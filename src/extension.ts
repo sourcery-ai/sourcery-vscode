@@ -157,6 +157,19 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         riProvider.toggle();
     }));
 
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.selectLanguage', () => {
+        const items = ['python', 'javascript'];
+
+        window.showQuickPick(items, {
+          canPickMany: false,
+          placeHolder: 'Select language'
+        }).then((selected) => {
+                riProvider.setLanguage(selected);
+            }
+        );
+
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.scan.applyRule', (entry) => {
         workspace.openTextDocument(entry.resourceUri).then(doc => {
             window.showTextDocument(doc).then(e => {

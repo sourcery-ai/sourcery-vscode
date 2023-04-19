@@ -22,6 +22,11 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		this._view.webview.postMessage({ command: 'toggle' });
 	}
 
+	public setLanguage(language) {
+		this._languageId = language;
+		this._setTitle();
+	}
+
 	public setPattern(pattern) {
 		this._view.webview.postMessage( {command: "setPattern", pattern: pattern})
 	}
@@ -43,9 +48,6 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		};
 
 		this._setViewState();
-
-
-
 
 		webviewView.onDidChangeVisibility(() => {
 		  	if (this._view.visible) {
@@ -109,7 +111,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					return languageId;
 				}
 			}
-			return languageId;
+			return "python";
 		}
 
 		// Default to python
