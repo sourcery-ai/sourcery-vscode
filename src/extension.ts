@@ -223,7 +223,8 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
     context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (rule, advanced: boolean, language: string) => {
 
         vscode.window.showInputBox({
-          prompt: "What would you like to call your rule?"
+            title: "What would you like to call your rule?" ,
+          prompt: "This should be lowercase, with words separated by hyphens (e.g. my-brilliant-rule)"
         }).then((name) => {
           if (name) {
             let request: ExecuteCommandParams = {
