@@ -159,7 +159,6 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="patternInput">Pattern</label>
 						<textarea
 							class="patternInput""
-							title="This is a tooltip"
 							nonce="${nonce}"
 						></textarea>
 						<label for="replacementInput">Replacement</label>
