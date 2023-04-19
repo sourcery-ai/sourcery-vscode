@@ -159,19 +159,17 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="patternInput">Pattern</label>
 						<textarea
 							class="patternInput""
-							placeholder="def foo(\${first}, \${rest*}):\n  ..."
+							title="This is a tooltip"
 							nonce="${nonce}"
 						></textarea>
 						<label for="replacementInput">Replacement</label>
 						<textarea
 							class="replacementInput""
-							placeholder="def bar(\${first}, \${rest}):\n  ..."
 							nonce="${nonce}"
 						></textarea>
 						<label for="conditionInput">Condition</label>
 						<textarea
 							class="conditionInput""
-							placeholder="first.starts_with('baz')"
 							nonce="${nonce}"
 						></textarea>
 					</div>

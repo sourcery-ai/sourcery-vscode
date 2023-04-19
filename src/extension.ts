@@ -216,15 +216,15 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
             let request: ExecuteCommandParams = {
                 command: 'config/rule/create',
                 arguments: [{
-                    "name": name,
+                    "rule_id": name,
                     'rule': rule,
+                    "inplace": false,
                     'advanced': advanced,
                     "language": language
                 }
                 ]
             };
             languageClient.sendRequest(ExecuteCommandRequest.type, request).then((result) => {
-                window.showInformationMessage(result);
                 const openPath = Uri.file(result);
                 workspace.openTextDocument(openPath).then(doc => {
                     window.showTextDocument(doc);
@@ -246,30 +246,31 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace: boolean, language: string) => {
-        if (inplace) {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, fix: boolean, language: string) => {
+        if (fix) {
             vscode.window
                 .showInformationMessage("Are you sure?", "Yes", "No")
                 .then(answer => {
                     if (answer === "Yes") {
-                        runScan(rule, advanced, inplace, language);
+                        runScan(rule, advanced, fix, language);
                     }
                 })
         } else {
-            runScan(rule, advanced, inplace, language);
+            runScan(rule, advanced, fix, language);
         }
 
     }));
 
-    function runScan(rule, advanced: boolean, inplace: boolean, language: string) {
+    function runScan(rule, advanced: boolean, fix: boolean, language: string) {
         tree.clear();
         treeView.title = "Results";
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
                 'rule': rule,
+                'rule_id': 'test-rule',
                 'advanced': advanced,
-                'inplace': inplace,
+                'inplace': fix,
                 "language": language
             }]
         };
