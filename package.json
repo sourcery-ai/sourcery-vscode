@@ -190,6 +190,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.scan.selectLanguage",
+				"title": "Select Language",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
@@ -208,6 +213,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "sourcery.scan.selectLanguage",
+					"when": "view == sourcery.rules",
+					"group": "navigation"
+				},
+				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
 					"group": "navigation"
@@ -223,7 +233,7 @@
 			"editor/context": [
 				{
 					"submenu": "sourcery.editor",
-					"group": "z_commands@2"
+					"group": "1_modification@2"
 				}
 			],
 			"explorer/context": [
@@ -234,7 +244,7 @@
 			],
 			"sourcery.editor": [
 				{
-					"command": "sourcery.rule.create",
+					"command": "sourcery.scan.open",
 					"title": "Create Sourcery rule with this pattern",
 					"when": "editorLangId==python && editorHasSelection"
 				}
@@ -270,6 +280,14 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.scan.selectLanguage",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.rule.create",
 					"when": "false"
 				}
 			]

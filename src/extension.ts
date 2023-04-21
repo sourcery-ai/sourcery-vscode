@@ -77,7 +77,7 @@ function createLangServer(): LanguageClient {
     return new LanguageClient(command, serverOptions, clientOptions);
 }
 
-function getValidInput(): string | null {
+export function getValidInput(): string | null {
     const editor = window.activeTextEditor;
 
     if (editor) {
@@ -157,6 +157,19 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         riProvider.toggle();
     }));
 
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.selectLanguage', () => {
+        const items = ['python', 'javascript'];
+
+        window.showQuickPick(items, {
+          canPickMany: false,
+          placeHolder: 'Select language'
+        }).then((selected) => {
+                riProvider.setLanguage(selected);
+            }
+        );
+
+    }));
+
     context.subscriptions.push(commands.registerCommand('sourcery.scan.applyRule', (entry) => {
         workspace.openTextDocument(entry.resourceUri).then(doc => {
             window.showTextDocument(doc).then(e => {
@@ -184,7 +197,12 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         vscode.commands.executeCommand('setContext',
             'sourceryRulesActive',
             true);
-        vscode.commands.executeCommand("sourcery.rules.focus")
+
+        vscode.commands.executeCommand("sourcery.rules.focus").then( () => {
+            const input = getValidInput();
+            riProvider.setPattern(input);
+            }
+        );
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.walkthrough.open', () => {
@@ -202,22 +220,33 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         });
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', () => {
-        const input = getValidInput();
+    context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (rule, advanced: boolean, language: string) => {
 
-        let request: ExecuteCommandParams = {
-            command: 'config/rule/create',
-            arguments: [{'selected': input}]
-        };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request).then((values) => {
-            const openPath = Uri.file(path.join(workspace.rootPath, '.sourcery.yaml'));
-            workspace.openTextDocument(openPath).then(doc => {
-                const opts: TextDocumentShowOptions = {
-                    selection: new Range(doc.lineCount - 1, 0, doc.lineCount - 1, 0)
-                };
-                window.showTextDocument(doc, opts);
+        vscode.window.showInputBox({
+            title: "What would you like to call your rule?" ,
+          prompt: "This should be lowercase, with words separated by hyphens (e.g. my-brilliant-rule)"
+        }).then((name) => {
+          if (name) {
+            let request: ExecuteCommandParams = {
+                command: 'config/rule/create',
+                arguments: [{
+                    "rule_id": name,
+                    'rule': rule,
+                    "inplace": false,
+                    'advanced': advanced,
+                    "language": language
+                }
+                ]
+            };
+            languageClient.sendRequest(ExecuteCommandRequest.type, request).then((result) => {
+                const openPath = Uri.file(result);
+                workspace.openTextDocument(openPath).then(doc => {
+                    window.showTextDocument(doc);
+                });
             });
+          }
         });
+
     }));
 
     context.subscriptions.push(commands.registerCommand('sourcery.refactor.workspace', (resource: Uri, selected?: Uri[]) => {
@@ -231,30 +260,31 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
     }));
 
-    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, inplace: boolean, language: string) => {
-        if (inplace) {
+    context.subscriptions.push(commands.registerCommand('sourcery.scan.rule', (rule, advanced: boolean, fix: boolean, language: string) => {
+        if (fix) {
             vscode.window
                 .showInformationMessage("Are you sure?", "Yes", "No")
                 .then(answer => {
                     if (answer === "Yes") {
-                        runScan(rule, advanced, inplace, language);
+                        runScan(rule, advanced, fix, language);
                     }
                 })
         } else {
-            runScan(rule, advanced, inplace, language);
+            runScan(rule, advanced, fix, language);
         }
 
     }));
 
-    function runScan(rule, advanced: boolean, inplace: boolean, language: string) {
+    function runScan(rule, advanced: boolean, fix: boolean, language: string) {
         tree.clear();
         treeView.title = "Results";
         let request: ExecuteCommandParams = {
             command: 'rule/scan',
             arguments: [{
                 'rule': rule,
+                'rule_id': 'test-rule',
                 'advanced': advanced,
-                'inplace': inplace,
+                'inplace': fix,
                 "language": language
             }]
         };

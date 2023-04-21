@@ -30,6 +30,9 @@
       if (message.command === 'toggle') {
           basic.classList.toggle("hidden");
           advanced.classList.toggle("hidden");
+      } else if (message.command === "setPattern") {
+          const input = document.querySelector('textarea.patternInput');
+          input.value = message.pattern;
       }
     });
 

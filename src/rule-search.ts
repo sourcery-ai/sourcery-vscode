@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import {window} from 'vscode';
 import {randomBytes} from "crypto";
+import {getValidInput} from "./extension";
 
 export class RuleInputProvider implements vscode.WebviewViewProvider {
 
@@ -18,8 +18,17 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 		this._extensionUri = _context.extensionUri;
 	}
 
-	public async toggle() {
+	public toggle() {
 		this._view.webview.postMessage({ command: 'toggle' });
+	}
+
+	public setLanguage(language) {
+		this._languageId = language;
+		this._setTitle();
+	}
+
+	public setPattern(pattern) {
+		this._view.webview.postMessage( {command: "setPattern", pattern: pattern})
 	}
 
 	public async resolveWebviewView(
@@ -38,10 +47,18 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 			]
 		};
 
-		this._languageId = this._resolveLanguage();
-		this._setTitle();
+		this._setViewState();
+
+		webviewView.onDidChangeVisibility(() => {
+		  	if (this._view.visible) {
+				  this._setViewState();
+		  	}
+		});
 
 		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
+
+		const input = getValidInput();
+		this.setPattern(input);
 
 		webviewView.webview.onDidReceiveMessage(async data => {
 			switch (data.type) {
@@ -54,10 +71,16 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					break;
 				}
 				case "save": {
-					window.showInformationMessage("Saving rules directly not yet available.")
+					vscode.commands.executeCommand("sourcery.rule.create", data.rule, data.advanced, this._languageId);
+					break;
 				}
 			}
 		});
+	}
+
+	private _setViewState() {
+		this._languageId = this._resolveLanguage();
+		this._setTitle();
 	}
 
 	private _setTitle() {
@@ -88,7 +111,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 					return languageId;
 				}
 			}
-			return languageId;
+			return "python";
 		}
 
 		// Default to python
@@ -138,19 +161,16 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="patternInput">Pattern</label>
 						<textarea
 							class="patternInput""
-							placeholder="Enter your pattern here..."
 							nonce="${nonce}"
 						></textarea>
 						<label for="replacementInput">Replacement</label>
 						<textarea
 							class="replacementInput""
-							placeholder="Enter your replacement here..."
 							nonce="${nonce}"
 						></textarea>
 						<label for="conditionInput">Condition</label>
 						<textarea
 							class="conditionInput""
-							placeholder="Enter your condition here..."
 							nonce="${nonce}"
 						></textarea>
 					</div>
@@ -158,7 +178,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 						<label for="ruleInput">Rule</label>
 						<textarea
 							class="ruleInput""
-							placeholder="Enter your rule here in yaml format.\nHere's an example:\nall:\n- pattern: typing.List\n  replacement: list\n- not:\n    inside:\n      kind: import_from_statement"
+							placeholder="all:\n- pattern: typing.List\n  replacement: list\n- not:\n    inside:\n      kind: import_from_statement"
 							nonce="${nonce}"
 						></textarea>		
 					</div>
