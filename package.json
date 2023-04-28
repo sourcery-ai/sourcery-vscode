@@ -302,11 +302,11 @@
 				},
 				{
 					"command": "sourcery.effects.enable",
-					"when": "sourcery.effects.enabled == false"
+					"when": "sourcery.features.code_understanding && !sourcery.effects.enabled"
 				},
 				{
 					"command": "sourcery.effects.disable",
-					"when": "sourcery.effects.enabled == true"
+					"when": "sourcery.features.code_understanding && sourcery.effects.enabled"
 				}
 			]
 		},
