@@ -198,6 +198,16 @@
 				"command": "sourcery.rule.create",
 				"title": "Create custom rule",
 				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.effects.enable",
+				"title": "Show Effects",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.effects.disable",
+				"title": "Hide Effects",
+				"category": "Sourcery"
 			}
 		],
 		"submenus": [
@@ -289,6 +299,14 @@
 				{
 					"command": "sourcery.rule.create",
 					"when": "false"
+				},
+				{
+					"command": "sourcery.effects.enable",
+					"when": "sourcery.features.code_understanding && !sourcery.effects.enabled"
+				},
+				{
+					"command": "sourcery.effects.disable",
+					"when": "sourcery.features.code_understanding && sourcery.effects.enabled"
 				}
 			]
 		},
