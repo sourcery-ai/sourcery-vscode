@@ -12,14 +12,27 @@
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
-		"Python",
-		"refactoring"
+		"ai",
+		"copilot",
+		"tabnine",
+		"python",
+		"javascript",
+		"jupyter",
+		"node.js",
+		"nodejs",
+		"node",
+		"refactor",
+		"refactoring",
+		"typescript"
 	],
 	"engines": {
 		"vscode": "^1.76.0"
 	},
 	"categories": [
-		"Other"
+		"Linters",
+		"Machine Learning",
+		"Programming Languages",
+		"Snippets"
 	],
 	"activationEvents": [
 		"onLanguage:python",
