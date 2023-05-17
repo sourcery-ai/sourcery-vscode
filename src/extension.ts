@@ -1,7 +1,7 @@
 'use strict';
 
 import * as path from 'path';
-import {getExecutablePath} from './executable';
+import { getExecutablePath } from './executable';
 
 import * as vscode from 'vscode';
 import {
@@ -27,9 +27,9 @@ import {
     LanguageClientOptions,
     ServerOptions
 } from 'vscode-languageclient/node';
-import {getHubSrc} from './hub';
-import {RuleInputProvider} from "./rule-search"
-import {ScanResultProvider} from "./rule-search-results";
+import { getHubSrc } from './hub';
+import { RuleInputProvider } from "./rule-search"
+import { ScanResultProvider } from "./rule-search-results";
 
 function createLangServer(): LanguageClient {
 
@@ -53,16 +53,16 @@ function createLangServer(): LanguageClient {
     const clientOptions: LanguageClientOptions = {
         diagnosticCollectionName: "sourcery",
         documentSelector: [
-            {language: 'python', scheme: 'file'},
-            {language: 'javascript', scheme: 'file'},
-            {language: 'typescript', scheme: 'file'},
-            {language: 'javascriptreact', scheme: 'file'},
-            {language: 'typescriptreact', scheme: 'file'},
-            {language: 'python', scheme: 'untitled'},
-            {language: 'python', scheme: 'vscode-notebook-cell' },
-            {language: 'yaml', pattern: '**/.sourcery.yaml'},
-            {language: 'yaml', pattern: '**/sourcery.yaml'},
-            {language: 'yaml', pattern: '**/.sourcery/rules/*.yaml'}
+            { language: 'python', scheme: 'file' },
+            { language: 'javascript', scheme: 'file' },
+            { language: 'typescript', scheme: 'file' },
+            { language: 'javascriptreact', scheme: 'file' },
+            { language: 'typescriptreact', scheme: 'file' },
+            { language: 'python', scheme: 'untitled' },
+            { language: 'python', scheme: 'vscode-notebook-cell' },
+            { language: 'yaml', pattern: '**/.sourcery.yaml' },
+            { language: 'yaml', pattern: '**/sourcery.yaml' },
+            { language: 'yaml', pattern: '**/.sourcery/rules/*.yaml' }
         ],
         synchronize: {
             configurationSection: 'sourcery'
@@ -110,6 +110,11 @@ function registerNotifications(languageClient: LanguageClient, tree: ScanResultP
         commands.executeCommand(command, ...args)
     });
 
+
+    languageClient.onNotification('sourcery/vscode/showSettings', () => {
+        commands.executeCommand('workbench.action.openSettings', 'sourcery');
+    });
+
     languageClient.onNotification('sourcery/vscode/scanResults', (params) => {
         if (params.diagnostics.length > 0) {
             tree.update(params);
@@ -139,7 +144,7 @@ function registerNotifications(languageClient: LanguageClient, tree: ScanResultP
 function registerCommands(context: ExtensionContext, riProvider: RuleInputProvider, languageClient: LanguageClient, tree: ScanResultProvider, treeView: TreeView<TreeItem>, hubWebviewPanel: WebviewPanel) {
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
-            RuleInputProvider.viewType, riProvider, {webviewOptions: {retainContextWhenHidden: true}}
+            RuleInputProvider.viewType, riProvider, { webviewOptions: { retainContextWhenHidden: true } }
         )
     );
 
@@ -162,21 +167,21 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
         const items = ['python', 'javascript'];
 
         window.showQuickPick(items, {
-          canPickMany: false,
-          placeHolder: 'Select language'
+            canPickMany: false,
+            placeHolder: 'Select language'
         }).then((selected) => {
-                riProvider.setLanguage(selected);
-            }
+            riProvider.setLanguage(selected);
+        }
         );
 
     }));
 
     // Enable/disable effects
     context.subscriptions.push(
-      commands.registerCommand('sourcery.effects.enable', () => effects_set_enabled(true))
+        commands.registerCommand('sourcery.effects.enable', () => effects_set_enabled(true))
     );
     context.subscriptions.push(
-      commands.registerCommand('sourcery.effects.disable', () => effects_set_enabled(false))
+        commands.registerCommand('sourcery.effects.disable', () => effects_set_enabled(false))
     );
     function effects_set_enabled(enabled: boolean) {
         vscode.commands.executeCommand('setContext', 'sourcery.effects.enabled', enabled);
@@ -215,10 +220,10 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
             'sourceryRulesActive',
             true);
 
-        vscode.commands.executeCommand("sourcery.rules.focus").then( () => {
+        vscode.commands.executeCommand("sourcery.rules.focus").then(() => {
             const input = getValidInput();
             riProvider.setPattern(input);
-            }
+        }
         );
     }));
 
@@ -240,28 +245,28 @@ function registerCommands(context: ExtensionContext, riProvider: RuleInputProvid
     context.subscriptions.push(commands.registerCommand('sourcery.rule.create', (rule, advanced: boolean, language: string) => {
 
         vscode.window.showInputBox({
-            title: "What would you like to call your rule?" ,
-          prompt: "This should be lowercase, with words separated by hyphens (e.g. my-brilliant-rule)"
+            title: "What would you like to call your rule?",
+            prompt: "This should be lowercase, with words separated by hyphens (e.g. my-brilliant-rule)"
         }).then((name) => {
-          if (name) {
-            let request: ExecuteCommandParams = {
-                command: 'config/rule/create',
-                arguments: [{
-                    "rule_id": name,
-                    'rule': rule,
-                    "inplace": false,
-                    'advanced': advanced,
-                    "language": language
-                }
-                ]
-            };
-            languageClient.sendRequest(ExecuteCommandRequest.type, request).then((result) => {
-                const openPath = Uri.file(result);
-                workspace.openTextDocument(openPath).then(doc => {
-                    window.showTextDocument(doc);
+            if (name) {
+                let request: ExecuteCommandParams = {
+                    command: 'config/rule/create',
+                    arguments: [{
+                        "rule_id": name,
+                        'rule': rule,
+                        "inplace": false,
+                        'advanced': advanced,
+                        "language": language
+                    }
+                    ]
+                };
+                languageClient.sendRequest(ExecuteCommandRequest.type, request).then((result) => {
+                    const openPath = Uri.file(result);
+                    workspace.openTextDocument(openPath).then(doc => {
+                        window.showTextDocument(doc);
+                    });
                 });
-            });
-          }
+            }
         });
 
     }));
@@ -368,12 +373,12 @@ export function activate(context: ExtensionContext) {
     let tree = new ScanResultProvider();
 
     let treeView = vscode.window.createTreeView('sourcery.rules.treeview', {
-      treeDataProvider: tree
+        treeDataProvider: tree
     });
 
     const riProvider = new RuleInputProvider(
         context,
-	);
+    );
     registerCommands(context, riProvider, languageClient, tree, treeView, hubWebviewPanel);
 
     showSourceryStatusBarItem(context);
@@ -384,12 +389,12 @@ export function activate(context: ExtensionContext) {
 }
 
 function openWelcomeFile(context: ExtensionContext) {
-        openDocument(path.join(context.extensionPath, 'welcome-to-sourcery.py'));
+    openDocument(path.join(context.extensionPath, 'welcome-to-sourcery.py'));
 }
 
 function openDocument(document_path: string) {
-        const openPath = Uri.file(document_path);
-        workspace.openTextDocument(openPath).then(doc => {
-            window.showTextDocument(doc);
-        });
+    const openPath = Uri.file(document_path);
+    workspace.openTextDocument(openPath).then(doc => {
+        window.showTextDocument(doc);
+    });
 }
