@@ -149,6 +149,11 @@
 		"commands": [
 			{
 				"command": "sourcery.login",
+				"title": "Login via browser",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.login.choose",
 				"title": "Login",
 				"category": "Sourcery"
 			},
@@ -287,6 +292,10 @@
 			],
 			"commandPalette": [
 				{
+					"command": "sourcery.login",
+					"when": "false"
+				},
+				{
 					"command": "sourcery.refactor.workspace",
 					"when": "false"
 				},
@@ -331,8 +340,7 @@
 				"sourcery.token": {
 					"type": "string",
 					"default": "",
-					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard",
-					"markdownDeprecationMessage": "Run the `Sourcery: Login` command instead"
+					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
 				},
 				"sourcery.ruleType.refactorings": {
 					"type": "boolean",
