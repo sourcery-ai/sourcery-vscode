@@ -149,12 +149,12 @@
 		"commands": [
 			{
 				"command": "sourcery.login",
-				"title": "Login",
+				"title": "Login via browser",
 				"category": "Sourcery"
 			},
 			{
 				"command": "sourcery.login.choose",
-				"title": "Login Choose",
+				"title": "Login",
 				"category": "Sourcery"
 			},
 			{
@@ -291,6 +291,10 @@
 				}
 			],
 			"commandPalette": [
+				{
+					"command": "sourcery.login",
+					"when": "false"
+				},
 				{
 					"command": "sourcery.refactor.workspace",
 					"when": "false"
