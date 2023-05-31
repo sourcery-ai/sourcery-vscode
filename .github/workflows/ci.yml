@@ -1,7 +1,6 @@
 name: Check conformance with Prettier
 
 on:
-  push:
   pull_request:
 
 jobs:
