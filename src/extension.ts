@@ -96,7 +96,7 @@ export function getValidInput(): string | null {
 
 function showSourceryStatusBarItem(context: ExtensionContext) {
   // Create the status bar
-  const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+    const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
   myStatusBarItem.command = "sourcery.hub.start";
   myStatusBarItem.text = "Sourcery";
   myStatusBarItem.tooltip = "Manage Sourcery settings";
