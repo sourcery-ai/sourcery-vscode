@@ -7,6 +7,7 @@
     const vscode = acquireVsCodeApi();
     var chatContainer = document.querySelector('.chatContainer');
     var messageInput = document.querySelector('.message-input');
+    var currentAssistantMessage;
 
     // Function to add a user message to the chat interface
     function addUserMessage(message) {
@@ -14,14 +15,21 @@
         userMessageElement.classList.add('user-message');
         userMessageElement.textContent = message;
         chatContainer.append(userMessageElement);
+        currentAssistantMessage = null;
     }
 
     // Function to add an assistant message to the chat interface
     function addAssistantMessage(message) {
-        var assistantMessageElement = document.createElement('div');
-        assistantMessageElement.classList.add('assistant-message');
-        assistantMessageElement.textContent = message;
-        chatContainer.append(assistantMessageElement);
+        if (currentAssistantMessage != null) {
+            currentAssistantMessage.textContent = currentAssistantMessage.textContent + message;
+        } else {
+            var assistantMessageElement = document.createElement('div');
+            assistantMessageElement.classList.add('assistant-message');
+            assistantMessageElement.textContent = message;
+            chatContainer.append(assistantMessageElement);
+            currentAssistantMessage = assistantMessageElement;
+        }
+
     }
 
     messageInput.addEventListener('keypress', (e) => {
