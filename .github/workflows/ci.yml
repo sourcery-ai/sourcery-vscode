@@ -1,0 +1,15 @@
+name: Check conformance with Prettier
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v2
+    - name: Run prettier
+      run: |-
+        npx prettier --check
