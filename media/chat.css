@@ -1,17 +1,3 @@
-body {
-	background-color: transparent;
-}
-
-.hidden {
-  display: none;
-}
-
-textarea {
-	font-size: var(--vscode-editor-font-size);
-	font-family: var(--vscode-editor-font-family);
-}
-
-
 .user-message {
 	font-size: var(--vscode-editor-font-size);
 	font-family: var(--vscode-editor-font-family);

@@ -1,80 +1,81 @@
-import * as vscode from 'vscode';
-import {randomBytes} from "crypto";
-import {getValidInput} from "./extension";
+import * as vscode from "vscode";
+import { randomBytes } from "crypto";
+import { getValidInput } from "./extension";
 
 export class ChatProvider implements vscode.WebviewViewProvider {
+  public static readonly viewType = "sourcery.chat";
 
-	public static readonly viewType = 'sourcery.chat';
+  private _view?: vscode.WebviewView;
 
-	private _view?: vscode.WebviewView;
+  private _extensionUri: vscode.Uri;
 
-	private _extensionUri: vscode.Uri;
+  constructor(private _context: vscode.ExtensionContext) {
+    this._extensionUri = _context.extensionUri;
+  }
 
+  public async resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
 
-	constructor(
-		private _context: vscode.ExtensionContext,
-	) {
-		this._extensionUri = _context.extensionUri;
-	}
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
 
+      localResourceRoots: [this._extensionUri],
+    };
 
-	public async resolveWebviewView(
-		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
-		_token: vscode.CancellationToken,
-	) {
-		this._view = webviewView;
+    webviewView.webview.html = await this._getHtmlForWebview(
+      webviewView.webview
+    );
 
-		webviewView.webview.options = {
-			// Allow scripts in the webview
-			enableScripts: true,
+    const input = getValidInput();
 
-			localResourceRoots: [
-				this._extensionUri
-			]
-		};
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case "scan": {
+          //vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false, this._languageId);
+          break;
+        }
+      }
+    });
+  }
 
+  private async _getHtmlForWebview(webview: vscode.Webview) {
+    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "chat.js")
+    );
 
-		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
+    // Do the same for the stylesheet.
+    const styleResetUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+    );
+    const styleVSCodeUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+    );
+    const styleMainUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "chat.css")
+    );
+    // Use a nonce to only allow a specific script to be run.
+    const nonce = randomBytes(16).toString("base64");
 
-		const input = getValidInput();
+    /* eslint-disable @typescript-eslint/naming-convention */
+    let cspStr = Object.entries({
+      "default-src": "'none'",
+      "style-src": `${webview.cspSource + ` 'nonce-${nonce}'`}`,
+      "script-src": `'nonce-${nonce}'`,
+      "img-src": "* 'self' https:;",
+    })
+      .map(([key, value]) => {
+        return `${key} ${value}`;
+      })
+      .join("; ");
+    /* eslint-enable @typescript-eslint/naming-convention */
 
-		webviewView.webview.onDidReceiveMessage(async data => {
-			switch (data.type) {
-				case "scan": {
-					//vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false, this._languageId);
-					break;
-				}
-
-			}
-		});
-	}
-
-
-
-	private async _getHtmlForWebview(webview: vscode.Webview) {
-		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'chat.js'));
-
-		// Do the same for the stylesheet.
-		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
-		// Use a nonce to only allow a specific script to be run.
-		const nonce = randomBytes(16).toString('base64');
-
-		/* eslint-disable @typescript-eslint/naming-convention */
-		let cspStr = Object.entries({
-			"default-src": "'none'",
-			"style-src": `${webview.cspSource + ` 'nonce-${nonce}'`}`,
-			"script-src": `'nonce-${nonce}'`,
-			"img-src": "* 'self' https:;"
-		}).map(([key, value]) => {
-			return `${key} ${value}`;
-		}).join('; ');
-		/* eslint-enable @typescript-eslint/naming-convention */
-
-		return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
 				<meta charset="UTF-8">
@@ -98,5 +99,5 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;
-	}
+  }
 }
