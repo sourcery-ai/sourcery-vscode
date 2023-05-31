@@ -52,6 +52,13 @@
 		"views": {
 			"sourcery-explorer": [
 				{
+					"id": "sourcery.chat",
+					"name": "Chat",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Chat"
+				},
+				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",

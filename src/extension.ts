@@ -30,6 +30,7 @@ import {
 import { getHubSrc } from './hub';
 import { RuleInputProvider } from "./rule-search"
 import { ScanResultProvider } from "./rule-search-results";
+import {ChatProvider} from "./chat";
 
 function createLangServer(): LanguageClient {
 
@@ -378,6 +379,14 @@ export function activate(context: ExtensionContext) {
 
     const riProvider = new RuleInputProvider(
         context,
+    );
+
+    const chatProvider = new ChatProvider(context);
+
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(
+            ChatProvider.viewType, chatProvider, { webviewOptions: { retainContextWhenHidden: true } }
+        )
     );
     registerCommands(context, riProvider, languageClient, tree, treeView, hubWebviewPanel);
 
