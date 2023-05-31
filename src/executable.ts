@@ -1,36 +1,32 @@
-'use strict';
+"use strict";
 
-import * as path from 'path';
-import * as fs from 'fs';
-
+import * as path from "path";
+import * as fs from "fs";
 
 export function getExecutablePath(): string {
   if (process.env.SOURCERY_EXECUTABLE) {
-        console.log(process.env.SOURCERY_EXECUTABLE)
-        return process.env.SOURCERY_EXECUTABLE;
-    }
-    const sourcery_binaries = path.join(__dirname, "..", "sourcery_binaries");
-    const activePath = path.join(sourcery_binaries, "active");
-    if (fs.existsSync(activePath)) {
-        if (process.platform == 'win32') {
-            return path.join(activePath, 'sourcery.exe')
-        } else if (process.platform == 'darwin') {
-            return path.join(activePath, 'sourcery')
-        } else {
-            // Assume everything else is linux compatible
-            return path.join(activePath, 'sourcery')
-        }
+    console.log(process.env.SOURCERY_EXECUTABLE);
+    return process.env.SOURCERY_EXECUTABLE;
+  }
+  const sourcery_binaries = path.join(__dirname, "..", "sourcery_binaries");
+  const activePath = path.join(sourcery_binaries, "active");
+  if (fs.existsSync(activePath)) {
+    if (process.platform == "win32") {
+      return path.join(activePath, "sourcery.exe");
+    } else if (process.platform == "darwin") {
+      return path.join(activePath, "sourcery");
     } else {
-        if (process.platform == 'win32') {
-            return path.join(sourcery_binaries, 'install/win/sourcery.exe')
-        } else if (process.platform == 'darwin') {
-            return path.join(sourcery_binaries, 'install/mac/sourcery')
-        } else {
-            // Assume everything else is linux compatible
-            return path.join(sourcery_binaries, 'install/linux/sourcery')
-        }
+      // Assume everything else is linux compatible
+      return path.join(activePath, "sourcery");
     }
+  } else {
+    if (process.platform == "win32") {
+      return path.join(sourcery_binaries, "install/win/sourcery.exe");
+    } else if (process.platform == "darwin") {
+      return path.join(sourcery_binaries, "install/mac/sourcery");
+    } else {
+      // Assume everything else is linux compatible
+      return path.join(sourcery_binaries, "install/linux/sourcery");
+    }
+  }
 }
-
-
-

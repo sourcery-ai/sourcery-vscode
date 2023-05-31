@@ -1,146 +1,170 @@
-import * as vscode from 'vscode';
-import {randomBytes} from "crypto";
-import {getValidInput} from "./extension";
+import * as vscode from "vscode";
+import { randomBytes } from "crypto";
+import { getValidInput } from "./extension";
 
 export class RuleInputProvider implements vscode.WebviewViewProvider {
+  public static readonly viewType = "sourcery.rules";
 
-	public static readonly viewType = 'sourcery.rules';
+  private _view?: vscode.WebviewView;
 
-	private _view?: vscode.WebviewView;
+  private _extensionUri: vscode.Uri;
 
-	private _extensionUri: vscode.Uri;
+  private _languageId: string;
 
-	private _languageId: string;
+  constructor(private _context: vscode.ExtensionContext) {
+    this._extensionUri = _context.extensionUri;
+  }
 
-	constructor(
-		private _context: vscode.ExtensionContext,
-	) {
-		this._extensionUri = _context.extensionUri;
-	}
+  public toggle() {
+    this._view.webview.postMessage({ command: "toggle" });
+  }
 
-	public toggle() {
-		this._view.webview.postMessage({ command: 'toggle' });
-	}
+  public setLanguage(language) {
+    this._languageId = language;
+    this._setTitle();
+  }
 
-	public setLanguage(language) {
-		this._languageId = language;
-		this._setTitle();
-	}
+  public setPattern(pattern) {
+    this._view.webview.postMessage({ command: "setPattern", pattern: pattern });
+  }
 
-	public setPattern(pattern) {
-		this._view.webview.postMessage( {command: "setPattern", pattern: pattern})
-	}
+  public async resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
 
-	public async resolveWebviewView(
-		webviewView: vscode.WebviewView,
-		context: vscode.WebviewViewResolveContext,
-		_token: vscode.CancellationToken,
-	) {
-		this._view = webviewView;
+    webviewView.webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
 
-		webviewView.webview.options = {
-			// Allow scripts in the webview
-			enableScripts: true,
+      localResourceRoots: [this._extensionUri],
+    };
 
-			localResourceRoots: [
-				this._extensionUri
-			]
-		};
+    this._setViewState();
 
-		this._setViewState();
+    webviewView.onDidChangeVisibility(() => {
+      if (this._view.visible) {
+        this._setViewState();
+      }
+    });
 
-		webviewView.onDidChangeVisibility(() => {
-		  	if (this._view.visible) {
-				  this._setViewState();
-		  	}
-		});
+    webviewView.webview.html = await this._getHtmlForWebview(
+      webviewView.webview
+    );
 
-		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
+    const input = getValidInput();
+    this.setPattern(input);
 
-		const input = getValidInput();
-		this.setPattern(input);
+    webviewView.webview.onDidReceiveMessage(async (data) => {
+      switch (data.type) {
+        case "scan": {
+          vscode.commands.executeCommand(
+            "sourcery.scan.rule",
+            data.rule,
+            data.advanced,
+            false,
+            this._languageId
+          );
+          break;
+        }
+        case "replace": {
+          vscode.commands.executeCommand(
+            "sourcery.scan.rule",
+            data.rule,
+            data.advanced,
+            true,
+            this._languageId
+          );
+          break;
+        }
+        case "save": {
+          vscode.commands.executeCommand(
+            "sourcery.rule.create",
+            data.rule,
+            data.advanced,
+            this._languageId
+          );
+          break;
+        }
+      }
+    });
+  }
 
-		webviewView.webview.onDidReceiveMessage(async data => {
-			switch (data.type) {
-				case "scan": {
-					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false, this._languageId);
-					break;
-				}
-				case "replace": {
-					vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, true, this._languageId);
-					break;
-				}
-				case "save": {
-					vscode.commands.executeCommand("sourcery.rule.create", data.rule, data.advanced, this._languageId);
-					break;
-				}
-			}
-		});
-	}
+  private _setViewState() {
+    this._languageId = this._resolveLanguage();
+    this._setTitle();
+  }
 
-	private _setViewState() {
-		this._languageId = this._resolveLanguage();
-		this._setTitle();
-	}
+  private _setTitle() {
+    this._view.title = "Rules - " + this._languageId;
+  }
 
-	private _setTitle() {
-		this._view.title = "Rules - " + this._languageId;
-	}
+  private _resolveLanguage() {
+    // Get the active editor in the workspace
+    const activeEditor = vscode.window.activeTextEditor;
 
-	private _resolveLanguage() {
-		// Get the active editor in the workspace
-		const activeEditor = vscode.window.activeTextEditor;
+    // Check if there's an active editor
+    if (activeEditor) {
+      const languageId = activeEditor.document.languageId;
+      switch (languageId) {
+        case "python": {
+          return languageId;
+        }
+        case "typescript": {
+          return languageId;
+        }
+        case "typescriptreact": {
+          return "typescript";
+        }
+        case "javascriptreact": {
+          return "javascript";
+        }
+        case "javascript": {
+          return languageId;
+        }
+      }
+      return "python";
+    }
 
-		// Check if there's an active editor
-		if (activeEditor) {
-			const languageId = activeEditor.document.languageId;
-			switch (languageId) {
-				case "python": {
-					return languageId;
-				}
-				case "typescript": {
-					return languageId;
-				}
-				case "typescriptreact": {
-					return "typescript";
-				}
-				case "javascriptreact": {
-					return "javascript";
-				}
-				case "javascript": {
-					return languageId;
-				}
-			}
-			return "python";
-		}
+    // Default to python
+    return "python";
+  }
 
-		// Default to python
-		return "python";
-	}
+  private async _getHtmlForWebview(webview: vscode.Webview) {
+    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "main.js")
+    );
 
-	private async _getHtmlForWebview(webview: vscode.Webview) {
-		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
+    // Do the same for the stylesheet.
+    const styleResetUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+    );
+    const styleVSCodeUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+    );
+    const styleMainUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "main.css")
+    );
+    // Use a nonce to only allow a specific script to be run.
+    const nonce = randomBytes(16).toString("base64");
 
-		// Do the same for the stylesheet.
-		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
-		// Use a nonce to only allow a specific script to be run.
-		const nonce = randomBytes(16).toString('base64');
+    /* eslint-disable @typescript-eslint/naming-convention */
+    let cspStr = Object.entries({
+      "default-src": "'none'",
+      "style-src": `${webview.cspSource + ` 'nonce-${nonce}'`}`,
+      "script-src": `'nonce-${nonce}'`,
+      "img-src": "* 'self' https:;",
+    })
+      .map(([key, value]) => {
+        return `${key} ${value}`;
+      })
+      .join("; ");
+    /* eslint-enable @typescript-eslint/naming-convention */
 
-		/* eslint-disable @typescript-eslint/naming-convention */
-		let cspStr = Object.entries({
-			"default-src": "'none'",
-			"style-src": `${webview.cspSource + ` 'nonce-${nonce}'`}`,
-			"script-src": `'nonce-${nonce}'`,
-			"img-src": "* 'self' https:;"
-		}).map(([key, value]) => {
-			return `${key} ${value}`;
-		}).join('; ');
-		/* eslint-enable @typescript-eslint/naming-convention */
-
-		return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
 				<meta charset="UTF-8">
@@ -195,5 +219,5 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;
-	}
+  }
 }

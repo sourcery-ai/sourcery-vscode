@@ -1,5 +1,5 @@
 export function getHubSrc() {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8" />
 <title>Sourcery Hub</title>
@@ -32,5 +32,5 @@ export function getHubSrc() {
     <iframe id="theFrame" src="http://127.0.0.1:61816/"></iframe>
     </div>
 </body>
-</html>`
+</html>`;
 }
