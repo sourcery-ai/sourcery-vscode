@@ -107,8 +107,9 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
 
 function registerNotifications(
   languageClient: LanguageClient,
-  tree: ScanResultProvider,
-  treeView: TreeView<TreeItem>,
+  scanResultTree: ScanResultProvider,
+  scanResultTreeView: TreeView<TreeItem>,
+  chatProvider: ChatProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -123,10 +124,14 @@ function registerNotifications(
 
   languageClient.onNotification("sourcery/vscode/scanResults", (params) => {
     if (params.diagnostics.length > 0) {
-      tree.update(params);
+      scanResultTree.update(params);
     }
-    treeView.title =
+    scanResultTreeView.title =
       "Results - " + params.results + " found in " + params.files + " files.";
+  });
+
+  languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
+    chatProvider.addResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -353,6 +358,20 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.chat_request", (message: string) => {
+      let request: ExecuteCommandParams = {
+        command: "chat/request",
+        arguments: [
+          {
+            message: message,
+          },
+        ],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand(
       "sourcery.scan.rule",
       (rule, advanced: boolean, fix: boolean, language: string) => {
@@ -481,7 +500,13 @@ export function activate(context: ExtensionContext) {
   showSourceryStatusBarItem(context);
 
   languageClient.start().then(() => {
-    registerNotifications(languageClient, tree, treeView, context);
+    registerNotifications(
+      languageClient,
+      tree,
+      treeView,
+      chatProvider,
+      context
+    );
   });
 }
 

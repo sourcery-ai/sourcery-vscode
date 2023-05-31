@@ -27,18 +27,25 @@
     messageInput.addEventListener('keypress', (e) => {
         if (e.which === 13) {
             e.preventDefault();
-            addUserMessage(messageInput.value.trim());
+            var message = messageInput.value.trim();
             messageInput.value = "";
-            addAssistantMessage("test response");
+            addUserMessage(message);
+            sendMessageToExtension(message);
+
         }
     });
 
+    window.addEventListener('message', event => {
+      const message = event.data;
+
+      if (message.command === 'add_result') {
+          addAssistantMessage(message.result);
+      }
+    });
 
 
-    // This is handled by the RuleInputProvider
-    function sendMessageToExtension(message_type) {
-
-        vscode.postMessage({ type: message_type});
+    function sendMessageToExtension(message) {
+        vscode.postMessage({ type: "chat_request", data: message});
     }
 
 }());

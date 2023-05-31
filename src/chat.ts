@@ -35,12 +35,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "scan": {
-          //vscode.commands.executeCommand("sourcery.scan.rule", data.rule, data.advanced, false, this._languageId);
+        case "chat_request": {
+          vscode.commands.executeCommand("sourcery.chat_request", data);
           break;
         }
       }
     });
+  }
+
+  public addResult(result) {
+    this._view.webview.postMessage({ command: "add_result", result: result });
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
