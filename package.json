@@ -56,7 +56,8 @@
 					"name": "Chat",
 					"type": "webview",
 					"icon": "sourcery-icon.png",
-					"contextualTitle": "Chat"
+					"contextualTitle": "Chat",
+					"when": "sourcery.features.code_understanding"
 				},
 				{
 					"id": "sourcery.rules",
