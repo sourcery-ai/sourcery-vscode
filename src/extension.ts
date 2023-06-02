@@ -161,7 +161,8 @@ function registerCommands(
   languageClient: LanguageClient,
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
-  hubWebviewPanel: WebviewPanel
+  hubWebviewPanel: WebviewPanel,
+  chatProvider: ChatProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -186,6 +187,14 @@ function registerCommands(
     commands.registerCommand("sourcery.scan.toggleAdvanced", () => {
       // Tell the rules webview to toggle
       riProvider.toggle();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.clearChat", () => {
+      // TODO This should clear the chat history in the binary, then clear the UI on
+      //      a successful response.
+      chatProvider.clearChat();
     })
   );
 
@@ -359,11 +368,20 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat_request", (message: string) => {
+      const input = getValidInput();
+      const activeEditor = window.activeTextEditor;
+      let activeFile = undefined;
+      if (activeEditor) {
+        activeFile = activeEditor.document.uri;
+      }
+
       let request: ExecuteCommandParams = {
         command: "chat/request",
         arguments: [
           {
             message: message,
+            selected: input,
+            active: activeFile,
           },
         ],
       };
@@ -494,7 +512,8 @@ export function activate(context: ExtensionContext) {
     languageClient,
     tree,
     treeView,
-    hubWebviewPanel
+    hubWebviewPanel,
+    chatProvider
   );
 
   showSourceryStatusBarItem(context);

@@ -47,6 +47,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     this._view.webview.postMessage({ command: "add_result", result: result });
   }
 
+  public clearChat() {
+    this._view.webview.postMessage({ command: "clear_chat" });
+  }
+
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(

@@ -217,6 +217,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.chat.clearChat",
+				"title": "Clear",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.scan.selectLanguage",
 				"title": "Select Language",
 				"category": "Sourcery"
@@ -257,6 +262,11 @@
 				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
+					"group": "navigation"
+				},
+				{
+					"command": "sourcery.chat.clearChat",
+					"when": "view == sourcery.chat",
 					"group": "navigation"
 				}
 			],
@@ -321,6 +331,10 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.chat.clearChat",
 					"when": "false"
 				},
 				{

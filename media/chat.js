@@ -5,13 +5,13 @@
 (function () {
 
     const vscode = acquireVsCodeApi();
-    var chatContainer = document.querySelector('.chatContainer');
-    var messageInput = document.querySelector('.message-input');
-    var currentAssistantMessage;
+    const chatContainer = document.querySelector('.chatContainer');
+    const messageInput = document.querySelector('.message-input');
+    let currentAssistantMessage;
 
     // Function to add a user message to the chat interface
     function addUserMessage(message) {
-        var userMessageElement = document.createElement('div');
+        let userMessageElement = document.createElement('div');
         userMessageElement.classList.add('user-message');
         userMessageElement.textContent = message;
         chatContainer.append(userMessageElement);
@@ -23,7 +23,7 @@
         if (currentAssistantMessage != null) {
             currentAssistantMessage.textContent = currentAssistantMessage.textContent + message;
         } else {
-            var assistantMessageElement = document.createElement('div');
+            let assistantMessageElement = document.createElement('div');
             assistantMessageElement.classList.add('assistant-message');
             assistantMessageElement.textContent = message;
             chatContainer.append(assistantMessageElement);
@@ -32,10 +32,15 @@
 
     }
 
+    function clearMessages() {
+        currentAssistantMessage = null;
+        chatContainer.textContent = "";
+    }
+
     messageInput.addEventListener('keypress', (e) => {
         if (e.which === 13) {
             e.preventDefault();
-            var message = messageInput.value.trim();
+            let message = messageInput.value.trim();
             messageInput.value = "";
             addUserMessage(message);
             sendMessageToExtension(message);
@@ -48,7 +53,9 @@
 
       if (message.command === 'add_result') {
           addAssistantMessage(message.result);
-      }
+      } else if (message.command === "clear_chat") {
+          clearMessages();
+        }
     });
 
 
