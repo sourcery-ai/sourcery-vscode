@@ -1,5 +1,6 @@
 # Ignore everything:
 /*
 
-# Except src:
+# Except src and media:
 !/src
+!/media

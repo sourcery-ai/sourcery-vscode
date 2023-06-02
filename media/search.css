@@ -1,5 +1,5 @@
 body {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .hidden {
@@ -7,8 +7,6 @@ body {
 }
 
 textarea {
-	font-size: var(--vscode-editor-font-size);
-	font-family: var(--vscode-editor-font-family);
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
 }
-
-

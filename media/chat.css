@@ -1,11 +1,11 @@
 .user-message {
-	font-size: var(--vscode-editor-font-size);
-	font-family: var(--vscode-editor-font-family);
-	background-color: var(--vscode-input-background);
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
+  background-color: var(--vscode-input-background);
 }
 
 .assistant-message {
-	font-size: var(--vscode-editor-font-size);
-	font-family: var(--vscode-editor-font-family);
-	background-color: var(--vscode-editor-background);
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
+  background-color: var(--vscode-editor-background);
 }
