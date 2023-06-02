@@ -374,6 +374,14 @@ function registerCommands(
       if (activeEditor) {
         activeFile = activeEditor.document.uri;
       }
+      const allFiles = [];
+      for (const tabGroup of vscode.window.tabGroups.all) {
+        for (const tab of tabGroup.tabs) {
+          if (tab.input instanceof vscode.TabInputText) {
+            allFiles.push(tab.input.uri);
+          }
+        }
+      }
 
       let request: ExecuteCommandParams = {
         command: "chat/request",
@@ -381,7 +389,8 @@ function registerCommands(
           {
             message: message,
             selected: input,
-            active: activeFile,
+            active_file: activeFile,
+            all_open_files: allFiles,
           },
         ],
       };
