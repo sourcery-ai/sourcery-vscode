@@ -17,7 +17,7 @@
     currentAssistantMessage = null;
   }
 
-  // Function to add an assistant message to the chat interface
+  // Function to add an assistant message or add to the existing one
   function addAssistantMessage(message) {
     if (currentAssistantMessage != null) {
       currentAssistantMessage.textContent =
