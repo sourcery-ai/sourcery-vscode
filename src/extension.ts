@@ -192,9 +192,15 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.clearChat", () => {
-      // TODO This should clear the chat history in the binary, then clear the UI on
-      //      a successful response.
-      chatProvider.clearChat();
+      let request: ExecuteCommandParams = {
+        command: "chat/clear",
+        arguments: [],
+      };
+      languageClient
+        .sendRequest(ExecuteCommandRequest.type, request)
+        .then(() => {
+          chatProvider.clearChat();
+        });
     })
   );
 
