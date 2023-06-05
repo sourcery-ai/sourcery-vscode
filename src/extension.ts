@@ -32,6 +32,7 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
+import { ChatProvider } from "./chat";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -106,8 +107,9 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
 
 function registerNotifications(
   languageClient: LanguageClient,
-  tree: ScanResultProvider,
-  treeView: TreeView<TreeItem>,
+  scanResultTree: ScanResultProvider,
+  scanResultTreeView: TreeView<TreeItem>,
+  chatProvider: ChatProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -122,10 +124,14 @@ function registerNotifications(
 
   languageClient.onNotification("sourcery/vscode/scanResults", (params) => {
     if (params.diagnostics.length > 0) {
-      tree.update(params);
+      scanResultTree.update(params);
     }
-    treeView.title =
+    scanResultTreeView.title =
       "Results - " + params.results + " found in " + params.files + " files.";
+  });
+
+  languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
+    chatProvider.addResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -155,7 +161,8 @@ function registerCommands(
   languageClient: LanguageClient,
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
-  hubWebviewPanel: WebviewPanel
+  hubWebviewPanel: WebviewPanel,
+  chatProvider: ChatProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -180,6 +187,20 @@ function registerCommands(
     commands.registerCommand("sourcery.scan.toggleAdvanced", () => {
       // Tell the rules webview to toggle
       riProvider.toggle();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.clearChat", () => {
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/clear",
+        arguments: [],
+      };
+      languageClient
+        .sendRequest(ExecuteCommandRequest.type, request)
+        .then(() => {
+          chatProvider.clearChat();
+        });
     })
   );
 
@@ -352,6 +373,38 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.chat_request", (message: string) => {
+      const input = getValidInput();
+      const activeEditor = window.activeTextEditor;
+      let activeFile = undefined;
+      if (activeEditor) {
+        activeFile = activeEditor.document.uri;
+      }
+      const allFiles = [];
+      for (const tabGroup of vscode.window.tabGroups.all) {
+        for (const tab of tabGroup.tabs) {
+          if (tab.input instanceof vscode.TabInputText) {
+            allFiles.push(tab.input.uri);
+          }
+        }
+      }
+
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/request",
+        arguments: [
+          {
+            message: message,
+            selected: input,
+            active_file: activeFile,
+            all_open_files: allFiles,
+          },
+        ],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand(
       "sourcery.scan.rule",
       (rule, advanced: boolean, fix: boolean, language: string) => {
@@ -374,7 +427,7 @@ function registerCommands(
     tree.clear();
     treeView.title = "Results";
     let request: ExecuteCommandParams = {
-      command: "rule/scan",
+      command: "sourcery/rule/scan",
       arguments: [
         {
           rule: rule,
@@ -458,19 +511,36 @@ export function activate(context: ExtensionContext) {
   });
 
   const riProvider = new RuleInputProvider(context);
+
+  const chatProvider = new ChatProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      ChatProvider.viewType,
+      chatProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
   registerCommands(
     context,
     riProvider,
     languageClient,
     tree,
     treeView,
-    hubWebviewPanel
+    hubWebviewPanel,
+    chatProvider
   );
 
   showSourceryStatusBarItem(context);
 
   languageClient.start().then(() => {
-    registerNotifications(languageClient, tree, treeView, context);
+    registerNotifications(
+      languageClient,
+      tree,
+      treeView,
+      chatProvider,
+      context
+    );
   });
 }
 

@@ -135,7 +135,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.js")
+      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "search.js")
     );
 
     // Do the same for the stylesheet.
@@ -146,7 +146,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
     );
     const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "main.css")
+      vscode.Uri.joinPath(this._extensionUri, "media", "search.css")
     );
     // Use a nonce to only allow a specific script to be run.
     const nonce = randomBytes(16).toString("base64");
