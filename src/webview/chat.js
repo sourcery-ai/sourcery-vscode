@@ -20,8 +20,7 @@
   // Function to add an assistant message or add to the existing one
   function addAssistantMessage(message) {
     if (currentAssistantMessage != null) {
-      currentAssistantMessage.textContent =
-        currentAssistantMessage.textContent + message;
+      currentAssistantMessage.textContent += message;
     } else {
       let assistantMessageElement = document.createElement("div");
       assistantMessageElement.classList.add("assistant-message");
@@ -37,7 +36,7 @@
   }
 
   messageInput.addEventListener("keypress", (e) => {
-    if (e.which === 13) {
+    if (e.which === 13 && !e.shiftKey) {
       e.preventDefault();
       let message = messageInput.value.trim();
       messageInput.value = "";

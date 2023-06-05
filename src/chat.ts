@@ -54,7 +54,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "chat.js")
+      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "chat.js")
     );
 
     // Do the same for the stylesheet.
