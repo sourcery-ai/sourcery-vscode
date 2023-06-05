@@ -193,7 +193,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.clearChat", () => {
       let request: ExecuteCommandParams = {
-        command: "chat/clear",
+        command: "sourcery/chat/clear",
         arguments: [],
       };
       languageClient
@@ -390,7 +390,7 @@ function registerCommands(
       }
 
       let request: ExecuteCommandParams = {
-        command: "chat/request",
+        command: "sourcery/chat/request",
         arguments: [
           {
             message: message,
@@ -427,7 +427,7 @@ function registerCommands(
     tree.clear();
     treeView.title = "Results";
     let request: ExecuteCommandParams = {
-      command: "rule/scan",
+      command: "sourcery/rule/scan",
       arguments: [
         {
           rule: rule,
