@@ -46,7 +46,7 @@
     const message = event.data;
 
     if (message.command === "add_result") {
-      addAssistantMessageToUI(message.result);
+      addAssistantMessageToUI({ outcome: "success", textContent: message.result });
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -100,25 +100,14 @@
       thinkingMessage = null;
     }
     if (currentAssistantMessage != null) {
-      currentAssistantMessage.textContent += message;
+      currentAssistantMessage.textContent += message.textContent;
     } else {
-      const templateContents = `
-            <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
-            ${assistantAvatar}
-            <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
-              <p class="sidebar__chat-assistant--chat-bubble-text">
-                ${message}
-              </p>
-            </div>`;
-
-      const assistantMessageElement = document.createElement("li");
-      assistantMessageElement.classList.add(
-        "sidebar__chat-assistant--chat-bubble"
-      );
-      assistantMessageElement.classList.add(
-        "sidebar__chat-assistant--chat-bubble-agent"
-      );
-      assistantMessageElement.innerHTML = templateContents;
+      let assistantMessageElement = document.createElement("div");
+      assistantMessageElement.classList.add("assistant-message");
+      if (message.outcome === "error") {
+        assistantMessageElement.style.color = "red";
+      }
+      assistantMessageElement.textContent = message.textContent;
       chatContainer.append(assistantMessageElement);
       currentAssistantMessage = assistantMessageElement.querySelector(
         ".sidebar__chat-assistant--chat-bubble-text"
