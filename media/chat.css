@@ -1,11 +1,239 @@
-.user-message {
-  font-size: var(--vscode-editor-font-size);
-  font-family: var(--vscode-editor-font-family);
-  background-color: var(--vscode-input-background);
+/* Sidebar sections */
+.sidebar__section-container {
+  transition: all 0.3s ease;
+  overflow: auto;
+  max-height: 70vh;
 }
 
-.assistant-message {
-  font-size: var(--vscode-editor-font-size);
-  font-family: var(--vscode-editor-font-family);
+.sidebar__section-container.is-opening {
+  max-height: 70vh;
+}
+
+.sidebar__section-container:not(.active) {
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* ------------- Chat UI ------------- */
+.sidebar__chat-assistant--dialogue-container {
+  padding: 0 var(--spacing-md);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__chat-assistant--chat-bubble {
+  display: inline-grid;
+  align-items: flex-end;
+  grid-gap: var(--spacing-md) var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  word-break: break-word;
+}
+
+/* Change width of columns based on agent/user */
+.sidebar__chat-assistant--chat-bubble-agent {
+  grid-template-columns: 32px 1fr;
+}
+
+.sidebar__chat-assistant--chat-bubble-user {
+  grid-template-columns: 1fr 32px;
+}
+
+/* Styles for avatars */
+.sidebar__chat-assistant--chat-avatar-container {
+  background: var(--vscode-foreground);
+  padding: var(--spacing-xs);
+  border-radius: 100%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: auto;
+}
+
+.sidebar__chat-assistant--agent-avatar-image {
+  width: 100%;
+  display: block;
+}
+
+/* Styles for content inside chat bubbles */
+.sidebar__chat-assistant--chat-bubble-content-assistant,
+.sidebar__chat-assistant--code-block-container {
+  background-color: var(--vscode-settings-textInputBackground);
+  padding: var(--spacing-xs);
+  border-radius: var(--spacing-xs);
+}
+
+.sidebar__chat-assistant--chat-bubble-content-user {
+  background-color: var(--vscode-settings-textInputBackground);
+  padding: var(--spacing-xs);
+  border-radius: var(--spacing-xs);
+}
+
+.sidebar__chat-assistant--chat-bubble-text {
+  margin: 0;
+  color: var(--vscode-settings-textInputForeground);
+}
+
+.sidebar__chat-assistant--chat-bubble-inline-button {
+  /* Override a few things that are coming from the main CSS file */
+  display: inline-block;
+  width: auto;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.sidebar__chat-assistant--code-block-container {
   background-color: var(--vscode-editor-background);
+  color: var(--vscode-sideBar-foreground);
+}
+
+.sidebar__chat-assistant--code-block {
+  margin: 0;
+  font-family: var(--vscode-editor-font-family);
+  white-space: pre-line;
+}
+
+.sidebar__chat-assistant--code-block code {
+  font-size: var(--vscode-sidebar-font-size);
+}
+
+.sidebar__chat-assistant--chat-text-inline-code {
+  display: inline-block;
+  font-family: var(--vscode-editor-font-family);
+  font-size: var(--vscode-sidebar-font-size);
+}
+
+.sidebar__chat-assistant--chat-text-bold {
+  font-weight: 600;
+}
+
+.sidebar__chat-assistant--chat-text-separator {
+  display: block;
+  margin: var(--spacing-xxs);
+}
+
+.sidebar__chat-assistant--chat-numbered-list {
+  color: var(--vscode-editor-background);
+}
+
+/* Hover functionality for inline code references in sidebar */
+.sidebar__chat-assistant--chat-bubble-inline-button
+  .sidebar__chat-assistant--chat-text-inline-code {
+  text-decoration: underline;
+  text-underline-offset: var(--spacing-xxs);
+}
+
+.sidebar__chat-assistant--chat-bubble-inline-button:hover {
+  background: transparent;
+}
+
+.sidebar__chat-assistant--chat-bubble-inline-button:hover
+  .sidebar__chat-assistant--chat-text-inline-code {
+  text-decoration: none;
+}
+
+/* Don't round the specific corner where the avatar is, to make it look more like a chat bubble */
+.sidebar__chat-assistant--chat-bubble-agent
+  .sidebar__chat-assistant--chat-bubble-content {
+  border-bottom-left-radius: 0;
+}
+
+.sidebar__chat-assistant--chat-bubble-user
+  .sidebar__chat-assistant--chat-bubble-content {
+  border-bottom-right-radius: 0;
+}
+
+/* Make avatar bigger for user, since we're using an emoji for now */
+.sidebar__chat-assistant--chat-bubble-user
+  .sidebar__chat-assistant--agent-avatar-image {
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+.sidebar__chat-assistant--cursor {
+  display: inline-block;
+  animation: cursor-blink 1.5s steps(2) infinite;
+  width: 2px;
+}
+
+/* Style and animate typing dots */
+.sidebar__chat-assistant--agent-typing-dot {
+  display: inline-block;
+  height: var(--spacing-xxs);
+  width: var(--spacing-xxs);
+  background-color: var(--vscode-editor-background);
+  border-radius: 50%;
+  animation-name: typing-dots;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.sidebar__chat-assistant--agent-typing-dot:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
+.sidebar__chat-assistant--agent-typing-dot:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.sidebar__chat-assistant--agent-typing-dot:nth-of-type(3) {
+  animation-delay: 0.4s;
+}
+
+/* ------------- Text box container ------------- */
+.sidebar__chat-assistant--footer {
+  border-bottom: 1px solid var(--vscode-sideBar-border);
+  padding: var(--spacing-md);
+  background-color: var(--vscode-sideBar-background);
+  position: sticky;
+  bottom: -1px;
+}
+
+.sidebar__chat-assistant--textarea-container {
+  position: relative;
+}
+
+.sidebar__chat-assistant--textarea {
+  font-weight: var(--vscode-font-weight);
+  font-size: var(--vscode-font-size);
+  border-radius: var(--spacing-xxs);
+  background-color: var(--vscode-sideBar-dropBackground);
+  padding-right: 3rem;
+  outline: 1px solid transparent;
+  resize: none;
+}
+
+.sidebar__chat-assistant--textarea-send-button {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  outline: none;
+  border-radius: var(--spacing-xxs);
+  font-size: var(--vscode-sidebar-font-size);
+  background-color: transparent;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.sidebar__chat-assistant--textarea-send-icon {
+  fill: orange;
+  width: var(--spacing-lg);
+}
+
+/* Disabled state for send button */
+.sidebar__textarea-send-button--disabled {
+  pointer-events: none;
+  background-color: transparent;
+}
+
+.sidebar__textarea-send-button--disabled svg {
+  opacity: 0.2;
 }
