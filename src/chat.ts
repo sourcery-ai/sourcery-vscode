@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
-import { getValidInput } from "./extension";
 
 export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
@@ -31,7 +30,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       webviewView.webview
     );
 
-    const input = getValidInput();
+    webviewView.onDidChangeVisibility(() => {
+      if (this._view.visible) {
+        this._view.webview.postMessage({ command: "focus" });
+      }
+    });
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {

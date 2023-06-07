@@ -8,6 +8,8 @@
     ".sidebar__chat-assistant--dialogue-container"
   );
   const messageInput = document.getElementById("user-prompt");
+  messageInput.focus();
+
   let currentAssistantMessage;
 
   // Function to add a user message to the chat interface
@@ -92,6 +94,8 @@
       addAssistantMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearMessages();
+    } else if (message.command === "focus") {
+      messageInput.focus();
     }
   });
 
