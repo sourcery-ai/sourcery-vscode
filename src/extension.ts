@@ -131,7 +131,7 @@ function registerNotifications(
   });
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addResult({ outcome: "success", textContent: params.result });
+    chatProvider.addResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
