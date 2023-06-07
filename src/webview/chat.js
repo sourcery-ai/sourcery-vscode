@@ -4,13 +4,47 @@
 // It cannot access the main VS Code APIs directly.
 (function () {
   const vscode = acquireVsCodeApi();
+
   const chatContainer = document.querySelector(
     ".sidebar__chat-assistant--dialogue-container"
   );
   const messageInput = document.getElementById("user-prompt");
   messageInput.focus();
 
+  const sendButton = document.getElementById("send-button");
+  sendButton.onclick = sendUserMessage;
+
+  // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
+
+  // Communication between the webview and the extension proper
+  window.addEventListener("message", (event) => {
+    const message = event.data;
+
+    if (message.command === "add_result") {
+      addAssistantMessageToUI(message.result);
+    } else if (message.command === "clear_chat") {
+      clearAllMessages();
+    } else if (message.command === "focus") {
+      messageInput.focus();
+    }
+  });
+  function sendMessageToExtension(message) {
+    vscode.postMessage({ type: "chat_request", data: message });
+  }
+
+  function clearAllMessages() {
+    currentAssistantMessage = null;
+    chatContainer.textContent = "";
+  }
+
+  function sendUserMessage() {
+    const message = messageInput.value.trim();
+    messageInput.value = "";
+    addUserMessageToUI(message);
+    sendMessageToExtension(message);
+    checkTextarea();
+  }
 
   // Function to add a user message to the chat interface
   function addUserMessageToUI(message) {
@@ -24,7 +58,7 @@
               <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
             </div>
     `;
-    let userMessageElement = document.createElement("li");
+    const userMessageElement = document.createElement("li");
     userMessageElement.classList.add("sidebar__chat-assistant--chat-bubble");
     userMessageElement.classList.add(
       "sidebar__chat-assistant--chat-bubble-user"
@@ -51,7 +85,7 @@
               </p>
             </div>`;
 
-      let assistantMessageElement = document.createElement("li");
+      const assistantMessageElement = document.createElement("li");
       assistantMessageElement.classList.add(
         "sidebar__chat-assistant--chat-bubble"
       );
@@ -66,44 +100,7 @@
     }
   }
 
-  function clearMessages() {
-    currentAssistantMessage = null;
-    chatContainer.textContent = "";
-    checkTextarea();
-  }
-
-  messageInput.addEventListener("keypress", (e) => {
-    if (e.which === 13 && !e.shiftKey) {
-      e.preventDefault();
-      sendUserMessage();
-    }
-  });
-
-  function sendUserMessage() {
-    let message = messageInput.value.trim();
-    messageInput.value = "";
-    addUserMessageToUI(message);
-    sendMessageToExtension(message);
-    checkTextarea();
-  }
-
-  window.addEventListener("message", (event) => {
-    const message = event.data;
-
-    if (message.command === "add_result") {
-      addAssistantMessageToUI(message.result);
-    } else if (message.command === "clear_chat") {
-      clearMessages();
-    } else if (message.command === "focus") {
-      messageInput.focus();
-    }
-  });
-
-  const sendButton = document.getElementById("send-button");
-
-  sendButton.onclick = sendUserMessage;
-
-  // Function to check if the textarea is empty
+  // Enable/Disable send button depending on whether text area is empty
   function checkTextarea() {
     if (messageInput.value.trim() !== "") {
       sendButton.classList.remove("sidebar__textarea-send-button--disabled");
@@ -112,17 +109,21 @@
     }
   }
 
-  // Add event listener for input changes
+  // Check for disable/enable send button
   messageInput.addEventListener("input", checkTextarea);
 
-  // Add event listener for backspace key press
+  // Check to see if we need to disable send button on backspace
   messageInput.addEventListener("keydown", function (event) {
     if (event.key === "Backspace") {
       setTimeout(checkTextarea, 0);
     }
   });
 
-  function sendMessageToExtension(message) {
-    vscode.postMessage({ type: "chat_request", data: message });
-  }
+  // Listen for return key in order to send user messages
+  messageInput.addEventListener("keypress", (e) => {
+    if (e.which === 13 && !e.shiftKey) {
+      e.preventDefault();
+      sendUserMessage();
+    }
+  });
 })();
