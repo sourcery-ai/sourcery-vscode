@@ -100,14 +100,21 @@
       thinkingMessage = null;
     }
     if (currentAssistantMessage != null) {
-      currentAssistantMessage.textContent += message.textContent;
+      let assistantMessageSpan = document.createElement("span");
+      assistantMessageSpan.textContent = message.textContent;
+      if (message.outcome === "error") {
+        assistantMessageSpan.style.color = "red";
+      }
+      currentAssistantMessage.append(assistantMessageSpan);
     } else {
       let assistantMessageElement = document.createElement("div");
       assistantMessageElement.classList.add("assistant-message");
+      let assistantMessageSpan = document.createElement("span");
+      assistantMessageSpan.textContent = message.textContent;
       if (message.outcome === "error") {
-        assistantMessageElement.style.color = "red";
+        assistantMessageSpan.style.color = "red";
       }
-      assistantMessageElement.textContent = message.textContent;
+      assistantMessageElement.append(assistantMessageSpan);
       chatContainer.append(assistantMessageElement);
       currentAssistantMessage = assistantMessageElement.querySelector(
         ".sidebar__chat-assistant--chat-bubble-text"
