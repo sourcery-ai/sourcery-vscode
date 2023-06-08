@@ -164,7 +164,7 @@
   display: inline-block;
   height: var(--spacing-xxs);
   width: var(--spacing-xxs);
-  background-color: var(--vscode-editor-background);
+  background-color: var(--vscode-settings-textInputForeground);
   border-radius: 50%;
   animation-name: typing-dots;
   animation-duration: 0.8s;

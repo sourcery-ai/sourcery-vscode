@@ -16,6 +16,30 @@
 
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
+  let thinkingMessage;
+
+  const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
+              <img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
+                class="sidebar__chat-assistant--agent-avatar-image" />
+            </div>`;
+
+  function createThinkingMessage() {
+    const templateContents = `
+            <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
+            ${assistantAvatar}
+            <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
+              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
+              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
+              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
+            </div>`;
+    const result = document.createElement("li");
+    result.classList.add("sidebar__chat-assistant--chat-bubble");
+    result.classList.add("sidebar__chat-assistant--chat-bubble-agent");
+    result.innerHTML = templateContents;
+    return result;
+  }
+
+  const thinkingMessageElement = createThinkingMessage();
 
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
@@ -42,6 +66,7 @@
     const message = messageInput.value.trim();
     messageInput.value = "";
     addUserMessageToUI(message);
+    addAssistantThinkingMessageToUI();
     sendMessageToExtension(message);
     checkTextarea();
   }
@@ -70,15 +95,16 @@
 
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
+    if (thinkingMessage != null) {
+      thinkingMessage.remove();
+      thinkingMessage = null;
+    }
     if (currentAssistantMessage != null) {
       currentAssistantMessage.textContent += message;
     } else {
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
-            <div class="sidebar__chat-assistant--chat-avatar-container">
-              <img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
-                class="sidebar__chat-assistant--agent-avatar-image" />
-            </div>
+            ${assistantAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
               <p class="sidebar__chat-assistant--chat-bubble-text">
                 ${message}
@@ -98,6 +124,15 @@
         ".sidebar__chat-assistant--chat-bubble-text"
       );
     }
+  }
+
+  function addAssistantThinkingMessageToUI() {
+    if (thinkingMessage != null) {
+      thinkingMessage.remove();
+      thinkingMessage = null;
+    }
+    thinkingMessage = thinkingMessageElement;
+    chatContainer.append(thinkingMessage);
   }
 
   // Enable/Disable send button depending on whether text area is empty

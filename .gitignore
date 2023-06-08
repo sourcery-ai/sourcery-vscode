@@ -128,4 +128,4 @@ out/
 *.vsix
 sourcery_binaries/
 .idea/
-
+.DS_Store
