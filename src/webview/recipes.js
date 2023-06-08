@@ -11,6 +11,7 @@
     vscode.postMessage({ type: "recipe_request", data: recipe });
   }
 
+  // Add each recipe to the UI as a button with an associated event
   function addRecipesToUI(recipes) {
     for (let i = 0; i < recipes.length; i++) {
       const templateMessage = `<button class="${recipes[i]["id"]}" >${recipes[i]["name"]}</button>`;

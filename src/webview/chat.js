@@ -47,15 +47,16 @@
 
     if (message.command === "add_result") {
       addAssistantMessageToUI(message.result);
-    } else if (message.command === "recipe_message") {
-      addRecipeMessage(message.result);
+    } else if (message.command === "recipe_request") {
+      sendRecipeRequest(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
       messageInput.focus();
     }
   });
-  function sendMessageToExtension(message) {
+  function sendRequestToExtension(message) {
+    addAssistantThinkingMessageToUI();
     vscode.postMessage({ type: "chat_request", data: message });
   }
 
@@ -68,18 +69,17 @@
     const message = messageInput.value.trim();
     messageInput.value = "";
     addUserMessageToUI(message);
-    addAssistantThinkingMessageToUI();
-    sendMessageToExtension(message);
+    sendRequestToExtension(message);
     checkTextarea();
   }
 
-  function addRecipeMessage(message) {
+  function sendRecipeRequest(message) {
     // Ensure we don't add on to the previous message
     assistantMessageFinished();
     addAssistantMessageToUI("Executing Recipe: " + message);
     // Ensure new responses don't get added on to this one
     assistantMessageFinished();
-    addAssistantThinkingMessageToUI();
+    sendRequestToExtension(message);
   }
 
   function assistantMessageFinished() {

@@ -50,9 +50,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     this._view.webview.postMessage({ command: "add_result", result: result });
   }
 
-  public addRecipeMeesage(message) {
+  public executeRecipeRequest(message) {
     this._view.webview.postMessage({
-      command: "recipe_message",
+      command: "recipe_request",
       result: message,
     });
   }

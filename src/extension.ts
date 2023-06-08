@@ -412,35 +412,7 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.recipe_request", (message) => {
-      chatProvider.addRecipeMeesage(message.data);
-
-      const input = getValidInput();
-      const activeEditor = window.activeTextEditor;
-      let activeFile = undefined;
-      if (activeEditor) {
-        activeFile = activeEditor.document.uri;
-      }
-      const allFiles = [];
-      for (const tabGroup of vscode.window.tabGroups.all) {
-        for (const tab of tabGroup.tabs) {
-          if (tab.input instanceof vscode.TabInputText) {
-            allFiles.push(tab.input.uri);
-          }
-        }
-      }
-
-      let request: ExecuteCommandParams = {
-        command: "sourcery/recipe/request",
-        arguments: [
-          {
-            message: message,
-            selected: input,
-            active_file: activeFile,
-            all_open_files: allFiles,
-          },
-        ],
-      };
-      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+      chatProvider.executeRecipeRequest(message.data);
     })
   );
 
