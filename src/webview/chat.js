@@ -47,6 +47,8 @@
 
     if (message.command === "add_result") {
       addAssistantMessageToUI(message.result);
+    } else if (message.command === "recipe_message") {
+      addRecipeMessage(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -58,7 +60,7 @@
   }
 
   function clearAllMessages() {
-    currentAssistantMessage = null;
+    assistantMessageFinished();
     chatContainer.textContent = "";
   }
 
@@ -69,6 +71,19 @@
     addAssistantThinkingMessageToUI();
     sendMessageToExtension(message);
     checkTextarea();
+  }
+
+  function addRecipeMessage(message) {
+    // Ensure we don't add on to the previous message
+    assistantMessageFinished();
+    addAssistantMessageToUI("Executing Recipe: " + message);
+    // Ensure new responses don't get added on to this one
+    assistantMessageFinished();
+    addAssistantThinkingMessageToUI();
+  }
+
+  function assistantMessageFinished() {
+    currentAssistantMessage = null;
   }
 
   // Function to add a user message to the chat interface
@@ -90,7 +105,7 @@
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
-    currentAssistantMessage = null;
+    assistantMessageFinished();
   }
 
   // Function to add an assistant message or add to the existing one

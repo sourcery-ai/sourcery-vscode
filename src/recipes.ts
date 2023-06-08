@@ -8,6 +8,8 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
 
   private _extensionUri: vscode.Uri;
 
+  private _recipes;
+
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
   }
@@ -30,6 +32,11 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
       webviewView.webview
     );
 
+    this._view.webview.postMessage({
+      command: "add_recipes",
+      result: this._recipes,
+    });
+
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "recipe_request": {
@@ -38,6 +45,10 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
         }
       }
     });
+  }
+
+  public addRecipes(result) {
+    this._recipes = result;
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
@@ -73,7 +84,7 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     return `<!DOCTYPE html>
-			<html lang="en">
+			<html lang="en" xmlns="http://www.w3.org/1999/html">
 			<head>
 				<meta charset="UTF-8">
 				<!--
@@ -88,12 +99,8 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
 				<link href="${animationsUri}" rel="stylesheet">
 			</head>
 			<body>
-				<div class="btnContainer">
-					<button class="scanner-button" >Explain Code</button>
-				</div>
-				<div class="btnContainer">
-					<button class="replace-button" >Generate Unit Test</button>
-				</div>
+			    <section class="recipe-section">
+			    </section>
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;

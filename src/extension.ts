@@ -111,6 +111,7 @@ function registerNotifications(
   scanResultTree: ScanResultProvider,
   scanResultTreeView: TreeView<TreeItem>,
   chatProvider: ChatProvider,
+  recipeProvider: RecipeProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -133,6 +134,10 @@ function registerNotifications(
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
     chatProvider.addResult(params.result);
+  });
+
+  languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
+    recipeProvider.addRecipes(params.recipes);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -374,7 +379,7 @@ function registerCommands(
   );
 
   context.subscriptions.push(
-    commands.registerCommand("sourcery.chat_request", (message: string) => {
+    commands.registerCommand("sourcery.chat_request", (message) => {
       const input = getValidInput();
       const activeEditor = window.activeTextEditor;
       let activeFile = undefined;
@@ -392,6 +397,40 @@ function registerCommands(
 
       let request: ExecuteCommandParams = {
         command: "sourcery/chat/request",
+        arguments: [
+          {
+            message: message,
+            selected: input,
+            active_file: activeFile,
+            all_open_files: allFiles,
+          },
+        ],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.recipe_request", (message) => {
+      chatProvider.addRecipeMeesage(message.data);
+
+      const input = getValidInput();
+      const activeEditor = window.activeTextEditor;
+      let activeFile = undefined;
+      if (activeEditor) {
+        activeFile = activeEditor.document.uri;
+      }
+      const allFiles = [];
+      for (const tabGroup of vscode.window.tabGroups.all) {
+        for (const tab of tabGroup.tabs) {
+          if (tab.input instanceof vscode.TabInputText) {
+            allFiles.push(tab.input.uri);
+          }
+        }
+      }
+
+      let request: ExecuteCommandParams = {
+        command: "sourcery/recipe/request",
         arguments: [
           {
             message: message,
@@ -551,6 +590,7 @@ export function activate(context: ExtensionContext) {
       tree,
       treeView,
       chatProvider,
+      recipeProvider,
       context
     );
   });
