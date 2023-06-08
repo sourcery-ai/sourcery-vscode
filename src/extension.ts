@@ -33,6 +33,7 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider } from "./chat";
+import { RecipeProvider } from "./recipes";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -521,6 +522,17 @@ export function activate(context: ExtensionContext) {
       { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
+
+  const recipeProvider = new RecipeProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      RecipeProvider.viewType,
+      recipeProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
+
   registerCommands(
     context,
     riProvider,

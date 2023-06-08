@@ -60,6 +60,14 @@
 					"when": "sourcery.features.coding_assistant"
 				},
 				{
+					"id": "sourcery.recipes",
+					"name": "Recipes",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Recipes",
+					"when": "sourcery.features.coding_assistant"
+				},
+				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",
