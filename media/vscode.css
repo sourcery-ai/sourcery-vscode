@@ -1,9 +1,17 @@
 :root {
-  --container-paddding: 20px;
-  --input-padding-vertical: 6px;
-  --input-padding-horizontal: 4px;
-  --input-margin-vertical: 4px;
+  /* Spacing. Converted them to rem and added a few more in-between values here */
+  --container-padding: 1.25rem;
+  --input-padding-vertical: 0.375rem;
+  --input-padding-horizontal: 0.25rem;
+  --input-margin-vertical: 0.25rem;
   --input-margin-horizontal: 0;
+  --spacing-xxs: 0.25rem;
+  --spacing-xs: 0.375rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1rem;
+  --spacing-xl: 1.25rem;
+  --spacing-xxl: 1.5rem;
 }
 
 body {

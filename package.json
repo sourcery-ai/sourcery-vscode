@@ -53,11 +53,11 @@
 			"sourcery-explorer": [
 				{
 					"id": "sourcery.chat",
-					"name": "Chat",
+					"name": "Coding Assistant",
 					"type": "webview",
 					"icon": "sourcery-icon.png",
-					"contextualTitle": "Chat",
-					"when": "sourcery.features.code_understanding"
+					"contextualTitle": "Coding Assistant",
+					"when": "sourcery.features.coding_assistant"
 				},
 				{
 					"id": "sourcery.rules",

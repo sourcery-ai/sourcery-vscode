@@ -1,0 +1,26 @@
+/* Simple CSS animation to animate the agent cursor */
+@keyframes cursor-blink {
+  0% {
+    opacity: 0;
+  }
+}
+
+/* Animation for the typing dots */
+@keyframes typing-dots {
+  0% {
+    transform: translateY(0px);
+  }
+
+  40% {
+    transform: translateY(-0.25rem);
+    opacity: 0.4;
+  }
+
+  60% {
+    transform: translateY(0px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
