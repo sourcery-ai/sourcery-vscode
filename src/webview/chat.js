@@ -46,7 +46,7 @@
     const message = event.data;
 
     if (message.command === "add_result") {
-      addAssistantMessageToUI({ outcome: "success", textContent: message.result });
+      addAssistantMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -99,6 +99,16 @@
       thinkingMessage.remove();
       thinkingMessage = null;
     }
+
+    const addMessageToCurrentAssistantMessage = () => {
+      let assistantMessageSpan = document.createElement("span");
+      assistantMessageSpan.textContent = message.textContent;
+      if (message.outcome === "error") {
+        assistantMessageSpan.style.color = "red";
+      }
+      currentAssistantMessage.append(assistantMessageSpan);
+    };
+
     if (currentAssistantMessage != null) {
       let assistantMessageSpan = document.createElement("span");
       assistantMessageSpan.textContent = message.textContent;
@@ -107,18 +117,26 @@
       }
       currentAssistantMessage.append(assistantMessageSpan);
     } else {
-      let assistantMessageElement = document.createElement("div");
-      assistantMessageElement.classList.add("assistant-message");
-      let assistantMessageSpan = document.createElement("span");
-      assistantMessageSpan.textContent = message.textContent;
-      if (message.outcome === "error") {
-        assistantMessageSpan.style.color = "red";
-      }
-      assistantMessageElement.append(assistantMessageSpan);
+      const templateContents = `
+            <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
+            ${assistantAvatar}
+            <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
+              <p class="sidebar__chat-assistant--chat-bubble-text"></p>
+            </div>`;
+
+      const assistantMessageElement = document.createElement("li");
+      assistantMessageElement.classList.add(
+        "sidebar__chat-assistant--chat-bubble"
+      );
+      assistantMessageElement.classList.add(
+        "sidebar__chat-assistant--chat-bubble-agent"
+      );
+      assistantMessageElement.innerHTML = templateContents;
       chatContainer.append(assistantMessageElement);
       currentAssistantMessage = assistantMessageElement.querySelector(
         ".sidebar__chat-assistant--chat-bubble-text"
       );
+      addMessageToCurrentAssistantMessage();
     }
   }
 
