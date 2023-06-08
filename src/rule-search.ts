@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
-import { getValidInput } from "./extension";
+import { getSelectionLocation } from "./extension";
 
 export class RuleInputProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.rules";
@@ -54,7 +54,7 @@ export class RuleInputProvider implements vscode.WebviewViewProvider {
       webviewView.webview
     );
 
-    const input = getValidInput();
+    const input = getSelectionLocation();
     this.setPattern(input);
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
