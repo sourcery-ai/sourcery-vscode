@@ -75,9 +75,7 @@
   function addUserMessageToUI(message) {
     const templateMessage = `
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
-              <p class="sidebar__chat-assistant--chat-bubble-text">
-                ${message}
-              </p>
+              <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>
             <div class="sidebar__chat-assistant--chat-avatar-container">
               <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
@@ -106,9 +104,7 @@
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
             ${assistantAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
-              <p class="sidebar__chat-assistant--chat-bubble-text">
-                ${message}
-              </p>
+              <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>`;
 
       const assistantMessageElement = document.createElement("li");
