@@ -47,7 +47,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public addResult(result) {
-    this._view.webview.postMessage({ command: "add_result", result: result });
+    this._view.webview.postMessage({
+      command: "add_result",
+      result: result,
+    });
   }
 
   public clearChat() {

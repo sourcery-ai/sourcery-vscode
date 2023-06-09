@@ -97,14 +97,24 @@
       thinkingMessage.remove();
       thinkingMessage = null;
     }
+
+    const addMessageToCurrentAssistantMessage = () => {
+      let assistantMessageSpan = document.createElement("span");
+      assistantMessageSpan.textContent = message.textContent;
+      if (message.outcome === "error") {
+        assistantMessageSpan.style.color = "red";
+      }
+      currentAssistantMessage.append(assistantMessageSpan);
+    };
+
     if (currentAssistantMessage != null) {
-      currentAssistantMessage.textContent += message;
+      addMessageToCurrentAssistantMessage();
     } else {
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
             ${assistantAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
-              <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
+              <p class="sidebar__chat-assistant--chat-bubble-text"></p>
             </div>`;
 
       const assistantMessageElement = document.createElement("li");
@@ -119,6 +129,7 @@
       currentAssistantMessage = assistantMessageElement.querySelector(
         ".sidebar__chat-assistant--chat-bubble-text"
       );
+      addMessageToCurrentAssistantMessage();
     }
   }
 
