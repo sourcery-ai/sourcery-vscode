@@ -74,6 +74,7 @@
 .sidebar__chat-assistant--chat-bubble-text {
   margin: 0;
   color: var(--vscode-settings-textInputForeground);
+  white-space: pre-wrap;
 }
 
 .sidebar__chat-assistant--chat-bubble-inline-button {
