@@ -2,7 +2,7 @@
 .sidebar__section-container {
   transition: all 0.3s ease;
   overflow: auto;
-  max-height: 70vh;
+  max-height: 85vh;
 }
 
 .sidebar__section-container.is-opening {
@@ -190,8 +190,9 @@
   border-bottom: 1px solid var(--vscode-sideBar-border);
   padding: var(--spacing-md);
   background-color: var(--vscode-sideBar-background);
-  position: sticky;
+  position: absolute;
   bottom: -1px;
+  width: 100%;
 }
 
 .sidebar__chat-assistant--textarea-container {

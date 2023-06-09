@@ -32,6 +32,7 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider } from "./chat";
+import { RecipeProvider } from "./recipes";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -114,6 +115,7 @@ function registerNotifications(
   scanResultTree: ScanResultProvider,
   scanResultTreeView: TreeView<TreeItem>,
   chatProvider: ChatProvider,
+  recipeProvider: RecipeProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -136,6 +138,10 @@ function registerNotifications(
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
     chatProvider.addResult(params.result);
+  });
+
+  languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
+    recipeProvider.addRecipes(params.recipes);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -377,7 +383,7 @@ function registerCommands(
   );
 
   context.subscriptions.push(
-    commands.registerCommand("sourcery.chat_request", (message: string) => {
+    commands.registerCommand("sourcery.chat_request", (message) => {
       const selectionLocation = getSelectionLocation();
       const activeEditor = window.activeTextEditor;
       let activeFile = undefined;
@@ -405,6 +411,12 @@ function registerCommands(
         ],
       };
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.recipe_request", (message) => {
+      chatProvider.executeRecipeRequest(message.data);
     })
   );
 
@@ -525,6 +537,17 @@ export function activate(context: ExtensionContext) {
       { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
+
+  const recipeProvider = new RecipeProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      RecipeProvider.viewType,
+      recipeProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
+
   registerCommands(
     context,
     riProvider,
@@ -543,6 +566,7 @@ export function activate(context: ExtensionContext) {
       tree,
       treeView,
       chatProvider,
+      recipeProvider,
       context
     );
   });

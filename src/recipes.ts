@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 
-export class ChatProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "sourcery.chat";
+export class RecipeProvider implements vscode.WebviewViewProvider {
+  public static readonly viewType = "sourcery.recipes";
 
   private _view?: vscode.WebviewView;
 
   private _extensionUri: vscode.Uri;
+
+  private _recipes;
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -30,44 +32,29 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       webviewView.webview
     );
 
-    webviewView.onDidChangeVisibility(() => {
-      if (this._view.visible) {
-        this._view.webview.postMessage({ command: "focus" });
-      }
+    this._view.webview.postMessage({
+      command: "add_recipes",
+      result: this._recipes,
     });
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "chat_request": {
-          vscode.commands.executeCommand("sourcery.chat_request", data);
+        case "recipe_request": {
+          vscode.commands.executeCommand("sourcery.recipe_request", data);
           break;
         }
       }
     });
   }
 
-  public addResult(result) {
-    this._view.webview.postMessage({
-      command: "add_result",
-      result: result,
-    });
-  }
-
-  public executeRecipeRequest(message) {
-    this._view.webview.postMessage({
-      command: "recipe_request",
-      result: message,
-    });
-  }
-
-  public clearChat() {
-    this._view.webview.postMessage({ command: "clear_chat" });
+  public addRecipes(result) {
+    this._recipes = result;
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "chat.js")
+      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "recipes.js")
     );
 
     // Do the same for the stylesheet.
@@ -76,9 +63,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     );
     const styleVSCodeUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
-    );
-    const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "chat.css")
     );
     const animationsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "animations.css")
@@ -100,7 +84,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     return `<!DOCTYPE html>
-			<html lang="en">
+			<html lang="en" xmlns="http://www.w3.org/1999/html">
 			<head>
 				<meta charset="UTF-8">
 				<!--
@@ -112,29 +96,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 				
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
-				<link href="${styleMainUri}" rel="stylesheet">
 				<link href="${animationsUri}" rel="stylesheet">
 			</head>
 			<body>
-                <section class="sidebar__section-container active" data-section="chat-assistant">
-                  <ul class="sidebar__chat-assistant--dialogue-container">
-  
-                  </ul>
-                </section>
-                <footer class="sidebar__chat-assistant--footer">
-                  <section class="sidebar__chat-assistant--textarea-container">
-                    <textarea class="sidebar__chat-assistant--textarea" placeholder="Type your message here!"
-                      id="user-prompt"></textarea>
-                    <button class="sidebar__chat-assistant--textarea-send-button sidebar__textarea-send-button--disabled"
-                      id="send-button">
-                      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
-                        class="sidebar__chat-assistant--textarea-send-icon">
-                        <path
-                          d="m498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6l-119.6-49.7-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1s-20.3-16.7-20.3-29.9v-83.6c0-4 1.5-7.8 4.2-10.7l167.6-182.9c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7l-203.4 180.7-88.3-44.2c-10.6-5.3-17.4-15.9-17.7-27.7s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
-                      </svg>
-                    </button>
-                  </section>
-                </footer>
+			    <section class="recipe-section">
+			    </section>
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;
