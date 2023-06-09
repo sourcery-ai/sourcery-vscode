@@ -75,9 +75,7 @@
   function addUserMessageToUI(message) {
     const templateMessage = `
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
-              <p class="sidebar__chat-assistant--chat-bubble-text">
-                ${message}
-              </p>
+              <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>
             <div class="sidebar__chat-assistant--chat-avatar-container">
               <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
@@ -110,12 +108,7 @@
     };
 
     if (currentAssistantMessage != null) {
-      let assistantMessageSpan = document.createElement("span");
-      assistantMessageSpan.textContent = message.textContent;
-      if (message.outcome === "error") {
-        assistantMessageSpan.style.color = "red";
-      }
-      currentAssistantMessage.append(assistantMessageSpan);
+      addMessageToCurrentAssistantMessage();
     } else {
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->

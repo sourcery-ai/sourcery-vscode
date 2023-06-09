@@ -11,7 +11,6 @@ import {
   extensions,
   Range,
   StatusBarAlignment,
-  TextDocumentShowOptions,
   TextEditorRevealType,
   TreeItem,
   TreeView,
@@ -80,16 +79,21 @@ function createLangServer(): LanguageClient {
   return new LanguageClient(command, serverOptions, clientOptions);
 }
 
-export function getValidInput(): string | null {
+export function getSelectionLocation(): { uri: string; range: Range } | null {
   const editor = window.activeTextEditor;
 
   if (editor) {
-    const document = editor.document;
-    const selection = editor.selection;
+    return { uri: editor.document.uri.toString(), range: editor.selection }; // Selection extends Range
+  }
 
-    // Get the text within the selection
-    let text = document.getText(selection);
-    return text;
+  return null;
+}
+
+export function getSelectedText(): string | null {
+  const editor = window.activeTextEditor;
+
+  if (editor) {
+    return editor.document.getText(editor.selection);
   }
 
   return null;
@@ -285,7 +289,7 @@ function registerCommands(
       vscode.commands.executeCommand("setContext", "sourceryRulesActive", true);
 
       vscode.commands.executeCommand("sourcery.rules.focus").then(() => {
-        const input = getValidInput();
+        const input = getSelectedText();
         riProvider.setPattern(input);
       });
     })
@@ -374,7 +378,7 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat_request", (message: string) => {
-      const input = getValidInput();
+      const selectionLocation = getSelectionLocation();
       const activeEditor = window.activeTextEditor;
       let activeFile = undefined;
       if (activeEditor) {
@@ -394,7 +398,7 @@ function registerCommands(
         arguments: [
           {
             message: message,
-            selected: input,
+            selected: selectionLocation,
             active_file: activeFile,
             all_open_files: allFiles,
           },
