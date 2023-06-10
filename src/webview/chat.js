@@ -167,9 +167,10 @@
     } else {
       sendButton.classList.add("sidebar__textarea-send-button--disabled");
     }
+    adjustTextareaHeight(messageInput);
   }
 
-  // Check for disable/enable send button
+  // Check for disable/enable send button and sizing
   messageInput.addEventListener("input", checkTextarea);
 
   // Check to see if we need to disable send button on backspace
@@ -186,4 +187,15 @@
       sendUserMessage();
     }
   });
+
+  const adjustTextareaHeight = (textarea) => {
+    // Reset height to auto to get the actual scroll height, and set it to that value
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+
+    // Check if scrolling occurs after setting the new height
+    if (textarea.clientHeight < textarea.scrollHeight) {
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+  };
 })();
