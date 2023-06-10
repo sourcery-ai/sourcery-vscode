@@ -124,7 +124,7 @@
       assistantMessageSpan.scrollIntoView();
     };
 
-    if (currentAssistantMessage != null) {
+    if (currentAssistantMessage != null && message.outcome !== "error") {
       addMessageToCurrentAssistantMessage();
     } else {
       const templateContents = `
