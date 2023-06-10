@@ -156,13 +156,13 @@
 
 /* Error states inside chat bubbles */
 .sidebar__chat-assistant--chat-bubble-error
-  .sidebar__chat-assistant--chat-bubble-content {
+  .sidebar__chat-assistant--chat-bubble-content-assistant {
   background: var(--vscode-inputValidation-errorBackground);
 }
 
 .sidebar__chat-assistant--chat-bubble-error
   .sidebar__chat-assistant--chat-bubble-text {
-  color: var(--vscode-sideBar-foreground);
+  color: var(--vscode-inputValidation-errorForeground);
 }
 
 .sidebar__chat-assistant--chat-bubble-error

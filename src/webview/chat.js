@@ -117,9 +117,6 @@
     const addMessageToCurrentAssistantMessage = () => {
       let assistantMessageSpan = document.createElement("span");
       assistantMessageSpan.textContent = message.textContent;
-      if (message.outcome === "error") {
-        assistantMessageSpan.style.color = "red";
-      }
       currentAssistantMessage.append(assistantMessageSpan);
       assistantMessageSpan.scrollIntoView();
     };
@@ -141,6 +138,12 @@
       assistantMessageElement.classList.add(
         "sidebar__chat-assistant--chat-bubble-agent"
       );
+
+      if (message.outcome === "error") {
+        assistantMessageElement.classList.add(
+          "sidebar__chat-assistant--chat-bubble-error"
+        );
+      }
       assistantMessageElement.innerHTML = templateContents;
       chatContainer.append(assistantMessageElement);
       currentAssistantMessage = assistantMessageElement.querySelector(
