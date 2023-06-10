@@ -103,6 +103,7 @@
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
+    userMessageElement.scrollIntoView();
     assistantMessageFinished();
   }
 
@@ -120,6 +121,7 @@
         assistantMessageSpan.style.color = "red";
       }
       currentAssistantMessage.append(assistantMessageSpan);
+      assistantMessageSpan.scrollIntoView();
     };
 
     if (currentAssistantMessage != null) {
@@ -155,6 +157,7 @@
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
+    thinkingMessage.scrollIntoView();
   }
 
   // Enable/Disable send button depending on whether text area is empty
