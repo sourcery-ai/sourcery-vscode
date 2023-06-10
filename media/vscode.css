@@ -61,7 +61,8 @@ button {
   outline-offset: 2px !important;
   color: var(--vscode-button-foreground);
   background: var(--vscode-button-background);
-  margin: 2.5px 2.5px 2.5px 2.5px;
+  margin-top: 2.5px;
+  margin-bottom: 2.5px;
 }
 
 button:hover {
