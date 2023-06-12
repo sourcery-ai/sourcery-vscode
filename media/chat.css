@@ -154,6 +154,26 @@
   text-align: center;
 }
 
+/* Error states inside chat bubbles */
+.sidebar__chat-assistant--chat-bubble-error
+  .sidebar__chat-assistant--chat-bubble-content-assistant {
+  background: var(--vscode-inputValidation-errorBackground);
+}
+
+.sidebar__chat-assistant--chat-bubble-error
+  .sidebar__chat-assistant--chat-bubble-text {
+  color: var(--vscode-inputValidation-errorForeground);
+}
+
+.sidebar__chat-assistant--chat-bubble-error
+  .sidebar__chat-assistant--chat-avatar-container {
+  background: var(--vscode-inputValidation-errorBackground);
+}
+
+.sidebar__chat-assistant--chat-bubble-error svg {
+  fill: var(--vscode-sideBar-foreground);
+}
+
 .sidebar__chat-assistant--cursor {
   display: inline-block;
   animation: cursor-blink 1.5s steps(2) infinite;

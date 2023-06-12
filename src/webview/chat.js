@@ -76,7 +76,10 @@
   function sendRecipeRequest(message) {
     // Ensure we don't add on to the previous message
     assistantMessageFinished();
-    addAssistantMessageToUI("Executing Recipe: " + message);
+    addAssistantMessageToUI({
+      textContent: "Executing Recipe: " + message,
+      outcome: "success",
+    });
     // Ensure new responses don't get added on to this one
     assistantMessageFinished();
     sendRequestToExtension(message);
@@ -103,6 +106,7 @@
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
+    userMessageElement.scrollIntoView();
     assistantMessageFinished();
   }
 
@@ -116,13 +120,11 @@
     const addMessageToCurrentAssistantMessage = () => {
       let assistantMessageSpan = document.createElement("span");
       assistantMessageSpan.textContent = message.textContent;
-      if (message.outcome === "error") {
-        assistantMessageSpan.style.color = "red";
-      }
       currentAssistantMessage.append(assistantMessageSpan);
+      assistantMessageSpan.scrollIntoView();
     };
 
-    if (currentAssistantMessage != null) {
+    if (currentAssistantMessage != null && message.outcome !== "error") {
       addMessageToCurrentAssistantMessage();
     } else {
       const templateContents = `
@@ -139,6 +141,12 @@
       assistantMessageElement.classList.add(
         "sidebar__chat-assistant--chat-bubble-agent"
       );
+
+      if (message.outcome === "error") {
+        assistantMessageElement.classList.add(
+          "sidebar__chat-assistant--chat-bubble-error"
+        );
+      }
       assistantMessageElement.innerHTML = templateContents;
       chatContainer.append(assistantMessageElement);
       currentAssistantMessage = assistantMessageElement.querySelector(
@@ -155,6 +163,7 @@
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
+    thinkingMessage.scrollIntoView();
   }
 
   // Enable/Disable send button depending on whether text area is empty
@@ -164,9 +173,10 @@
     } else {
       sendButton.classList.add("sidebar__textarea-send-button--disabled");
     }
+    adjustTextareaHeight(messageInput);
   }
 
-  // Check for disable/enable send button
+  // Check for disable/enable send button and sizing
   messageInput.addEventListener("input", checkTextarea);
 
   // Check to see if we need to disable send button on backspace
@@ -183,4 +193,15 @@
       sendUserMessage();
     }
   });
+
+  const adjustTextareaHeight = (textarea) => {
+    // Reset height to auto to get the actual scroll height, and set it to that value
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+
+    // Check if scrolling occurs after setting the new height
+    if (textarea.clientHeight < textarea.scrollHeight) {
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+  };
 })();
