@@ -76,7 +76,10 @@
   function sendRecipeRequest(message) {
     // Ensure we don't add on to the previous message
     assistantMessageFinished();
-    addAssistantMessageToUI("Executing Recipe: " + message);
+    addAssistantMessageToUI({
+      textContent: "Executing Recipe: " + message,
+      outcome: "success",
+    });
     // Ensure new responses don't get added on to this one
     assistantMessageFinished();
     sendRequestToExtension(message);
