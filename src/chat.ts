@@ -1,6 +1,21 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 
+enum ChatResultOutcome {
+  Success = "success",
+  Error = "error",
+}
+
+type ChatResult = {
+  outcome: ChatResultOutcome;
+  textContent: string;
+};
+
+export type ChatRequest = {
+  type: string;
+  data: string;
+};
+
 export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
 
@@ -36,7 +51,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       }
     });
 
-    webviewView.webview.onDidReceiveMessage(async (data) => {
+    webviewView.webview.onDidReceiveMessage(async (data: ChatRequest) => {
       switch (data.type) {
         case "chat_request": {
           vscode.commands.executeCommand("sourcery.chat_request", data);
@@ -46,14 +61,14 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public addResult(result) {
+  public addResult(result: ChatResult) {
     this._view.webview.postMessage({
       command: "add_result",
       result: result,
     });
   }
 
-  public executeRecipeRequest(message) {
+  public executeRecipeRequest(message: string) {
     this._view.webview.postMessage({
       command: "recipe_request",
       result: message,
