@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
+import { marked } from "marked";
 
 enum ChatResultOutcome {
   Success = "success",
@@ -22,6 +23,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
   private _extensionUri: vscode.Uri;
+
+  private currentAssistantMessage: string = "";
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -54,6 +57,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data: ChatRequest) => {
       switch (data.type) {
         case "chat_request": {
+          this.currentAssistantMessage = "";
           vscode.commands.executeCommand("sourcery.chat_request", data);
           break;
         }
@@ -62,13 +66,23 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public addResult(result: ChatResult) {
+    if (result.outcome === ChatResultOutcome.Success) {
+      this.currentAssistantMessage += result.textContent;
+    }
+
+    const rendered = marked(this.currentAssistantMessage, {
+      gfm: true,
+      breaks: true,
+    });
+
     this._view.webview.postMessage({
       command: "add_result",
-      result: result,
+      result: { outcome: result.outcome, textContent: rendered },
     });
   }
 
   public executeRecipeRequest(message: string) {
+    this.currentAssistantMessage = "";
     this._view.webview.postMessage({
       command: "recipe_request",
       result: message,
@@ -77,6 +91,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   public clearChat() {
     this._view.webview.postMessage({ command: "clear_chat" });
+    this.currentAssistantMessage = "";
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
