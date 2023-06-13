@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
+import { ColorThemeKind } from "vscode";
 import { randomBytes } from "crypto";
 import { marked } from "marked";
 import hljs from "highlight.js";
 import { markedHighlight } from "marked-highlight";
-import { sanitize, isSupported } from "isomorphic-dompurify";
+import { sanitize } from "isomorphic-dompurify";
 
 marked.use(
   markedHighlight({
@@ -128,9 +129,17 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     const animationsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "animations.css")
     );
-    const hljsUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "hljs.css")
-    );
+    let hljsUri;
+    if (vscode.window.activeColorTheme.kind === ColorThemeKind.Light) {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github.min.css")
+      );
+    } else {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github-dark.min.css")
+      );
+    }
+
     // Use a nonce to only allow a specific script to be run.
     const nonce = randomBytes(16).toString("base64");
 
