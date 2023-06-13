@@ -1,6 +1,18 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 import { marked } from "marked";
+import hljs from "highlight.js";
+import { markedHighlight } from "marked-highlight";
+
+marked.use(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      return hljs.highlightAuto(code).value;
+    },
+  })
+);
 
 enum ChatResultOutcome {
   Success = "success",
@@ -113,6 +125,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     const animationsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "animations.css")
     );
+    const hljsUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "hljs.css")
+    );
     // Use a nonce to only allow a specific script to be run.
     const nonce = randomBytes(16).toString("base64");
 
@@ -144,6 +159,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
 				<link href="${animationsUri}" rel="stylesheet">
+				<link href="${hljsUri}" rel="stylesheet">
+
 			</head>
 			<body>
                 <section class="sidebar__section-container active" data-section="chat-assistant">

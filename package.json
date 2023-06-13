@@ -417,7 +417,9 @@
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
+		"highlight.js": "^11.8.0",
 		"marked": "^5.1.0",
+		"marked-highlight": "^2.0.1",
 		"vscode-languageclient": "^8.1.0"
 	},
 	"__metadata": {
