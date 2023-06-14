@@ -69,7 +69,7 @@
     const message = messageInput.value.trim();
     messageInput.value = "";
     addUserMessageToUI(message);
-    sendRequestToExtension(message);
+    sendRequestToExtension({ message, kind: "user_message" });
     checkTextarea();
   }
 
@@ -77,12 +77,12 @@
     // Ensure we don't add on to the previous message
     assistantMessageFinished();
     addAssistantMessageToUI({
-      textContent: "Executing Recipe: " + message,
+      textContent: "Executing Recipe: " + message.name,
       outcome: "success",
     });
     // Ensure new responses don't get added on to this one
     assistantMessageFinished();
-    sendRequestToExtension(message);
+    sendRequestToExtension({ ...message, kind: "recipe_request" });
   }
 
   function assistantMessageFinished() {

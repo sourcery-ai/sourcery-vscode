@@ -21,7 +21,7 @@
       buttonContainer
         .querySelector(`.${recipes[i]["id"]}`)
         .addEventListener("click", () => {
-          sendMessageToExtension(recipes[i]["name"]);
+          sendMessageToExtension(recipes[i]);
         });
       recipeSection.append(buttonContainer);
     }
