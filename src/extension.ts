@@ -31,7 +31,7 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
-import { ChatProvider } from "./chat";
+import { ChatProvider, ChatRequest } from "./chat";
 import { RecipeProvider } from "./recipes";
 
 function createLangServer(): LanguageClient {
@@ -383,41 +383,47 @@ function registerCommands(
   );
 
   context.subscriptions.push(
-    commands.registerCommand("sourcery.chat_request", (message) => {
-      const selectionLocation = getSelectionLocation();
-      const activeEditor = window.activeTextEditor;
-      let activeFile = undefined;
-      if (activeEditor) {
-        activeFile = activeEditor.document.uri;
-      }
-      const allFiles = [];
-      for (const tabGroup of vscode.window.tabGroups.all) {
-        for (const tab of tabGroup.tabs) {
-          if (tab.input instanceof vscode.TabInputText) {
-            allFiles.push(tab.input.uri);
+    commands.registerCommand(
+      "sourcery.chat_request",
+      (message: ChatRequest) => {
+        const selectionLocation = getSelectionLocation();
+        const activeEditor = window.activeTextEditor;
+        let activeFile = undefined;
+        if (activeEditor) {
+          activeFile = activeEditor.document.uri;
+        }
+        const allFiles = [];
+        for (const tabGroup of vscode.window.tabGroups.all) {
+          for (const tab of tabGroup.tabs) {
+            if (tab.input instanceof vscode.TabInputText) {
+              allFiles.push(tab.input.uri);
+            }
           }
         }
-      }
 
-      let request: ExecuteCommandParams = {
-        command: "sourcery/chat/request",
-        arguments: [
-          {
-            message: message,
-            selected: selectionLocation,
-            active_file: activeFile,
-            all_open_files: allFiles,
-          },
-        ],
-      };
-      languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    })
+        let request: ExecuteCommandParams = {
+          command: "sourcery/chat/request",
+          arguments: [
+            {
+              message: message,
+              selected: selectionLocation,
+              active_file: activeFile,
+              all_open_files: allFiles,
+            },
+          ],
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+      }
+    )
   );
 
   context.subscriptions.push(
-    commands.registerCommand("sourcery.recipe_request", (message) => {
-      chatProvider.executeRecipeRequest(message.data);
-    })
+    commands.registerCommand(
+      "sourcery.recipe_request",
+      (message: ChatRequest) => {
+        chatProvider.executeRecipeRequest(message.data);
+      }
+    )
   );
 
   context.subscriptions.push(

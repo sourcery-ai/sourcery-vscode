@@ -91,6 +91,17 @@
   color: var(--vscode-sideBar-foreground);
 }
 
+.sidebar__chat-assistant--chat-bubble-text code {
+  font-family: var(--vscode-editor-font-family);
+  font-size: var(--vscode-sidebar-font-size);
+}
+
+.sidebar__chat-assistant--chat-bubble-text pre {
+  background-color: var(--vscode-editor-background);
+  margin: 0;
+  border-radius: var(--spacing-xs);
+}
+
 .sidebar__chat-assistant--code-block {
   margin: 0;
   font-family: var(--vscode-editor-font-family);

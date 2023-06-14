@@ -398,9 +398,10 @@
 		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
 		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode",
 		"format": "prettier --write .",
-  		"lint:format": "prettier --check ."
+		"lint:format": "prettier --check ."
 	},
 	"devDependencies": {
+		"@types/marked": "^5.0.0",
 		"@types/mocha": "^10.0.1",
 		"@types/node": "^18.15.1",
 		"@types/vscode": "^1.76.0",
@@ -416,6 +417,10 @@
 		"vscode-test": "^1.6.1"
 	},
 	"dependencies": {
+		"highlight.js": "^11.8.0",
+		"isomorphic-dompurify": "^1.6.0",
+		"marked": "^5.1.0",
+		"marked-highlight": "^2.0.1",
 		"vscode-languageclient": "^8.1.0"
 	},
 	"__metadata": {

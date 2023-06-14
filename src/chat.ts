@@ -1,5 +1,35 @@
 import * as vscode from "vscode";
+import { ColorThemeKind } from "vscode";
 import { randomBytes } from "crypto";
+import { marked } from "marked";
+import hljs from "highlight.js";
+import { markedHighlight } from "marked-highlight";
+import { sanitize } from "isomorphic-dompurify";
+
+marked.use(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      return hljs.highlightAuto(code).value;
+    },
+  })
+);
+
+enum ChatResultOutcome {
+  Success = "success",
+  Error = "error",
+}
+
+type ChatResult = {
+  outcome: ChatResultOutcome;
+  textContent: string;
+};
+
+export type ChatRequest = {
+  type: string;
+  data: string;
+};
 
 export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
@@ -7,6 +37,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
   private _extensionUri: vscode.Uri;
+
+  private currentAssistantMessage: string = "";
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -36,9 +68,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       }
     });
 
-    webviewView.webview.onDidReceiveMessage(async (data) => {
+    webviewView.webview.onDidReceiveMessage(async (data: ChatRequest) => {
       switch (data.type) {
         case "chat_request": {
+          this.currentAssistantMessage = "";
           vscode.commands.executeCommand("sourcery.chat_request", data);
           break;
         }
@@ -46,14 +79,31 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public addResult(result) {
+  public addResult(result: ChatResult) {
+    // Send the whole message we've been streamed so far to the webview,
+    // after converting from markdown to html
+
+    if (result.outcome === ChatResultOutcome.Success) {
+      this.currentAssistantMessage += result.textContent;
+    } else {
+      this.currentAssistantMessage = result.textContent;
+    }
+
+    const rendered = marked(this.currentAssistantMessage, {
+      gfm: true,
+      breaks: true,
+    });
+
+    const sanitized = sanitize(rendered);
+
     this._view.webview.postMessage({
       command: "add_result",
-      result: result,
+      result: { outcome: result.outcome, textContent: sanitized },
     });
   }
 
-  public executeRecipeRequest(message) {
+  public executeRecipeRequest(message: string) {
+    this.currentAssistantMessage = "";
     this._view.webview.postMessage({
       command: "recipe_request",
       result: message,
@@ -62,6 +112,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   public clearChat() {
     this._view.webview.postMessage({ command: "clear_chat" });
+    this.currentAssistantMessage = "";
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
@@ -83,6 +134,17 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     const animationsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "animations.css")
     );
+    let hljsUri;
+    if (vscode.window.activeColorTheme.kind === ColorThemeKind.Light) {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github.min.css")
+      );
+    } else {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github-dark.min.css")
+      );
+    }
+
     // Use a nonce to only allow a specific script to be run.
     const nonce = randomBytes(16).toString("base64");
 
@@ -114,6 +176,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
 				<link href="${animationsUri}" rel="stylesheet">
+				<link href="${hljsUri}" rel="stylesheet">
+
 			</head>
 			<body>
                 <section class="sidebar__section-container active" data-section="chat-assistant">

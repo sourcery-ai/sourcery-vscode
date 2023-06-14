@@ -117,15 +117,15 @@
       thinkingMessage = null;
     }
 
-    const addMessageToCurrentAssistantMessage = () => {
-      let assistantMessageSpan = document.createElement("span");
-      assistantMessageSpan.textContent = message.textContent;
-      currentAssistantMessage.append(assistantMessageSpan);
-      assistantMessageSpan.scrollIntoView();
+    const replaceCurrentAssistantMessage = () => {
+      currentAssistantMessage.innerHTML = message.textContent;
+
+      // Scroll the bottom into view
+      currentAssistantMessage.scrollIntoView(false);
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
-      addMessageToCurrentAssistantMessage();
+      replaceCurrentAssistantMessage();
     } else {
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
@@ -152,7 +152,7 @@
       currentAssistantMessage = assistantMessageElement.querySelector(
         ".sidebar__chat-assistant--chat-bubble-text"
       );
-      addMessageToCurrentAssistantMessage();
+      replaceCurrentAssistantMessage();
     }
   }
 
