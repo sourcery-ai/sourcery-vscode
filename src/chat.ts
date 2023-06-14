@@ -85,6 +85,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     if (result.outcome === ChatResultOutcome.Success) {
       this.currentAssistantMessage += result.textContent;
+    } else {
+      this.currentAssistantMessage = result.textContent;
     }
 
     const rendered = marked(this.currentAssistantMessage, {
