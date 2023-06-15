@@ -1,8 +1,12 @@
 
 # Welcome to Sourcery!
 
-# We're here to help you write cleaner, more Pythonic code.
-# You should start to notice parts of your code being underlined.
+# To get started log into your Sourcery account.
+# Open the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: login`.
+
+# We're here to help you write cleaner, clearer code.
+# When you log in to Sourcery you'll start to see parts 
+# of your code like this start to get underlined. 
 # This means Sourcery has a suggestion.
 
 def refactoring_example(spellbook):
