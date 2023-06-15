@@ -26,9 +26,6 @@ jobs:
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
 
-    - name: Update version number
-      run: yarn run bump ${{ github.event.inputs.version }}
-
     - name: Package VSCode extension
       run: yarn run vsce package
 
