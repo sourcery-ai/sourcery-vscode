@@ -29,6 +29,9 @@ jobs:
     - name: Package VSCode extension
       run: yarn run vsce package
 
+    - name: Rename packaged VSIX file
+      run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}.vsix
+
     - name: Upload archive
       uses: actions/upload-artifact@v3
       with:
