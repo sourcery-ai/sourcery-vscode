@@ -54,6 +54,7 @@ jobs:
       with:
         status: ${{ job.status }}
         text: Publish VS Code extension pre-release v${{ github.event.inputs.version }} - ${{ job.status }}
+        fields: repo,commit,workflow,job
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASES_WEBHOOK_URL }}
       if: always()
