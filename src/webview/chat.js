@@ -44,22 +44,17 @@
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
     const message = event.data;
-
     if (message.command === "add_result") {
-      if (message.result.role === "assistant") {
-        addAssistantMessageToUI(message.result);
-      } else {
-        addUserMessageToUI(message.result.textContent);
-        addAssistantThinkingMessageToUI();
-      }
-    } else if (message.command === "recipe_request") {
-      sendRecipeRequest(message.result);
+      addMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
       messageInput.focus();
+    } else if (message.command === "assistant_finished") {
+      assistantMessageFinished();
     }
   });
+
   function sendRequestToExtension(message) {
     vscode.postMessage({ type: "chat_request", data: message });
   }
@@ -74,18 +69,6 @@
     messageInput.value = "";
     sendRequestToExtension({ message, kind: "user_message" });
     checkTextarea();
-  }
-
-  function sendRecipeRequest(message) {
-    // Ensure we don't add on to the previous message
-    assistantMessageFinished();
-    addAssistantMessageToUI({
-      textContent: "Executing Recipe: " + message.name,
-      outcome: "success",
-    });
-    // Ensure new responses don't get added on to this one
-    assistantMessageFinished();
-    sendRequestToExtension({ ...message, kind: "recipe_request" });
   }
 
   function assistantMessageFinished() {
@@ -110,7 +93,15 @@
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
     userMessageElement.scrollIntoView();
-    assistantMessageFinished();
+  }
+
+  function addMessageToUI(result) {
+    if (result.role === "assistant") {
+      addAssistantMessageToUI(result);
+    } else {
+      addUserMessageToUI(result.textContent);
+      addAssistantThinkingMessageToUI();
+    }
   }
 
   // Function to add an assistant message or add to the existing one

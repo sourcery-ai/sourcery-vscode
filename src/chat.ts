@@ -88,6 +88,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   public addResult(result: ChatResult) {
     if (result.outcome === ChatResultOutcome.Finished) {
       this.currentAssistantMessage = "";
+      this._view.webview.postMessage({ command: "assistant_finished" });
       return;
     }
 
