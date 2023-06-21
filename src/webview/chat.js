@@ -46,7 +46,12 @@
     const message = event.data;
 
     if (message.command === "add_result") {
-      addAssistantMessageToUI(message.result);
+      if (message.result.role === "assistant") {
+        addAssistantMessageToUI(message.result);
+      } else {
+        addUserMessageToUI(message.result.textContent);
+        addAssistantThinkingMessageToUI();
+      }
     } else if (message.command === "recipe_request") {
       sendRecipeRequest(message.result);
     } else if (message.command === "clear_chat") {
@@ -56,7 +61,6 @@
     }
   });
   function sendRequestToExtension(message) {
-    addAssistantThinkingMessageToUI();
     vscode.postMessage({ type: "chat_request", data: message });
   }
 
@@ -68,7 +72,6 @@
   function sendUserMessage() {
     const message = messageInput.value.trim();
     messageInput.value = "";
-    addUserMessageToUI(message);
     sendRequestToExtension({ message, kind: "user_message" });
     checkTextarea();
   }

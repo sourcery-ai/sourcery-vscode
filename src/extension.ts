@@ -386,6 +386,7 @@ function registerCommands(
     commands.registerCommand(
       "sourcery.chat_request",
       (message: ChatRequest) => {
+        console.log(message);
         const selectionLocation = getSelectionLocation();
         const activeEditor = window.activeTextEditor;
         let activeFile = undefined;
@@ -413,15 +414,6 @@ function registerCommands(
           ],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand(
-      "sourcery.recipe_request",
-      (message: ChatRequest) => {
-        chatProvider.executeRecipeRequest(message.data);
       }
     )
   );

@@ -8,7 +8,10 @@
   const recipeSection = document.querySelector(".recipe-section");
 
   function sendMessageToExtension(recipe) {
-    vscode.postMessage({ type: "recipe_request", data: recipe });
+    vscode.postMessage({
+      type: "recipe_request",
+      data: { ...recipe, kind: "recipe_request" },
+    });
   }
 
   // Add each recipe to the UI as a button with an associated event
