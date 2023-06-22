@@ -1,5 +1,14 @@
 //@ts-check
 
+const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
+<img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
+  class="sidebar__chat-assistant--agent-avatar-image" />
+</div>`;
+
+const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
+<span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
+</div>`;
+
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
@@ -17,11 +26,6 @@
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
   let thinkingMessage;
-
-  const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
-              <img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
-                class="sidebar__chat-assistant--agent-avatar-image" />
-            </div>`;
 
   function createThinkingMessage() {
     const templateContents = `
@@ -72,6 +76,7 @@
   }
 
   function assistantMessageFinished() {
+    console.log("clearing current message");
     currentAssistantMessage = null;
   }
 
@@ -81,9 +86,7 @@
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
               <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>
-            <div class="sidebar__chat-assistant--chat-avatar-container">
-              <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
-            </div>
+            ${chatAvatar}
     `;
     const userMessageElement = document.createElement("li");
     userMessageElement.classList.add("sidebar__chat-assistant--chat-bubble");
@@ -106,6 +109,8 @@
 
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
+    console.log(message);
+
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
@@ -119,6 +124,7 @@
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
+      console.log("replacing message");
       replaceCurrentAssistantMessage();
     } else {
       const templateContents = `

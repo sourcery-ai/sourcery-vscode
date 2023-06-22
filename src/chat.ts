@@ -86,16 +86,32 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public addResult(result: ChatResult) {
+    console.log(result);
+    if (result.role === ChatResultRole.User) {
+      this._view.webview.postMessage({
+        command: "add_result",
+        result: {
+          role: result.role,
+          outcome: result.outcome,
+          textContent: result.textContent,
+        },
+      });
+      return;
+    }
+
     if (result.outcome === ChatResultOutcome.Finished) {
       this.currentAssistantMessage = "";
       this._view.webview.postMessage({ command: "assistant_finished" });
       return;
     }
 
-    let sanitized =
-      result.role === ChatResultRole.Assistant
-        ? this.renderAssistantMessage(result)
-        : result.textContent;
+    if (result.outcome === ChatResultOutcome.Success) {
+      this.currentAssistantMessage += result.textContent;
+    } else {
+      this.currentAssistantMessage = result.textContent;
+    }
+
+    let sanitized = this.renderAssistantMessage(this.currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",
@@ -107,16 +123,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  private renderAssistantMessage(result: ChatResult) {
+  private renderAssistantMessage(message: string) {
     // Send the whole message we've been streamed so far to the webview,
     // after converting from markdown to html
-    if (result.outcome === ChatResultOutcome.Success) {
-      this.currentAssistantMessage += result.textContent;
-    } else {
-      this.currentAssistantMessage = result.textContent;
-    }
 
-    const rendered = marked(this.currentAssistantMessage, {
+    const rendered = marked(message, {
       gfm: true,
       breaks: true,
       mangle: false,
