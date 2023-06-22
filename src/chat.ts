@@ -80,9 +80,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public addResult(result: ChatResult) {
-    // Send the whole message we've been streamed so far to the webview,
-    // after converting from markdown to html
-
     if (result.outcome === ChatResultOutcome.Success) {
       this.currentAssistantMessage += result.textContent;
     } else {
