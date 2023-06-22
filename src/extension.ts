@@ -215,6 +215,14 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.ask", () => {
+      vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
+        window.showInformationMessage("You asked!");
+      });
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand("sourcery.scan.selectLanguage", () => {
       const items = ["python", "javascript"];
 
