@@ -76,7 +76,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   }
 
   function assistantMessageFinished() {
-    console.log("clearing current message");
     currentAssistantMessage = null;
   }
 
@@ -109,8 +108,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
-    console.log(message);
-
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
@@ -124,7 +121,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
-      console.log("replacing message");
       replaceCurrentAssistantMessage();
     } else {
       const templateContents = `

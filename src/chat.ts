@@ -86,19 +86,25 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public addResult(result: ChatResult) {
-    console.log(result);
     if (result.role === ChatResultRole.User) {
-      this._view.webview.postMessage({
-        command: "add_result",
-        result: {
-          role: result.role,
-          outcome: result.outcome,
-          textContent: result.textContent,
-        },
-      });
-      return;
+      this.addUserResult(result);
+    } else {
+      this.addAssistantResult(result);
     }
+  }
 
+  private addUserResult(result: ChatResult) {
+    this._view.webview.postMessage({
+      command: "add_result",
+      result: {
+        role: result.role,
+        outcome: result.outcome,
+        textContent: result.textContent,
+      },
+    });
+  }
+
+  private addAssistantResult(result: ChatResult) {
     if (result.outcome === ChatResultOutcome.Finished) {
       this.currentAssistantMessage = "";
       this._view.webview.postMessage({ command: "assistant_finished" });
