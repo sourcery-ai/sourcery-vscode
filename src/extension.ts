@@ -383,10 +383,19 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.initialise_chat", () => {
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/initialise",
+        arguments: [],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand(
       "sourcery.chat_request",
       (message: ChatRequest) => {
-        console.log(message);
         const selectionLocation = getSelectionLocation();
         const activeEditor = window.activeTextEditor;
         let activeFile = undefined;

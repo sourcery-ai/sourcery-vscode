@@ -83,6 +83,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         }
       }
     });
+
+    vscode.commands.executeCommand("sourcery.initialise_chat");
   }
 
   public addResult(result: ChatResult) {
