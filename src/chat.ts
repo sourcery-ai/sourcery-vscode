@@ -50,7 +50,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private _extensionUri: vscode.Uri;
 
-  private currentAssistantMessage: string = "";
+  private _currentAssistantMessage: string = "";
+
+  private _unhandledMessages: ChatResult[] = [];
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -88,14 +90,25 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         }
       }
     });
-    vscode.commands.executeCommand("sourcery.initialise_chat");
+    if (this._unhandledMessages.length === 0) {
+      vscode.commands.executeCommand("sourcery.initialise_chat");
+    } else {
+      while (this._unhandledMessages.length > 0) {
+        const message = this._unhandledMessages.shift();
+        this.addResult(message);
+      }
+    }
   }
 
   public addResult(result: ChatResult) {
-    if (result.role === ChatResultRole.User) {
-      this.addUserResult(result);
+    if (this._view) {
+      if (result.role === ChatResultRole.User) {
+        this.addUserResult(result);
+      } else {
+        this.addAssistantResult(result);
+      }
     } else {
-      this.addAssistantResult(result);
+      this._unhandledMessages.push(result);
     }
   }
 
@@ -112,18 +125,18 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private addAssistantResult(result: ChatResult) {
     if (result.outcome === ChatResultOutcome.Finished) {
-      this.currentAssistantMessage = "";
+      this._currentAssistantMessage = "";
       this._view.webview.postMessage({ command: "assistant_finished" });
       return;
     }
 
     if (result.outcome === ChatResultOutcome.Success) {
-      this.currentAssistantMessage += result.textContent;
+      this._currentAssistantMessage += result.textContent;
     } else {
-      this.currentAssistantMessage = result.textContent;
+      this._currentAssistantMessage = result.textContent;
     }
 
-    let sanitized = this.renderAssistantMessage(this.currentAssistantMessage);
+    let sanitized = this.renderAssistantMessage(this._currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",
@@ -151,7 +164,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   public clearChat() {
     this._view.webview.postMessage({ command: "clear_chat" });
-    this.currentAssistantMessage = "";
+    this._currentAssistantMessage = "";
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
