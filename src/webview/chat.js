@@ -1,5 +1,14 @@
 //@ts-check
 
+const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
+<img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
+  class="sidebar__chat-assistant--agent-avatar-image" />
+</div>`;
+
+const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
+<span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
+</div>`;
+
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
@@ -17,11 +26,6 @@
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
   let thinkingMessage;
-
-  const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
-              <img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
-                class="sidebar__chat-assistant--agent-avatar-image" />
-            </div>`;
 
   function createThinkingMessage() {
     const templateContents = `
@@ -44,19 +48,18 @@
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
     const message = event.data;
-
     if (message.command === "add_result") {
-      addAssistantMessageToUI(message.result);
-    } else if (message.command === "recipe_request") {
-      sendRecipeRequest(message.result);
+      addMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
       messageInput.focus();
+    } else if (message.command === "assistant_finished") {
+      assistantMessageFinished();
     }
   });
+
   function sendRequestToExtension(message) {
-    addAssistantThinkingMessageToUI();
     vscode.postMessage({ type: "chat_request", data: message });
   }
 
@@ -68,21 +71,8 @@
   function sendUserMessage() {
     const message = messageInput.value.trim();
     messageInput.value = "";
-    addUserMessageToUI(message);
     sendRequestToExtension({ message, kind: "user_message" });
     checkTextarea();
-  }
-
-  function sendRecipeRequest(message) {
-    // Ensure we don't add on to the previous message
-    assistantMessageFinished();
-    addAssistantMessageToUI({
-      textContent: "Executing Recipe: " + message.name,
-      outcome: "success",
-    });
-    // Ensure new responses don't get added on to this one
-    assistantMessageFinished();
-    sendRequestToExtension({ ...message, kind: "recipe_request" });
   }
 
   function assistantMessageFinished() {
@@ -95,9 +85,7 @@
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
               <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>
-            <div class="sidebar__chat-assistant--chat-avatar-container">
-              <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
-            </div>
+            ${chatAvatar}
     `;
     const userMessageElement = document.createElement("li");
     userMessageElement.classList.add("sidebar__chat-assistant--chat-bubble");
@@ -107,7 +95,15 @@
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
     userMessageElement.scrollIntoView();
-    assistantMessageFinished();
+  }
+
+  function addMessageToUI(result) {
+    if (result.role === "assistant") {
+      addAssistantMessageToUI(result);
+    } else {
+      addUserMessageToUI(result.textContent);
+      addAssistantThinkingMessageToUI();
+    }
   }
 
   // Function to add an assistant message or add to the existing one

@@ -19,16 +19,23 @@ marked.use(
 enum ChatResultOutcome {
   Success = "success",
   Error = "error",
+  Finished = "finished",
+}
+
+enum ChatResultRole {
+  Assistant = "assistant",
+  User = "user",
 }
 
 type ChatResult = {
   outcome: ChatResultOutcome;
   textContent: string;
+  role: ChatResultRole;
 };
 
 export type ChatRequest = {
   type: string;
-  data: string;
+  data: any;
 };
 
 export class ChatProvider implements vscode.WebviewViewProvider {
@@ -71,40 +78,71 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data: ChatRequest) => {
       switch (data.type) {
         case "chat_request": {
-          this.currentAssistantMessage = "";
           vscode.commands.executeCommand("sourcery.chat_request", data);
           break;
         }
       }
     });
+
+    vscode.commands.executeCommand("sourcery.initialise_chat");
   }
 
   public addResult(result: ChatResult) {
+    if (result.role === ChatResultRole.User) {
+      this.addUserResult(result);
+    } else {
+      this.addAssistantResult(result);
+    }
+  }
+
+  private addUserResult(result: ChatResult) {
+    this._view.webview.postMessage({
+      command: "add_result",
+      result: {
+        role: result.role,
+        outcome: result.outcome,
+        textContent: result.textContent,
+      },
+    });
+  }
+
+  private addAssistantResult(result: ChatResult) {
+    if (result.outcome === ChatResultOutcome.Finished) {
+      this.currentAssistantMessage = "";
+      this._view.webview.postMessage({ command: "assistant_finished" });
+      return;
+    }
+
     if (result.outcome === ChatResultOutcome.Success) {
       this.currentAssistantMessage += result.textContent;
     } else {
       this.currentAssistantMessage = result.textContent;
     }
 
-    const rendered = marked(this.currentAssistantMessage, {
-      gfm: true,
-      breaks: true,
-    });
-
-    const sanitized = sanitize(rendered);
+    let sanitized = this.renderAssistantMessage(this.currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",
-      result: { outcome: result.outcome, textContent: sanitized },
+      result: {
+        role: result.role,
+        outcome: result.outcome,
+        textContent: sanitized,
+      },
     });
   }
 
-  public executeRecipeRequest(message: string) {
-    this.currentAssistantMessage = "";
-    this._view.webview.postMessage({
-      command: "recipe_request",
-      result: message,
+  private renderAssistantMessage(message: string) {
+    // Send the whole message we've been streamed so far to the webview,
+    // after converting from markdown to html
+
+    const rendered = marked(message, {
+      gfm: true,
+      breaks: true,
+      mangle: false,
+      headerIds: false,
     });
+
+    return sanitize(rendered);
   }
 
   public clearChat() {
