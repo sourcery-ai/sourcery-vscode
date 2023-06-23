@@ -2,6 +2,11 @@ import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 import { ChatRequest } from "./chat";
 
+export type Recipe = {
+  id: string;
+  name: string;
+};
+
 export class RecipeProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.recipes";
 
@@ -9,7 +14,7 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
 
   private _extensionUri: vscode.Uri;
 
-  private _recipes;
+  public recipes: Recipe[];
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -35,7 +40,7 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
 
     this._view.webview.postMessage({
       command: "add_recipes",
-      result: this._recipes,
+      result: this.recipes,
     });
 
     webviewView.webview.onDidReceiveMessage(async (request: ChatRequest) => {
@@ -48,8 +53,8 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public addRecipes(result) {
-    this._recipes = result;
+  public addRecipes(result: Recipe[]) {
+    this.recipes = result;
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {

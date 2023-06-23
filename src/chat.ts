@@ -33,9 +33,14 @@ type ChatResult = {
   role: ChatResultRole;
 };
 
+export type ChatRequestData = {
+  message: string;
+  kind: string;
+};
+
 export type ChatRequest = {
   type: string;
-  data: any;
+  data: ChatRequestData;
 };
 
 export class ChatProvider implements vscode.WebviewViewProvider {

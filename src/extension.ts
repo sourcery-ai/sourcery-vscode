@@ -32,7 +32,7 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider, ChatRequest } from "./chat";
-import { RecipeProvider } from "./recipes";
+import { Recipe, RecipeProvider } from "./recipes";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -172,7 +172,8 @@ function registerCommands(
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
-  chatProvider: ChatProvider
+  chatProvider: ChatProvider,
+  recipeProvider: RecipeProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -216,9 +217,19 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", () => {
-      vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-        window.showInformationMessage("You asked!");
-      });
+      showAskSourceryQuickPick(recipeProvider.recipes).then(
+        (result: string) => {
+          vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
+            // {'message': {'type': 'chat_request', 'data': {'kind': 'chat_request', 'message': 'what is this??'}}
+            // {'message': {'type': 'chat_request', 'data': {'message': 'hello', 'kind': 'user_message'}}
+            const request = {
+              type: "chat_request",
+              data: { kind: "user_message", message: result },
+            };
+            vscode.commands.executeCommand("sourcery.chat_request", request);
+          });
+        }
+      );
     })
   );
 
@@ -570,7 +581,8 @@ export function activate(context: ExtensionContext) {
     tree,
     treeView,
     hubWebviewPanel,
-    chatProvider
+    chatProvider,
+    recipeProvider
   );
 
   showSourceryStatusBarItem(context);
@@ -595,5 +607,39 @@ function openDocument(document_path: string) {
   const openPath = Uri.file(document_path);
   workspace.openTextDocument(openPath).then((doc) => {
     window.showTextDocument(doc);
+  });
+}
+
+function showAskSourceryQuickPick(recipes: Recipe[]) {
+  return new Promise((resolve) => {
+    const recipeNames = recipes.map((item) => item.name);
+    const recipeItems = recipes.map((item) => ({
+      label: item.name,
+      id: item.id,
+    }));
+
+    const quickPick = window.createQuickPick();
+    quickPick.placeholder = "Ask Sourcery.";
+    quickPick.items = recipeItems;
+
+    quickPick.onDidAccept(() => {
+      const selection = quickPick.activeItems[0];
+      if ("id" in selection) {
+        resolve(selection.id);
+      } else {
+        resolve(selection.label);
+      }
+      quickPick.hide();
+    });
+
+    quickPick.onDidChangeValue(() => {
+      // add what the user has typed to the pick list as the first item
+      if (!recipeNames.includes(quickPick.value)) {
+        const newItems = [{ label: quickPick.value }, ...recipeItems];
+        quickPick.items = newItems;
+      }
+    });
+    quickPick.onDidHide(() => quickPick.dispose());
+    quickPick.show();
   });
 }
