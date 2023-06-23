@@ -215,13 +215,12 @@ function registerCommands(
     })
   );
 
-  // {'message': {'type': 'recipe_request', 'data': {'id': 'debug_code', 'name': 'Debug', 'kind': 'recipe_request'}}
-
   context.subscriptions.push(
-    commands.registerCommand("sourcery.chat.ask", () => {
+    commands.registerCommand("sourcery.chat.ask", (arg?) => {
       showAskSourceryQuickPick(recipeProvider.recipes).then((result: any) => {
         vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
           let request;
+          let contextRange = "start" in arg ? arg : null;
           if ("id" in result) {
             request = {
               type: "recipe_request",
@@ -230,11 +229,13 @@ function registerCommands(
                 name: result.label,
                 id: result.id,
               },
+              context_range: contextRange,
             };
           } else {
             request = {
               type: "chat_request",
               data: { kind: "user_message", message: result.label },
+              context_range: contextRange,
             };
           }
 
@@ -426,7 +427,13 @@ function registerCommands(
     commands.registerCommand(
       "sourcery.chat_request",
       (message: ChatRequest) => {
-        const selectionLocation = getSelectionLocation();
+        let selectionLocation = getSelectionLocation();
+        if (message.context_range != null) {
+          selectionLocation = {
+            uri: selectionLocation.uri,
+            range: message.context_range,
+          };
+        }
         const activeEditor = window.activeTextEditor;
         let activeFile = undefined;
         if (activeEditor) {

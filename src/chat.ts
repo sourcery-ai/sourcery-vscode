@@ -41,6 +41,7 @@ export type ChatRequestData = {
 export type ChatRequest = {
   type: string;
   data: ChatRequestData;
+  context_range?: any;
 };
 
 export class ChatProvider implements vscode.WebviewViewProvider {
