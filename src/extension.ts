@@ -637,7 +637,7 @@ function showAskSourceryQuickPick(recipes: Recipe[]) {
     }));
 
     const quickPick = window.createQuickPick();
-    quickPick.placeholder = "Ask Sourcery.";
+    quickPick.placeholder = "Ask any question or choose one of these recipes";
     quickPick.items = recipeItems;
 
     quickPick.onDidAccept(() => {
