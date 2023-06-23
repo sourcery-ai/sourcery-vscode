@@ -215,21 +215,32 @@ function registerCommands(
     })
   );
 
+  // {'message': {'type': 'recipe_request', 'data': {'id': 'debug_code', 'name': 'Debug', 'kind': 'recipe_request'}}
+
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", () => {
-      showAskSourceryQuickPick(recipeProvider.recipes).then(
-        (result: string) => {
-          vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-            // {'message': {'type': 'chat_request', 'data': {'kind': 'chat_request', 'message': 'what is this??'}}
-            // {'message': {'type': 'chat_request', 'data': {'message': 'hello', 'kind': 'user_message'}}
-            const request = {
-              type: "chat_request",
-              data: { kind: "user_message", message: result },
+      showAskSourceryQuickPick(recipeProvider.recipes).then((result: any) => {
+        vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
+          let request;
+          if ("id" in result) {
+            request = {
+              type: "recipe_request",
+              data: {
+                kind: "recipe_request",
+                name: result.label,
+                id: result.id,
+              },
             };
-            vscode.commands.executeCommand("sourcery.chat_request", request);
-          });
-        }
-      );
+          } else {
+            request = {
+              type: "chat_request",
+              data: { kind: "user_message", message: result.label },
+            };
+          }
+
+          vscode.commands.executeCommand("sourcery.chat_request", request);
+        });
+      });
     })
   );
 
@@ -624,11 +635,7 @@ function showAskSourceryQuickPick(recipes: Recipe[]) {
 
     quickPick.onDidAccept(() => {
       const selection = quickPick.activeItems[0];
-      if ("id" in selection) {
-        resolve(selection.id);
-      } else {
-        resolve(selection.label);
-      }
+      resolve(selection);
       quickPick.hide();
     });
 
