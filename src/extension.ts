@@ -215,6 +215,35 @@ function registerCommands(
     })
   );
 
+  // {'message': {'type': 'recipe_request', 'data': {'id': 'debug_code', 'name': 'Debug', 'kind': 'recipe_request'}}
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.ask", () => {
+      showAskSourceryQuickPick(recipeProvider.recipes).then((result: any) => {
+        vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
+          let request;
+          if ("id" in result) {
+            request = {
+              type: "recipe_request",
+              data: {
+                kind: "recipe_request",
+                name: result.label,
+                id: result.id,
+              },
+            };
+          } else {
+            request = {
+              type: "chat_request",
+              data: { kind: "user_message", message: result.label },
+            };
+          }
+
+          vscode.commands.executeCommand("sourcery.chat_request", request);
+        });
+      });
+    })
+  );
+
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", (arg?) => {
       showAskSourceryQuickPick(recipeProvider.recipes).then((result: any) => {
