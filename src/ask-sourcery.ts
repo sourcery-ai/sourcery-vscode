@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
 import { Recipe, RecipeProvider } from "./recipes";
+import { ChatRequest } from "./chat";
 
 export function askSourceryCommand(recipes: Recipe[], contextRange?) {
   showAskSourceryQuickPick(recipes).then((result: any) => {
     vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-      let request;
+      let request: ChatRequest;
       if ("id" in result) {
         request = {
           type: "recipe_request",

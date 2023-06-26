@@ -38,9 +38,15 @@ export type ChatRequestData = {
   kind: string;
 };
 
+export type RecipeRequestData = {
+  kind: string;
+  name: string;
+  id: string;
+};
+
 export type ChatRequest = {
   type: string;
-  data: ChatRequestData;
+  data: ChatRequestData | RecipeRequestData;
   context_range?: any;
 };
 
