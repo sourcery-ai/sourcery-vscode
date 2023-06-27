@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { marked } from "marked";
 import hljs from "highlight.js";
 import { markedHighlight } from "marked-highlight";
-import { sanitize } from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 
 marked.use(
   markedHighlight({
@@ -93,9 +93,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       gfm: true,
       breaks: true,
     });
-
-    const sanitized = sanitize(rendered);
-
+    console.log("Rendered:");
+    console.log(rendered);
+    const sanitized = sanitizeHtml(rendered, {
+      allowedClasses: { span: false, code: false },
+    });
+    console.log("Sanitized:");
+    console.log(sanitized);
     this._view.webview.postMessage({
       command: "add_result",
       result: { outcome: result.outcome, textContent: sanitized },

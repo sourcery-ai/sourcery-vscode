@@ -392,13 +392,17 @@
 	},
 	"main": "./out/extension",
 	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
 		"vscode:uninstall": "node ./out/uninstall",
 		"compile": "tsc -watch -p ./",
 		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
 		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode",
 		"format": "prettier --write .",
-		"lint:format": "prettier --check ."
+		"lint:format": "prettier --check .",
+		"vscode:prepublish": "npm run esbuild-base -- --minify",
+		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+		"test-compile": "tsc -p ./"
 	},
 	"devDependencies": {
 		"@types/marked": "^5.0.0",
@@ -408,6 +412,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
 		"@vscode/vsce": "^2.18.0",
+		"esbuild": "^0.18.10",
 		"eslint": "^8.36.0",
 		"mocha": "^10.2.0",
 		"ovsx": "^0.8.0",
@@ -418,9 +423,9 @@
 	},
 	"dependencies": {
 		"highlight.js": "^11.8.0",
-		"isomorphic-dompurify": "^1.6.0",
 		"marked": "^5.1.0",
 		"marked-highlight": "^2.0.1",
+		"sanitize-html": "^2.11.0",
 		"vscode-languageclient": "^8.1.0"
 	},
 	"__metadata": {
