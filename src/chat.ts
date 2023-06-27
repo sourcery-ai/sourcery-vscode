@@ -93,13 +93,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       gfm: true,
       breaks: true,
     });
-    console.log("Rendered:");
-    console.log(rendered);
+
     const sanitized = sanitizeHtml(rendered, {
       allowedClasses: { span: false, code: false },
     });
-    console.log("Sanitized:");
-    console.log(sanitized);
+
     this._view.webview.postMessage({
       command: "add_result",
       result: { outcome: result.outcome, textContent: sanitized },
