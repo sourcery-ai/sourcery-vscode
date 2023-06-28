@@ -276,7 +276,8 @@
   margin-right: var(--spacing-xs);
 }
 
-.sidebar__chat-assistant--cancel-button:disabled .sidebar__chat-assistant--regenerate-button-icon {
+.sidebar__chat-assistant--cancel-button:disabled
+  .sidebar__chat-assistant--regenerate-button-icon {
   fill: var(--vscode-disabledForeground);
 }
 
