@@ -224,7 +224,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     return `<!DOCTYPE html>
-			<html lang="en">
+			<html lang="en" style="height: 100%">
 			<head>
 				<meta charset="UTF-8">
 				<!--
@@ -241,7 +241,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 				<link href="${hljsUri}" rel="stylesheet">
 
 			</head>
-			<body>
+			<body class="sidebar__chat-assistant-body">
                 <section class="sidebar__section-container active" data-section="chat-assistant">
                   <ul class="sidebar__chat-assistant--dialogue-container">
   

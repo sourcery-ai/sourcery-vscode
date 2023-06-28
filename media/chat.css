@@ -2,11 +2,7 @@
 .sidebar__section-container {
   transition: all 0.3s ease;
   overflow: auto;
-  max-height: 85vh;
-}
-
-.sidebar__section-container.is-opening {
-  max-height: 70vh;
+  flex-grow: 1;
 }
 
 .sidebar__section-container:not(.active) {
@@ -15,6 +11,12 @@
 }
 
 /* ------------- Chat UI ------------- */
+.sidebar__chat-assistant-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .sidebar__chat-assistant--dialogue-container {
   padding: 0 var(--spacing-md);
   margin: 0;
@@ -23,7 +25,10 @@
 }
 
 .sidebar__chat-assistant--chat-bubble {
-  display: inline-grid;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  gap: var(--spacing-md);
   align-items: flex-end;
   grid-gap: var(--spacing-md) var(--spacing-xs);
   margin-bottom: var(--spacing-md);
@@ -33,14 +38,18 @@
 /* Change width of columns based on agent/user */
 .sidebar__chat-assistant--chat-bubble-agent {
   grid-template-columns: 32px 1fr;
+  flex-direction: row;
 }
 
 .sidebar__chat-assistant--chat-bubble-user {
   grid-template-columns: 1fr 32px;
+  flex-direction: row-reverse;
 }
 
 /* Styles for avatars */
 .sidebar__chat-assistant--chat-avatar-container {
+  flex-shrink: 0;
+  flex-grow: 0;
   background: var(--vscode-foreground);
   padding: var(--spacing-xs);
   border-radius: 100%;
@@ -49,7 +58,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: auto;
 }
 
 .sidebar__chat-assistant--agent-avatar-image {
@@ -63,6 +71,9 @@
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
   border-radius: var(--spacing-xs);
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user {
@@ -100,6 +111,8 @@
   background-color: var(--vscode-editor-background);
   margin: 0;
   border-radius: var(--spacing-xs);
+  overflow-x: auto;
+  width: 100%;
 }
 
 .sidebar__chat-assistant--code-block {
@@ -221,9 +234,8 @@
   border-bottom: 1px solid var(--vscode-sideBar-border);
   padding: var(--spacing-md);
   background-color: var(--vscode-sideBar-background);
-  position: absolute;
-  bottom: -1px;
-  width: 100%;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .sidebar__chat-assistant--textarea-container {
