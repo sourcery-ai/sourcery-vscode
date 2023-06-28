@@ -34,18 +34,18 @@ type ChatResult = {
 };
 
 export type ChatRequestData = {
+  kind: "user_message";
   message: string;
-  kind: string;
 };
 
 export type RecipeRequestData = {
-  kind: string;
+  kind: "recipe_request";
   name: string;
   id: string;
 };
 
 export type ChatRequest = {
-  type: string;
+  type: "recipe_request" | "chat_request";
   data: ChatRequestData | RecipeRequestData;
   context_range?: any;
 };
