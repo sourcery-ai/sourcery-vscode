@@ -28,6 +28,8 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     cancelButton.onclick = sendCancelRequest;
   }
 
+  const messageContainer = document.getElementById("message-container");
+
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
   let thinkingMessage;
@@ -121,15 +123,11 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     if (!currentAssistantMessage) {
       return;
     }
-    const messageContainer = document.getElementById("message-container");
+    const { scrollTop, clientHeight, scrollHeight } = messageContainer;
     const isScrolledToBottom =
-      messageContainer.scrollTop + messageContainer.clientHeight <=
-        messageContainer.scrollHeight &&
-      messageContainer.scrollTop + messageContainer.clientHeight >=
-        messageContainer.scrollHeight - 18; // give a bit of a buffer
+      Math.abs(scrollHeight - clientHeight - scrollTop) <= 18; // give a bit of a buffer
     if (isScrolledToBottom) {
-      messageContainer.scrollTop =
-        messageContainer.scrollHeight - messageContainer.clientHeight;
+      messageContainer.scrollTop = scrollHeight - clientHeight;
     }
   }
 
