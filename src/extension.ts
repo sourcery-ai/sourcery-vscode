@@ -27,12 +27,14 @@ import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
+  URI,
 } from "vscode-languageclient/node";
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider, ChatRequest } from "./chat";
-import { RecipeProvider } from "./recipes";
+import { Recipe, RecipeProvider } from "./recipes";
+import { askSourceryCommand } from "./ask-sourcery";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -172,7 +174,8 @@ function registerCommands(
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
-  chatProvider: ChatProvider
+  chatProvider: ChatProvider,
+  recipeProvider: RecipeProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -211,6 +214,13 @@ function registerCommands(
         .then(() => {
           chatProvider.clearChat();
         });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.ask", (arg?) => {
+      let contextRange = arg && "start" in arg ? arg : null;
+      askSourceryCommand(recipeProvider.recipes, contextRange);
     })
   );
 
@@ -383,23 +393,29 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.initialise_chat", () => {
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/initialise",
+        arguments: [],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand(
       "sourcery.chat_request",
       (message: ChatRequest) => {
-        const selectionLocation = getSelectionLocation();
-        const activeEditor = window.activeTextEditor;
-        let activeFile = undefined;
-        if (activeEditor) {
-          activeFile = activeEditor.document.uri;
+        // Use the editor selection unless a range was passed through in
+        // the message
+        let selectionLocation = getSelectionLocation();
+        if (message.context_range != null) {
+          selectionLocation = {
+            uri: selectionLocation.uri,
+            range: message.context_range,
+          };
         }
-        const allFiles = [];
-        for (const tabGroup of vscode.window.tabGroups.all) {
-          for (const tab of tabGroup.tabs) {
-            if (tab.input instanceof vscode.TabInputText) {
-              allFiles.push(tab.input.uri);
-            }
-          }
-        }
+        let { activeFile, allFiles } = activeFiles();
 
         let request: ExecuteCommandParams = {
           command: "sourcery/chat/request",
@@ -413,15 +429,6 @@ function registerCommands(
           ],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand(
-      "sourcery.recipe_request",
-      (message: ChatRequest) => {
-        chatProvider.executeRecipeRequest(message.data);
       }
     )
   );
@@ -561,7 +568,8 @@ export function activate(context: ExtensionContext) {
     tree,
     treeView,
     hubWebviewPanel,
-    chatProvider
+    chatProvider,
+    recipeProvider
   );
 
   showSourceryStatusBarItem(context);
@@ -587,4 +595,21 @@ function openDocument(document_path: string) {
   workspace.openTextDocument(openPath).then((doc) => {
     window.showTextDocument(doc);
   });
+}
+
+function activeFiles(): { activeFile: URI | null; allFiles: URI[] } {
+  const activeEditor = window.activeTextEditor;
+  let activeFile = null;
+  if (activeEditor) {
+    activeFile = activeEditor.document.uri;
+  }
+  const allFiles = [];
+  for (const tabGroup of vscode.window.tabGroups.all) {
+    for (const tab of tabGroup.tabs) {
+      if (tab.input instanceof vscode.TabInputText) {
+        allFiles.push(tab.input.uri);
+      }
+    }
+  }
+  return { activeFile, allFiles };
 }

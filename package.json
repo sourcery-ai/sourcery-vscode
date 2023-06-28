@@ -230,6 +230,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.chat.ask",
+				"title": "Ask Sourcery",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.scan.selectLanguage",
 				"title": "Select Language",
 				"category": "Sourcery"
@@ -302,6 +307,11 @@
 					"command": "sourcery.scan.open",
 					"title": "Create Sourcery rule with this pattern",
 					"when": "editorLangId==python && editorHasSelection"
+				},
+				{
+					"command": "sourcery.chat.ask",
+					"title": "Ask Sourcery",
+					"when": "editorHasSelection && sourcery.features.coding_assistant"
 				}
 			],
 			"sourcery.scans": [
@@ -344,6 +354,10 @@
 				{
 					"command": "sourcery.chat.clearChat",
 					"when": "false"
+				},
+				{
+					"command": "sourcery.chat.ask",
+					"when": "sourcery.features.coding_assistant"
 				},
 				{
 					"command": "sourcery.scan.selectLanguage",
