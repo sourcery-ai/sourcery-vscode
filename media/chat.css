@@ -104,7 +104,7 @@
   color: var(--vscode-sideBar-foreground);
 }
 
-.sidebar__chat-assistant--chat-bubble-text p:not(:last-of-type) {
+.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
   margin-bottom: var(--spacing-sm);
 }
 
@@ -253,19 +253,31 @@
   border-radius: var(--spacing-xxs);
   margin-bottom: var(--spacing-xs);
   outline: none;
-  background-color: transparent;
+  background-color: var(--vscode-button-secondaryBackground);
   color: var(--vscode-button-secondaryForeground);
 }
 
 .sidebar__chat-assistant--cancel-button:hover {
-  background-color: transparent;
-  opacity: 0.8;
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.sidebar__chat-assistant--cancel-button:disabled {
+  color: var(--vscode-disabledForeground);
+  cursor: initial;
+}
+
+.sidebar__chat-assistant--cancel-button:hover:disabled {
+  background-color: var(--vscode-button-secondaryBackground);
 }
 
 .sidebar__chat-assistant--regenerate-button-icon {
-    fill: var(--vscode-button-secondaryForeground);
-    width: var(--spacing-lg);
-    margin-right: var(--spacing-xs);
+  fill: var(--vscode-button-secondaryForeground);
+  width: var(--spacing-lg);
+  margin-right: var(--spacing-xs);
+}
+
+.sidebar__chat-assistant--cancel-button:disabled .sidebar__chat-assistant--regenerate-button-icon {
+  fill: var(--vscode-disabledForeground);
 }
 
 .sidebar__chat-assistant--textarea-container {
