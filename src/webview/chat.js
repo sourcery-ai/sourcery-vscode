@@ -104,7 +104,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
-    userMessageElement.scrollIntoView();
+    stickyScrollToBottom();
   }
 
   function addMessageToUI(result) {
@@ -113,6 +113,23 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     } else {
       addUserMessageToUI(result.textContent);
       addAssistantThinkingMessageToUI();
+    }
+  }
+
+  // If we're already at the bottom, scroll the bottom into view
+  function stickyScrollToBottom() {
+    if (!currentAssistantMessage) {
+      return;
+    }
+    const messageContainer = document.getElementById("message-container");
+    const isScrolledToBottom =
+      messageContainer.scrollTop + messageContainer.clientHeight <=
+        messageContainer.scrollHeight &&
+      messageContainer.scrollTop + messageContainer.clientHeight >=
+        messageContainer.scrollHeight - 18; // give a bit of a buffer
+    if (isScrolledToBottom) {
+      messageContainer.scrollTop =
+        messageContainer.scrollHeight - messageContainer.clientHeight;
     }
   }
 
@@ -128,7 +145,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
       currentAssistantMessage.innerHTML = message.textContent;
 
       // Scroll the bottom into view
-      currentAssistantMessage.scrollIntoView(false);
+      stickyScrollToBottom();
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
@@ -170,7 +187,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
-    thinkingMessage.scrollIntoView();
+    stickyScrollToBottom();
   }
 
   // Enable/Disable send button depending on whether text area is empty
