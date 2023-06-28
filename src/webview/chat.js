@@ -23,6 +23,9 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   const sendButton = document.getElementById("send-button");
   sendButton.onclick = sendUserMessage;
 
+  const cancelButton = document.getElementById("cancel-button");
+  cancelButton.onclick = sendCancelRequest;
+
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
   let thinkingMessage;
@@ -66,6 +69,10 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   function clearAllMessages() {
     assistantMessageFinished();
     chatContainer.textContent = "";
+  }
+
+  function sendCancelRequest() {
+    vscode.postMessage({ type: "cancel_request" });
   }
 
   function sendUserMessage() {

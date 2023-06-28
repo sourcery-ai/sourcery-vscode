@@ -95,6 +95,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
           vscode.commands.executeCommand("sourcery.chat_request", data);
           break;
         }
+        case "cancel_request": {
+          vscode.commands.executeCommand("sourcery.chat_cancel_request");
+          break;
+        }
       }
     });
     if (this._unhandledMessages.length === 0) {
@@ -248,6 +252,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
                   </ul>
                 </section>
                 <footer class="sidebar__chat-assistant--footer">
+                  <button id="cancel-button">Cancel</button>
                   <section class="sidebar__chat-assistant--textarea-container">
                     <textarea class="sidebar__chat-assistant--textarea" placeholder="Type your message here!"
                       id="user-prompt"></textarea>

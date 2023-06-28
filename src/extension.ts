@@ -434,6 +434,15 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand("sourcery.chat_cancel_request", () => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/chat/cancel",
+        arguments: [],
+      });
+    })
+  );
+
+  context.subscriptions.push(
     commands.registerCommand(
       "sourcery.scan.rule",
       (rule, advanced: boolean, fix: boolean, language: string) => {
