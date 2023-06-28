@@ -166,6 +166,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       headerIds: false,
     });
 
+    // Allow any classes on span and code blocks or highlightjs classes get removed
     return sanitizeHtml(rendered, {
       allowedClasses: { span: false, code: false },
     });
