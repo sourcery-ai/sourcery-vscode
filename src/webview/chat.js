@@ -24,7 +24,9 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   sendButton.onclick = sendUserMessage;
 
   const cancelButton = document.getElementById("cancel-button");
-  cancelButton.onclick = sendCancelRequest;
+  if (cancelButton) {
+    cancelButton.onclick = sendCancelRequest;
+  }
 
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;

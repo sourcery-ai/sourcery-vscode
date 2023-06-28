@@ -252,8 +252,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
                   </ul>
                 </section>
                 <footer class="sidebar__chat-assistant--footer">
-                  <button id="cancel-button">Cancel</button>
                   <section class="sidebar__chat-assistant--textarea-container">
+                    <button id="cancel-button">Cancel</button>
                     <textarea class="sidebar__chat-assistant--textarea" placeholder="Type your message here!"
                       id="user-prompt"></textarea>
                     <button class="sidebar__chat-assistant--textarea-send-button sidebar__textarea-send-button--disabled"
