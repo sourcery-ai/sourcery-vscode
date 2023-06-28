@@ -82,10 +82,10 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   // Function to add a user message to the chat interface
   function addUserMessageToUI(message) {
     const templateMessage = `
+            ${chatAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
               <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
             </div>
-            ${chatAvatar}
     `;
     const userMessageElement = document.createElement("li");
     userMessageElement.classList.add("sidebar__chat-assistant--chat-bubble");
