@@ -23,6 +23,11 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   const sendButton = document.getElementById("send-button");
   sendButton.onclick = sendUserMessage;
 
+  const cancelButton = document.getElementById("cancel-button");
+  if (cancelButton) {
+    cancelButton.onclick = sendCancelRequest;
+  }
+
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
   let thinkingMessage;
@@ -68,6 +73,10 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     chatContainer.textContent = "";
   }
 
+  function sendCancelRequest() {
+    vscode.postMessage({ type: "cancel_request" });
+  }
+
   function sendUserMessage() {
     const message = messageInput.value.trim();
     messageInput.value = "";
@@ -77,6 +86,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   function assistantMessageFinished() {
     currentAssistantMessage = null;
+    cancelButton.disabled = true;
   }
 
   // Function to add a user message to the chat interface
@@ -108,6 +118,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
+    cancelButton.disabled = false;
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
