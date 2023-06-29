@@ -85,6 +85,11 @@
   border-radius: var(--spacing-xs);
 }
 
+.sidebar__chat-assistant--chat-bubble-content-user
+  .sidebar__chat-assistant--chat-bubble-text {
+  white-space: pre-wrap;
+}
+
 .sidebar__chat-assistant--chat-bubble-text {
   margin: 0;
   color: var(--vscode-settings-textInputForeground);
@@ -99,9 +104,26 @@
   background: transparent;
 }
 
-.sidebar__chat-assistant--code-block-container {
-  background-color: var(--vscode-editor-background);
-  color: var(--vscode-sideBar-foreground);
+.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
+  margin-bottom: var(--spacing-sm);
+}
+
+.sidebar__chat-assistant--chat-bubble-text :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.sidebar__chat-assistant--chat-bubble-text
+  :is(h1, h2, h3, h4, h5, h6):not(:first-child) {
+  margin-top: var(--spacing-md);
+}
+
+.sidebar__chat-assistant--chat-bubble-text :is(ol, ul) {
+  margin-left: 1.5em;
+}
+
+.sidebar__chat-assistant--chat-bubble-text li {
+  /*padding-left: 1.5em;*/
 }
 
 .sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
@@ -114,11 +136,15 @@
 }
 
 .sidebar__chat-assistant--chat-bubble-text pre {
-  background-color: var(--vscode-editor-background);
   margin: 0;
-  border-radius: var(--spacing-xs);
   overflow-x: auto;
   width: 100%;
+  background-color: var(--vscode-editor-background);
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: var(--spacing-xs);
+}
+
+.sidebar__chat-assistant--chat-bubble-text pre code {
 }
 
 .sidebar__chat-assistant--code-block {
@@ -253,12 +279,13 @@
   border-radius: var(--spacing-xxs);
   margin-bottom: var(--spacing-xs);
   outline: none;
-  background-color: var(--vscode-button-secondaryBackground);
-  color: var(--vscode-button-secondaryForeground);
+  background-color: transparent;
+  color: var(--vscode-foreground);
 }
 
 .sidebar__chat-assistant--cancel-button:hover {
-  background-color: var(--vscode-button-secondaryHoverBackground);
+  background-color: transparent;
+  opacity: 0.8;
 }
 
 .sidebar__chat-assistant--cancel-button:disabled {
@@ -267,11 +294,12 @@
 }
 
 .sidebar__chat-assistant--cancel-button:hover:disabled {
-  background-color: var(--vscode-button-secondaryBackground);
+  background-color: transparent;
+  opacity: 1;
 }
 
 .sidebar__chat-assistant--regenerate-button-icon {
-  fill: var(--vscode-button-secondaryForeground);
+  fill: var(--vscode-foreground);
   width: var(--spacing-lg);
   margin-right: var(--spacing-xs);
 }
