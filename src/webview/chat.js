@@ -61,7 +61,7 @@ const LINE_HEIGHT = 36;
   window.addEventListener("message", (event) => {
     const message = event.data;
     if (message.command === "add_result") {
-      addMessageToUI(message.result);
+      withStickyScroll(addMessageToUI)(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -98,7 +98,6 @@ const LINE_HEIGHT = 36;
 
   // Function to add a user message to the chat interface
   function addUserMessageToUI(message) {
-    const { scrollHeight: scrollHeightBefore } = messageContainer;
     const templateMessage = `
             ${chatAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
@@ -112,8 +111,6 @@ const LINE_HEIGHT = 36;
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
-    const { scrollHeight: scrollHeightAfter } = messageContainer;
-    stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
   }
 
   function addMessageToUI(result) {
@@ -160,7 +157,6 @@ const LINE_HEIGHT = 36;
     if (currentAssistantMessage != null && message.outcome !== "error") {
       replaceCurrentAssistantMessage();
     } else {
-      const { scrollHeight: scrollHeightBefore } = messageContainer;
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
             ${assistantAvatar}
@@ -187,21 +183,16 @@ const LINE_HEIGHT = 36;
         ".sidebar__chat-assistant--chat-bubble-text"
       );
       replaceCurrentAssistantMessage();
-      const { scrollHeight: scrollHeightAfter } = messageContainer;
-      stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
     }
   }
 
   function addAssistantThinkingMessageToUI() {
-    const { scrollHeight: scrollHeightBefore } = messageContainer;
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
-    const { scrollHeight: scrollHeightAfter } = messageContainer;
-    stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
   }
 
   // Enable/Disable send button depending on whether text area is empty
