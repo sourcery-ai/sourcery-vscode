@@ -85,7 +85,8 @@
   border-radius: var(--spacing-xs);
 }
 
-.sidebar__chat-assistant--chat-bubble-content-user .sidebar__chat-assistant--chat-bubble-text {
+.sidebar__chat-assistant--chat-bubble-content-user
+  .sidebar__chat-assistant--chat-bubble-text {
   white-space: pre-wrap;
 }
 
@@ -112,12 +113,10 @@
   font-weight: bold;
 }
 
-
-.sidebar__chat-assistant--chat-bubble-text :is(h1, h2, h3, h4, h5, h6):not(:first-child) {
+.sidebar__chat-assistant--chat-bubble-text
+  :is(h1, h2, h3, h4, h5, h6):not(:first-child) {
   margin-top: var(--spacing-md);
 }
-
-
 
 .sidebar__chat-assistant--chat-bubble-text :is(ol, ul) {
   margin-left: 1.5em;
