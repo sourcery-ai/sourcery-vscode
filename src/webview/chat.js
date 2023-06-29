@@ -9,6 +9,11 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
 </div>`;
 
+// This is a little larger than the (empirical) number of pixels the window might scroll by when
+// a new line is added. If the line is less than this, we should try to keep scrolling with the window.
+// See `stickyScrollToBottom` below.
+const LINE_HEIGHT = 36;
+
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
@@ -93,6 +98,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   // Function to add a user message to the chat interface
   function addUserMessageToUI(message) {
+    const { scrollHeight: scrollHeightBefore } = messageContainer;
     const templateMessage = `
             ${chatAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-user">
@@ -106,7 +112,8 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
-    stickyScrollToBottom();
+    const { scrollHeight: scrollHeightAfter } = messageContainer;
+    stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
   }
 
   function addMessageToUI(result) {
@@ -118,14 +125,21 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     }
   }
 
+  function withStickyScroll(wrapped) {
+    return function () {
+      const { scrollHeight: scrollHeightBefore } = messageContainer;
+      wrapped.apply(this, arguments);
+      const { scrollHeight: scrollHeightAfter } = messageContainer;
+      stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
+    };
+  }
+
   // If we're already at the bottom, scroll the bottom into view
-  function stickyScrollToBottom() {
-    if (!currentAssistantMessage) {
-      return;
-    }
+  function stickyScrollToBottom(diff = LINE_HEIGHT) {
     const { scrollTop, clientHeight, scrollHeight } = messageContainer;
-    const isScrolledToBottom =
-      Math.abs(scrollHeight - clientHeight - scrollTop) <= 18; // give a bit of a buffer
+    const scrollDiff = Math.abs(scrollHeight - clientHeight - scrollTop);
+    const isScrolledToBottom = scrollDiff <= diff + 1;
+
     if (isScrolledToBottom) {
       messageContainer.scrollTop = scrollHeight - clientHeight;
     }
@@ -141,14 +155,12 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
     const replaceCurrentAssistantMessage = () => {
       currentAssistantMessage.innerHTML = message.textContent;
-
-      // Scroll the bottom into view
-      stickyScrollToBottom();
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
       replaceCurrentAssistantMessage();
     } else {
+      const { scrollHeight: scrollHeightBefore } = messageContainer;
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
             ${assistantAvatar}
@@ -175,17 +187,21 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
         ".sidebar__chat-assistant--chat-bubble-text"
       );
       replaceCurrentAssistantMessage();
+      const { scrollHeight: scrollHeightAfter } = messageContainer;
+      stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
     }
   }
 
   function addAssistantThinkingMessageToUI() {
+    const { scrollHeight: scrollHeightBefore } = messageContainer;
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
-    stickyScrollToBottom();
+    const { scrollHeight: scrollHeightAfter } = messageContainer;
+    stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
   }
 
   // Enable/Disable send button depending on whether text area is empty
