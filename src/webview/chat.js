@@ -109,7 +109,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   function addMessageToUI(result) {
     if (result.role === "assistant") {
-      cancelButton.disabled = false;
       addAssistantMessageToUI(result);
     } else {
       addUserMessageToUI(result.textContent);
@@ -119,6 +118,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
+    cancelButton.disabled = false;
     if (thinkingMessage != null) {
       thinkingMessage.remove();
       thinkingMessage = null;
