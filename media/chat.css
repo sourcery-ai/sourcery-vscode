@@ -85,6 +85,10 @@
   border-radius: var(--spacing-xs);
 }
 
+.sidebar__chat-assistant--chat-bubble-content-user .sidebar__chat-assistant--chat-bubble-text {
+  white-space: pre-wrap;
+}
+
 .sidebar__chat-assistant--chat-bubble-text {
   margin: 0;
   color: var(--vscode-settings-textInputForeground);
@@ -99,9 +103,22 @@
   background: transparent;
 }
 
-.sidebar__chat-assistant--code-block-container {
-  background-color: var(--vscode-editor-background);
-  color: var(--vscode-sideBar-foreground);
+.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
+  margin-bottom: var(--spacing-sm);
+}
+
+.sidebar__chat-assistant--chat-bubble-text :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: 0.5em;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.sidebar__chat-assistant--chat-bubble-text :is(ol, ul) {
+  padding-left: 1.5em;
+}
+
+.sidebar__chat-assistant--chat-bubble-text li {
+  /*padding-left: 1.5em;*/
 }
 
 .sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
