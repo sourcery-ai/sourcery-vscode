@@ -92,7 +92,7 @@
 }
 
 .sidebar__chat-assistant--chat-bubble-text {
-  margin: 0;
+  margin: var(--spacing-sm);
   color: var(--vscode-settings-textInputForeground);
 }
 
@@ -105,7 +105,7 @@
   background: transparent;
 }
 
-.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
+.sidebar__chat-assistant--chat-bubble-text > *:not(:last-child) {
   margin-bottom: var(--spacing-sm);
 }
 
@@ -127,10 +127,6 @@
   /*padding-left: 1.5em;*/
 }
 
-.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
-  margin-bottom: var(--spacing-sm);
-}
-
 .sidebar__chat-assistant--chat-bubble-text code {
   font-family: var(--vscode-editor-font-family);
   font-size: var(--vscode-sidebar-font-size);
@@ -143,9 +139,29 @@
   background-color: var(--vscode-editor-background);
   border: 1px solid var(--vscode-panel-border);
   border-radius: var(--spacing-xs);
+  position: relative;
 }
 
-.sidebar__chat-assistant--chat-bubble-text pre code {
+
+button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+  visibility: hidden;
+  background: transparent;
+  position: absolute;
+  display: block;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  color: var(--vscode-settings-textInputForeground);
+  padding: var(--spacing-xs);
+  width: unset;
+  margin: 0;
+}
+
+button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
+  background-color: var(--vscode-toolbar-hoverBackground);
+}
+
+.sidebar__chat-assistant--chat-bubble-text pre:hover button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+  visibility: visible;
 }
 
 .sidebar__chat-assistant--code-block {

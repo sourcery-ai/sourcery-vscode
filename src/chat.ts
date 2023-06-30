@@ -252,32 +252,32 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
 			</head>
 			<body class="sidebar__chat-assistant-body">
-                <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
-                  <ul class="sidebar__chat-assistant--dialogue-container">
-                    
-                    <li id="anchor"></li>
-                  </ul>
-                </section>
-                <footer class="sidebar__chat-assistant--footer">
-                  <section class="sidebar__chat-assistant--textarea-container">
-                    <button id="cancel-button" class="sidebar__chat-assistant--cancel-button" disabled>
-                        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="sidebar__chat-assistant--regenerate-button-icon">
-                            <path d="m464 256a208 208 0 1 0 -416 0 208 208 0 1 0 416 0zm-464 0a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm224-72v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24z"></path>
-                        </svg>
-                        <span>Cancel</span>
-                    </button>
-                    <textarea class="sidebar__chat-assistant--textarea" placeholder="Type your message here!"
-                      id="user-prompt"></textarea>
-                    <button class="sidebar__chat-assistant--textarea-send-button sidebar__textarea-send-button--disabled"
-                      id="send-button">
-                      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
-                        class="sidebar__chat-assistant--textarea-send-icon">
-                        <path
-                          d="m498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6l-119.6-49.7-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1s-20.3-16.7-20.3-29.9v-83.6c0-4 1.5-7.8 4.2-10.7l167.6-182.9c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7l-203.4 180.7-88.3-44.2c-10.6-5.3-17.4-15.9-17.7-27.7s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
-                      </svg>
-                    </button>
-                  </section>
-                </footer>
+        <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
+          <ul class="sidebar__chat-assistant--dialogue-container">
+            
+            <li id="anchor"></li>
+          </ul>
+        </section>
+        <footer class="sidebar__chat-assistant--footer">
+          <section class="sidebar__chat-assistant--textarea-container">
+            <button id="cancel-button" class="sidebar__chat-assistant--cancel-button" disabled>
+                <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="sidebar__chat-assistant--regenerate-button-icon">
+                    <path d="m464 256a208 208 0 1 0 -416 0 208 208 0 1 0 416 0zm-464 0a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm224-72v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24z"></path>
+                </svg>
+                <span>Cancel</span>
+            </button>
+            <textarea class="sidebar__chat-assistant--textarea" placeholder="Type your message here!"
+              id="user-prompt"></textarea>
+            <button class="sidebar__chat-assistant--textarea-send-button sidebar__textarea-send-button--disabled"
+              id="send-button">
+              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                class="sidebar__chat-assistant--textarea-send-icon">
+                <path
+                  d="m498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6l-119.6-49.7-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1s-20.3-16.7-20.3-29.9v-83.6c0-4 1.5-7.8 4.2-10.7l167.6-182.9c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7l-203.4 180.7-88.3-44.2c-10.6-5.3-17.4-15.9-17.7-27.7s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z" />
+              </svg>
+            </button>
+          </section>
+        </footer>
 			</body>
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;

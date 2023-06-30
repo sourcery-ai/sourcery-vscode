@@ -152,6 +152,22 @@ const LINE_HEIGHT = 36;
 
     const replaceCurrentAssistantMessage = () => {
       currentAssistantMessage.innerHTML = message.textContent;
+
+      let blocks = currentAssistantMessage.querySelectorAll("pre");
+      blocks.forEach((block) => {
+        if (navigator.clipboard) {
+          let text = block.querySelector("code").innerText;
+          let button = document.createElement("button");
+          button.innerText = "Copy";
+          button.classList.add(
+            "sidebar__chat-assistant--chat-bubble-text--code-copy-button"
+          );
+          block.appendChild(button);
+          button.onclick = async () => {
+            await navigator.clipboard.writeText(text);
+          };
+        }
+      });
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
