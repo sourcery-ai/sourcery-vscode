@@ -9,6 +9,11 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
 </div>`;
 
+// This is a little larger than the (empirical) number of pixels the window might scroll by when
+// a new line is added. If the line is less than this, we should try to keep scrolling with the window.
+// See `stickyScrollToBottom` below.
+const LINE_HEIGHT = 36;
+
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
@@ -27,6 +32,8 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   if (cancelButton) {
     cancelButton.onclick = sendCancelRequest;
   }
+
+  const messageContainer = document.getElementById("message-container");
 
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
@@ -54,7 +61,7 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
   window.addEventListener("message", (event) => {
     const message = event.data;
     if (message.command === "add_result") {
-      addMessageToUI(message.result);
+      withStickyScroll(addMessageToUI)(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -104,7 +111,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     );
     userMessageElement.innerHTML = templateMessage;
     chatContainer.append(userMessageElement);
-    userMessageElement.scrollIntoView();
   }
 
   function addMessageToUI(result) {
@@ -113,6 +119,26 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     } else {
       addUserMessageToUI(result.textContent);
       addAssistantThinkingMessageToUI();
+    }
+  }
+
+  function withStickyScroll(wrapped) {
+    return function () {
+      const { scrollHeight: scrollHeightBefore } = messageContainer;
+      wrapped.apply(this, arguments);
+      const { scrollHeight: scrollHeightAfter } = messageContainer;
+      stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
+    };
+  }
+
+  // If we're already at the bottom, scroll the bottom into view
+  function stickyScrollToBottom(diff = LINE_HEIGHT) {
+    const { scrollTop, clientHeight, scrollHeight } = messageContainer;
+    const scrollDiff = Math.abs(scrollHeight - clientHeight - scrollTop);
+    const isScrolledToBottom = scrollDiff <= diff + 1;
+
+    if (isScrolledToBottom) {
+      messageContainer.scrollTop = scrollHeight - clientHeight;
     }
   }
 
@@ -126,9 +152,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 
     const replaceCurrentAssistantMessage = () => {
       currentAssistantMessage.innerHTML = message.textContent;
-
-      // Scroll the bottom into view
-      currentAssistantMessage.scrollIntoView(false);
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
@@ -170,7 +193,6 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
     }
     thinkingMessage = thinkingMessageElement;
     chatContainer.append(thinkingMessage);
-    thinkingMessage.scrollIntoView();
   }
 
   // Enable/Disable send button depending on whether text area is empty
