@@ -134,7 +134,6 @@
 
 .sidebar__chat-assistant--chat-bubble-text pre {
   margin: 0;
-  overflow-x: hidden;
   width: 100%;
   background-color: var(--vscode-editor-background);
   border: 1px solid var(--vscode-panel-border);
@@ -158,9 +157,11 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
   margin: 0;
   width: var(--spacing-lg);
   height: var(--spacing-lg);
+  outline: none;
 }
 
 .sidebar__chat-assistant--code-block-action-button-icon {
+  height: var(--spacing-lg);
   width: var(--spacing-lg);
   position: absolute;
   left: var(--spacing-xxs);
