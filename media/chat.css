@@ -141,7 +141,6 @@
   position: relative;
 }
 
-
 button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
   visibility: hidden;
   background: var(--vscode-button-secondaryBackground);
@@ -172,7 +171,9 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
   background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
-.sidebar__chat-assistant--chat-bubble-text pre:hover button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+.sidebar__chat-assistant--chat-bubble-text
+  pre:hover
+  button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
   visibility: visible;
 }
 
