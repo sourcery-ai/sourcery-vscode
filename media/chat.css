@@ -92,7 +92,7 @@
 }
 
 .sidebar__chat-assistant--chat-bubble-text {
-  margin: 0;
+  margin: var(--spacing-sm);
   color: var(--vscode-settings-textInputForeground);
 }
 
@@ -105,7 +105,7 @@
   background: transparent;
 }
 
-.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
+.sidebar__chat-assistant--chat-bubble-text > *:not(:last-child) {
   margin-bottom: var(--spacing-sm);
 }
 
@@ -127,10 +127,6 @@
   /*padding-left: 1.5em;*/
 }
 
-.sidebar__chat-assistant--chat-bubble-text *:not(:last-child) {
-  margin-bottom: var(--spacing-sm);
-}
-
 .sidebar__chat-assistant--chat-bubble-text code {
   font-family: var(--vscode-editor-font-family);
   font-size: var(--vscode-sidebar-font-size);
@@ -138,14 +134,47 @@
 
 .sidebar__chat-assistant--chat-bubble-text pre {
   margin: 0;
-  overflow-x: auto;
   width: 100%;
   background-color: var(--vscode-editor-background);
   border: 1px solid var(--vscode-panel-border);
   border-radius: var(--spacing-xs);
+  position: relative;
 }
 
-.sidebar__chat-assistant--chat-bubble-text pre code {
+button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+  visibility: hidden;
+  background: var(--vscode-button-secondaryBackground);
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: var(--spacing-xxs);
+  position: absolute;
+  display: block;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  color: var(--vscode-settings-textInputForeground);
+  padding: var(--spacing-md);
+  fill: var(--vscode-button-secondaryForeground);
+  margin: 0;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  outline: none;
+}
+
+.sidebar__chat-assistant--code-block-action-button-icon {
+  height: var(--spacing-lg);
+  width: var(--spacing-lg);
+  position: absolute;
+  left: var(--spacing-xxs);
+  top: var(--spacing-xxs);
+}
+
+button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.sidebar__chat-assistant--chat-bubble-text
+  pre:hover
+  button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+  visibility: visible;
 }
 
 .sidebar__chat-assistant--code-block {
