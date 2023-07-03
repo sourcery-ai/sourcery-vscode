@@ -134,7 +134,7 @@
 
 .sidebar__chat-assistant--chat-bubble-text pre {
   margin: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   width: 100%;
   background-color: var(--vscode-editor-background);
   border: 1px solid var(--vscode-panel-border);
@@ -145,19 +145,30 @@
 
 button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
   visibility: hidden;
-  background: transparent;
+  background: var(--vscode-button-secondaryBackground);
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: var(--spacing-xxs);
   position: absolute;
   display: block;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
   color: var(--vscode-settings-textInputForeground);
-  padding: var(--spacing-xs);
-  width: unset;
+  padding: var(--spacing-md);
+  fill: var(--vscode-button-secondaryForeground);
   margin: 0;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+}
+
+.sidebar__chat-assistant--code-block-action-button-icon {
+  width: var(--spacing-lg);
+  position: absolute;
+  left: var(--spacing-xxs);
+  top: var(--spacing-xxs);
 }
 
 button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
-  background-color: var(--vscode-toolbar-hoverBackground);
+  background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
 .sidebar__chat-assistant--chat-bubble-text pre:hover button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {

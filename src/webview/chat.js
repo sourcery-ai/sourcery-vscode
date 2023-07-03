@@ -158,7 +158,16 @@ const LINE_HEIGHT = 36;
         if (navigator.clipboard) {
           let text = block.querySelector("code").innerText;
           let button = document.createElement("button");
-          button.innerText = "Copy";
+          button.innerHTML = `
+            <svg 
+              viewBox="0 0 512 512" 
+              xmlns="http://www.w3.org/2000/svg"
+              class="sidebar__chat-assistant--code-block-action-button-icon"
+            >
+              <path d="m272 0h124.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9v220.1c0 26.5-21.5 48-48 48h-192c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48zm-224 128h144v64h-128v256h192v-32h64v48c0 26.5-21.5 48-48 48h-224c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48z" />        
+            </svg>
+          `;
+          button.title = "Copy to Clipboard";
           button.classList.add(
             "sidebar__chat-assistant--chat-bubble-text--code-copy-button"
           );
