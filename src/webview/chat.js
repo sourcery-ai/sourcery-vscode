@@ -9,6 +9,10 @@ const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
 <span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
 </div>`;
 
+const errorAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container" >
+    <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 0 64 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V320c0 17.7 14.3 32 32 32s32-14.3 32-32V64zM32 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
+</div>`;
+
 // This is a little larger than the (empirical) number of pixels the window might scroll by when
 // a new line is added. If the line is less than this, we should try to keep scrolling with the window.
 // See `stickyScrollToBottom` below.
@@ -198,7 +202,7 @@ const LINE_HEIGHT = 36;
     } else {
       const templateContents = `
             <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
-            ${assistantAvatar}
+            ${message.outcome === "error" ? errorAvatar : assistantAvatar}
             <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
               <p class="sidebar__chat-assistant--chat-bubble-text"></p>
             </div>`;

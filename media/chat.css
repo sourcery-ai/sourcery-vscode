@@ -74,16 +74,16 @@
 .sidebar__chat-assistant--code-block-container {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
-  border-radius: var(--spacing-xs);
   flex-grow: 1;
   flex-shrink: 1;
   overflow: hidden;
+  border-radius: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) 0;
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
-  border-radius: var(--spacing-xs);
+  border-radius: var(--spacing-xs) var(--spacing-xs) 0 var(--spacing-xs);
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user
@@ -248,7 +248,7 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
 
 .sidebar__chat-assistant--chat-bubble-error
   .sidebar__chat-assistant--chat-bubble-text {
-  color: var(--vscode-inputValidation-errorForeground);
+  color: var(--vscode-foreground);
 }
 
 .sidebar__chat-assistant--chat-bubble-error
@@ -256,8 +256,8 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
   background: var(--vscode-inputValidation-errorBackground);
 }
 
-.sidebar__chat-assistant--chat-bubble-error svg {
-  fill: var(--vscode-sideBar-foreground);
+.sidebar__chat-assistant--chat-bubble-error {
+  fill: var(--vscode-foreground);
 }
 
 .sidebar__chat-assistant--cursor {
