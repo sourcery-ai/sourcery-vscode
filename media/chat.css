@@ -74,16 +74,16 @@
 .sidebar__chat-assistant--code-block-container {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
-  border-radius: var(--spacing-xs);
   flex-grow: 1;
   flex-shrink: 1;
   overflow: hidden;
+  border-radius: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 0;
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
-  border-radius: var(--spacing-xs);
+  border-radius: var(--spacing-sm) var(--spacing-sm) 0 var(--spacing-sm);
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user
@@ -136,9 +136,10 @@
   margin: 0;
   width: 100%;
   background-color: var(--vscode-editor-background);
-  border: 1px solid var(--vscode-panel-border);
+  outline: 1px solid var(--vscode-panel-border);
   border-radius: var(--spacing-xs);
   position: relative;
+  overflow: hidden;
 }
 
 button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
@@ -222,17 +223,6 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
   text-decoration: none;
 }
 
-/* Don't round the specific corner where the avatar is, to make it look more like a chat bubble */
-.sidebar__chat-assistant--chat-bubble-agent
-  .sidebar__chat-assistant--chat-bubble-content {
-  border-bottom-left-radius: 0;
-}
-
-.sidebar__chat-assistant--chat-bubble-user
-  .sidebar__chat-assistant--chat-bubble-content {
-  border-bottom-right-radius: 0;
-}
-
 /* Make avatar bigger for user, since we're using an emoji for now */
 .sidebar__chat-assistant--chat-bubble-user
   .sidebar__chat-assistant--agent-avatar-image {
@@ -248,7 +238,7 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
 
 .sidebar__chat-assistant--chat-bubble-error
   .sidebar__chat-assistant--chat-bubble-text {
-  color: var(--vscode-inputValidation-errorForeground);
+  color: var(--vscode-foreground);
 }
 
 .sidebar__chat-assistant--chat-bubble-error
@@ -256,8 +246,8 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
   background: var(--vscode-inputValidation-errorBackground);
 }
 
-.sidebar__chat-assistant--chat-bubble-error svg {
-  fill: var(--vscode-sideBar-foreground);
+.sidebar__chat-assistant--chat-bubble-error {
+  fill: var(--vscode-foreground);
 }
 
 .sidebar__chat-assistant--cursor {
