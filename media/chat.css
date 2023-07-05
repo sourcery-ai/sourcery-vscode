@@ -77,13 +77,13 @@
   flex-grow: 1;
   flex-shrink: 1;
   overflow: hidden;
-  border-radius: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) 0;
+  border-radius: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 0;
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);
-  border-radius: var(--spacing-xs) var(--spacing-xs) 0 var(--spacing-xs);
+  border-radius: var(--spacing-sm) var(--spacing-sm) 0 var(--spacing-sm);
 }
 
 .sidebar__chat-assistant--chat-bubble-content-user
@@ -220,17 +220,6 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
 .sidebar__chat-assistant--chat-bubble-inline-button:hover
   .sidebar__chat-assistant--chat-text-inline-code {
   text-decoration: none;
-}
-
-/* Don't round the specific corner where the avatar is, to make it look more like a chat bubble */
-.sidebar__chat-assistant--chat-bubble-agent
-  .sidebar__chat-assistant--chat-bubble-content {
-  border-bottom-left-radius: 0;
-}
-
-.sidebar__chat-assistant--chat-bubble-user
-  .sidebar__chat-assistant--chat-bubble-content {
-  border-bottom-right-radius: 0;
 }
 
 /* Make avatar bigger for user, since we're using an emoji for now */
