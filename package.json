@@ -91,6 +91,17 @@
 				"when": "workspacePlatform != webworker",
 				"steps": [
 					{
+						"id": "sourcery.login",
+						"title": "Login",
+						"description": "Unlock all of Sourcery's features, including 14 a day trial of Sourcery Pro\n[Login](command:sourcery.login)",
+						"media": {
+							"markdown": "walkthrough/login.md"
+						},
+						"completionEvents": [
+							"onContext:sourcery.is_authenticated"
+						]
+					},					
+					{
 						"id": "sourcery.openWelcomeFile",
 						"title": "Get your first recommendation",
 						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Put the cursor over the underlined code to see the refactoring suggestion. \n You can see all Sourcery's recommendations in the [Problems Pane](command:workbench.actions.view.problems)",
@@ -132,20 +143,9 @@
 						}
 					},
 					{
-						"id": "sourcery.login",
-						"title": "Login",
-						"description": "Unlock all of Sourcery's features, including 30 days of Sourcery Pro\n[Login](command:sourcery.login)",
-						"media": {
-							"markdown": "walkthrough/login.md"
-						},
-						"completionEvents": [
-							"onContext:sourcery.is_authenticated"
-						]
-					},
-					{
 						"id": "sourcery.advancedFeatures",
 						"title": "Advanced Features",
-						"description": "Once you have logged in you will be able to use Sourcery's Pro features for 30 days\nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
+						"description": "With a Sourcery Pro account you can use Sourcery's advanced features on any project. Otherwise, you can use them on any open source project. \nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
 						"media": {
 							"markdown": "walkthrough/refactoring_scan.md"
 						},
