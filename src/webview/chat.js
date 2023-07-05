@@ -1,8 +1,14 @@
 //@ts-check
 
+// This is the sourcery logo
 const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
-<img src="https://sourcery.ai/favicon-32x32.png?v=63c3364394c84cae06d42bc320066118" alt="Sourcery logo"
-  class="sidebar__chat-assistant--agent-avatar-image" />
+  <svg viewBox="0 0 1037.1 1037.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">  
+    <polygon fill="#FFFFFF" points="527.2 74.6 100.9 304.3 100.9 513.7 100.9 656.7 100.9 733.3 518.3 963.1 935.7 733.3 935.7 646.5 935.7 513.7 935.7 294.1"/>
+    <polygon fill="#31313A" points="100.9 656.7 527.2 426.9 935.7 646.5 935.7 733.3 518.3 963.1 100.9 733.3"/>
+    <polygon fill="#F7931E" fill-opacity="0.8" points="518.3 521 518.3 963.1 100.9 733.3 100.9 304.3"/>
+    <polygon fill="#F7931E" fill-opacity="0.7" points="935.7 294.1 935.7 733.3 518.3 963.1 518.3 521"/>
+    <polygon fill="#FBB03B" fill-opacity="0.8" points="100.9 304.3 527.2 74.6 935.7 294.1 935.7 513.7 518.3 743.5 100.9 513.7"/>
+  </svg>
 </div>`;
 
 const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
