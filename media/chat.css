@@ -55,7 +55,7 @@
   flex-shrink: 0;
   flex-grow: 0;
   background: var(--vscode-foreground);
-  padding: var(--spacing-xs);
+  padding: var(--spacing-xxs);
   border-radius: 100%;
   width: 2rem;
   height: 2rem;
