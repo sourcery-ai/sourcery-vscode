@@ -136,9 +136,10 @@
   margin: 0;
   width: 100%;
   background-color: var(--vscode-editor-background);
-  border: 1px solid var(--vscode-panel-border);
+  outline: 1px solid var(--vscode-panel-border);
   border-radius: var(--spacing-xs);
   position: relative;
+  overflow: hidden;
 }
 
 button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
