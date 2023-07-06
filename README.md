@@ -13,7 +13,7 @@
 
 **[WEBSITE](https://sourcery.ai/) | [DOCS](https://docs.sourcery.ai/Welcome/) | [BUGS](https://github.com/sourcery-ai/sourcery/issues)**
 
-Sourcery is the pair programmer who will help you improve your code anytime you're working in Python. It reviews and improves your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
+Sourcery is the pair programmer who will help you improve your code. It reviews and improves your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
 
 ![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Example.gif)
 
@@ -21,7 +21,7 @@ Sourcery is the pair programmer who will help you improve your code anytime yo
 
 ## Sourcery
 
-Sourcery is a VS Code extension to help make all of your Python code cleaner and more readable. Quickly find areas **where your code could be refactored**, see **instant suggestions for improvement**, and understand how new changes impact your **code quality**. 
+Sourcery is a VS Code extension to help make all of your code cleaner and more readable. Quickly find areas **where your code could be refactored**, see **instant suggestions for improvement**, and understand how new changes impact your **code quality**. 
 
 Here are some of the features Sourcery offers to help improve your code:
 
@@ -38,6 +38,10 @@ To start using Sourcery on your code, check out our [Getting Started guide](http
 
 Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more information on how to use Sourcery.
 
+Sourcery is free to use for open source projects. 
+
+To use Sourcery on non open sourced projects you'll need a Sourcery Pro or Sourcery Team subscription. To get a 14 day free trial to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?product=prod_pro&utm_source=VS-Code)**.
+
 ---
 
 ## Features
@@ -46,7 +50,7 @@ Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more inform
 
 ![Refactoring Code with Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Refactoring.gif)
 
-While you work, Sourcery will review all of the Python files you have open and look for opportunities to clean up and improve your code. Once Sourcery finds a potential improvement it will underline that section of your code.
+While you work, Sourcery will review all of the Python, JavaScript, and TypeScript files you have open and look for opportunities to clean up and improve your code. Once Sourcery finds a potential improvement it will underline that section of your code.
 
 Hover your mouse over the underlined section of code to see the changes Sourcery suggests and to see a diff of the proposed change.
 
@@ -61,7 +65,7 @@ The commands to bring up the quick fix menu depend on your OS & region, but gene
 | Windows | Ctrl . |
 | Linux | Ctrl . |
 
-Sourcery reviews all of the Python files you have open. You can get an overview of all the suggestions Sourcery has in the Problem window.
+Sourcery reviews all of the files you have open. You can get an overview of all the suggestions Sourcery has in the Problem window.
 
 ### Set up your own rules - or use public rulesets
 
@@ -98,8 +102,6 @@ You can use Sourcery to review a single file, a folder, or your whole project at
 
 Right-click on any item in the Explorer window and select "Sourcery → Scan for Refactorings". Sourcery will show you a notification when the scan is done & will show all of the suggestions it found in the Problems window.
 
-Multi-File Analysis requires a Sourcery Pro subscription. To get a month free access to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?utm_source=VS-Code)**.
-
 ### Duplicate Code Detection
 
 ![Duplicate Code Detection in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Example_Duplicates_VS_Code.gif)
@@ -109,8 +111,6 @@ Sourcery can help you find duplicate code and near-duplicate code across your wh
 Right-click on any item in the Explorer window and select "Sourcery → Detect Clones". Sourcery will show you a notification when it's done scanning for clones & will show you all of the instances of duplication it found in the Problems window.
 
 By default, Sourcery will flag items where at least 3 lines are duplicates or near-duplicates that occur at least twice in the scanned files.
-
-Duplicate Code Detection requires a Sourcery Pro subscription. To get a month free access to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?utm_source=VS-Code)**.
 
 ### Sourcery CLI
 
@@ -253,18 +253,6 @@ def func(a,b):
     return c
 ```
 
----
-
-## Sign Up For More Features
-
-Do you like how Sourcery improves your code bit by bit?
-Sign up and get a 30 day free trial of the Pro features. (No automatic renewal, no credit card required.)
-
-After [signing up](https://sourcery.ai/signup/?utm_source=VS-Code), login by
-opening the command palette (Ctrl/Cmd+Shift+P) and executing the `Sourcery:
-Login` command.
-
-We also love to hear your feedback.
 
 ---
 
