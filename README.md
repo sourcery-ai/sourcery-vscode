@@ -21,7 +21,7 @@ Sourcery is the pair programmer who will help you improve your code. It revie
 
 ## Sourcery
 
-Sourcery is a VS Code extension to help make all of your  code cleaner and more readable. Quickly find areas **where your code could be refactored**, see **instant suggestions for improvement**, and understand how new changes impact your **code quality**. 
+Sourcery is a VS Code extension to help make all of your code cleaner and more readable. Quickly find areas **where your code could be refactored**, see **instant suggestions for improvement**, and understand how new changes impact your **code quality**. 
 
 Here are some of the features Sourcery offers to help improve your code:
 
