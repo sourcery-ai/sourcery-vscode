@@ -54,10 +54,10 @@ export type CancelRequest = {
   type: "cancel_request";
 };
 
-export type OpenPathRequest = {
-  type: "open_path_request";
-  pathType: "file" | "directory";
-  path: string;
+export type OpenLinkRequest = {
+  type: "open_link_request";
+  linkType: "url" | "file" | "directory";
+  link: string;
 };
 
 export class ChatProvider implements vscode.WebviewViewProvider {
@@ -100,7 +100,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (request: ChatRequest | CancelRequest | OpenPathRequest) => {
+      async (request: ChatRequest | CancelRequest | OpenLinkRequest) => {
         switch (request.type) {
           case "chat_request": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
@@ -110,23 +110,28 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             vscode.commands.executeCommand("sourcery.chat_cancel_request");
             break;
           }
-          case "open_path_request": {
-            let path = vscode.Uri.file(request.path);
-
-            // Make the path relative to the workspace root
-            if (!request.path.startsWith("/")) {
-              const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
-              if (workspaceRoot) {
-                path = vscode.Uri.joinPath(workspaceRoot, request.path);
-              }
-            }
-
-            if (request.pathType === "file") {
-              // Open the file in the editor
-              vscode.commands.executeCommand("vscode.open", path);
+          case "open_link_request": {
+            if (request.linkType === "url") {
+              vscode.env.openExternal(vscode.Uri.parse(request.link));
             } else {
-              // Reveal the directory in the explorer
-              vscode.commands.executeCommand("revealInExplorer", path);
+              let path = vscode.Uri.file(request.link);
+
+              // Make the path relative to the workspace root
+              if (!request.link.startsWith("/")) {
+                const workspaceRoot =
+                  vscode.workspace.workspaceFolders?.[0].uri;
+                if (workspaceRoot) {
+                  path = vscode.Uri.joinPath(workspaceRoot, request.link);
+                }
+              }
+
+              if (request.linkType === "file") {
+                // Open the file in the editor
+                vscode.commands.executeCommand("vscode.open", path);
+              } else {
+                // Reveal the directory in the explorer
+                vscode.commands.executeCommand("revealInExplorer", path);
+              }
             }
             break;
           }

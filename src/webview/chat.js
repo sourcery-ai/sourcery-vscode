@@ -89,8 +89,8 @@ const LINE_HEIGHT = 36;
     vscode.postMessage({ type: "cancel_request" });
   }
 
-  function sendOpenPathRequest(pathType, path) {
-    vscode.postMessage({ type: "open_path_request", pathType, path });
+  function sendOpenLinkRequest(linkType, link) {
+    vscode.postMessage({ type: "open_link_request", linkType, link });
   }
 
   function clearAllMessages() {
@@ -206,12 +206,19 @@ const LINE_HEIGHT = 36;
       let blocks = currentAssistantMessage.querySelectorAll("pre");
       blocks.forEach(setupCopyButton);
 
+      let httpLinks =
+        currentAssistantMessage.querySelectorAll('a[href*="http"]');
+      httpLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          sendOpenLinkRequest("url", link.href);
+        });
+      });
       let fileLinks = currentAssistantMessage.querySelectorAll(
         'a[href="VALID_FILE"]'
       );
       fileLinks.forEach((link) => {
         link.addEventListener("click", () => {
-          sendOpenPathRequest("file", link.innerText);
+          sendOpenLinkRequest("file", link.innerText);
         });
       });
       let folderLinks = currentAssistantMessage.querySelectorAll(
@@ -219,7 +226,7 @@ const LINE_HEIGHT = 36;
       );
       folderLinks.forEach((link) => {
         link.addEventListener("click", () => {
-          sendOpenPathRequest("directory", link.innerText);
+          sendOpenLinkRequest("directory", link.innerText);
         });
       });
     };
