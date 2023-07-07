@@ -81,7 +81,8 @@
 }
 
 .sidebar__chat-assistant--chat-bubble-content-assistant a[href="VALID_FILE"],
-.sidebar__chat-assistant--chat-bubble-content-assistant a[href="VALID_DIRECTORY"],
+.sidebar__chat-assistant--chat-bubble-content-assistant
+  a[href="VALID_DIRECTORY"],
 .sidebar__chat-assistant--chat-bubble-content-assistant a[href="INVALID_PATH"] {
   font-family: monospace;
 }
