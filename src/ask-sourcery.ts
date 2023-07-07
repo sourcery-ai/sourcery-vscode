@@ -38,7 +38,8 @@ export function showAskSourceryQuickPick(recipes: Recipe[]) {
     }));
 
     const quickPick = vscode.window.createQuickPick();
-    quickPick.placeholder = "Ask any question or choose one of these recipes";
+    quickPick.placeholder =
+      "Ask Sourcery a question or choose one of these recipes";
     quickPick.items = recipeItems;
 
     quickPick.onDidAccept(() => {
