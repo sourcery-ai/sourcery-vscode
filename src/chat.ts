@@ -54,6 +54,12 @@ export type CancelRequest = {
   type: "cancel_request";
 };
 
+export type OpenPathRequest = {
+  type: "open_path_request";
+  pathType: "file" | "directory";
+  path: string;
+};
+
 export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
 
@@ -94,14 +100,34 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (data: ChatRequest | CancelRequest) => {
-        switch (data.type) {
+      async (request: ChatRequest | CancelRequest | OpenPathRequest) => {
+        switch (request.type) {
           case "chat_request": {
-            vscode.commands.executeCommand("sourcery.chat_request", data);
+            vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
           }
           case "cancel_request": {
             vscode.commands.executeCommand("sourcery.chat_cancel_request");
+            break;
+          }
+          case "open_path_request": {
+            let path = vscode.Uri.file(request.path);
+
+            // Make the path relative to the workspace root
+            if (!request.path.startsWith("/")) {
+              const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
+              if (workspaceRoot) {
+                path = vscode.Uri.joinPath(workspaceRoot, request.path);
+              }
+            }
+
+            if (request.pathType === "file") {
+              // Open the file in the editor
+              vscode.commands.executeCommand("vscode.open", path);
+            } else {
+              // Reveal the directory in the explorer
+              vscode.commands.executeCommand("revealInExplorer", path);
+            }
             break;
           }
         }
