@@ -80,6 +80,19 @@
   border-radius: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) 0;
 }
 
+.sidebar__chat-assistant--chat-bubble-content-assistant a[href="VALID_FILE"],
+.sidebar__chat-assistant--chat-bubble-content-assistant
+  a[href="VALID_DIRECTORY"],
+.sidebar__chat-assistant--chat-bubble-content-assistant a[href="INVALID_PATH"] {
+  font-family: monospace;
+}
+
+.sidebar__chat-assistant--chat-bubble-content-assistant a[href="INVALID_PATH"] {
+  color: var(--vscode-textPreformat-foreground);
+  cursor: text;
+  text-decoration: none;
+}
+
 .sidebar__chat-assistant--chat-bubble-content-user {
   background-color: var(--vscode-settings-textInputBackground);
   padding: var(--spacing-xs);

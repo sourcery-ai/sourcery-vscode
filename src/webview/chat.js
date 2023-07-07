@@ -85,13 +85,17 @@ const LINE_HEIGHT = 36;
     vscode.postMessage({ type: "chat_request", data: message });
   }
 
+  function sendCancelRequest() {
+    vscode.postMessage({ type: "cancel_request" });
+  }
+
+  function sendOpenPathRequest(pathType, path) {
+    vscode.postMessage({ type: "open_path_request", pathType, path });
+  }
+
   function clearAllMessages() {
     assistantMessageFinished();
     chatContainer.textContent = "";
-  }
-
-  function sendCancelRequest() {
-    vscode.postMessage({ type: "cancel_request" });
   }
 
   function sendUserMessage() {
@@ -201,6 +205,23 @@ const LINE_HEIGHT = 36;
 
       let blocks = currentAssistantMessage.querySelectorAll("pre");
       blocks.forEach(setupCopyButton);
+
+      let fileLinks = currentAssistantMessage.querySelectorAll(
+        'a[href="VALID_FILE"]'
+      );
+      fileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          sendOpenPathRequest("file", link.innerText);
+        });
+      });
+      let folderLinks = currentAssistantMessage.querySelectorAll(
+        'a[href="VALID_DIRECTORY"]'
+      );
+      folderLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          sendOpenPathRequest("directory", link.innerText);
+        });
+      });
     };
 
     if (currentAssistantMessage != null && message.outcome !== "error") {
