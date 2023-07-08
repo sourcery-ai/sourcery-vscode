@@ -4,28 +4,26 @@ import { ChatRequest } from "./chat";
 
 export function askSourceryCommand(recipes: Recipe[], contextRange?) {
   showAskSourceryQuickPick(recipes).then((result: any) => {
-    vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-      let request: ChatRequest;
-      if ("id" in result) {
-        request = {
-          type: "recipe_request",
-          data: {
-            kind: "recipe_request",
-            name: result.label,
-            id: result.id,
-          },
-          context_range: contextRange,
-        };
-      } else {
-        request = {
-          type: "chat_request",
-          data: { kind: "user_message", message: result.label },
-          context_range: contextRange,
-        };
-      }
+    let request: ChatRequest;
+    if ("id" in result) {
+      request = {
+        type: "recipe_request",
+        data: {
+          kind: "recipe_request",
+          name: result.label,
+          id: result.id,
+        },
+        context_range: contextRange,
+      };
+    } else {
+      request = {
+        type: "chat_request",
+        data: { kind: "user_message", message: result.label },
+        context_range: contextRange,
+      };
+    }
 
-      vscode.commands.executeCommand("sourcery.chat_request", request);
-    });
+    vscode.commands.executeCommand("sourcery.chat_request", request);
   });
 }
 

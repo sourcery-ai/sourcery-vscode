@@ -406,29 +406,31 @@ function registerCommands(
     commands.registerCommand(
       "sourcery.chat_request",
       (message: ChatRequest) => {
-        // Use the editor selection unless a range was passed through in
-        // the message
-        let selectionLocation = getSelectionLocation();
-        if (message.context_range != null) {
-          selectionLocation = {
-            uri: selectionLocation.uri,
-            range: message.context_range,
-          };
-        }
-        let { activeFile, allFiles } = activeFiles();
+        vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
+          // Use the editor selection unless a range was passed through in
+          // the message
+          let selectionLocation = getSelectionLocation();
+          if (message.context_range != null) {
+            selectionLocation = {
+              uri: selectionLocation.uri,
+              range: message.context_range,
+            };
+          }
+          let { activeFile, allFiles } = activeFiles();
 
-        let request: ExecuteCommandParams = {
-          command: "sourcery/chat/request",
-          arguments: [
-            {
-              message: message,
-              selected: selectionLocation,
-              active_file: activeFile,
-              all_open_files: allFiles,
-            },
-          ],
-        };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+          let request: ExecuteCommandParams = {
+            command: "sourcery/chat/request",
+            arguments: [
+              {
+                message: message,
+                selected: selectionLocation,
+                active_file: activeFile,
+                all_open_files: allFiles,
+              },
+            ],
+          };
+          languageClient.sendRequest(ExecuteCommandRequest.type, request);
+        });
       }
     )
   );
