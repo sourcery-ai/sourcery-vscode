@@ -38,6 +38,10 @@ import { askSourceryCommand } from "./ask-sourcery";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
+  const showCodeLens = workspace
+    .getConfiguration("sourcery")
+    .get<boolean>("codeLens");
+
   const packageJson = extensions.getExtension("sourcery.sourcery").packageJSON;
   const extensionVersion = packageJson.version;
 
@@ -76,6 +80,7 @@ function createLangServer(): LanguageClient {
       editor_version: "vscode " + version,
       extension_version: extensionVersion,
       telemetry_enabled: env.isTelemetryEnabled,
+      show_code_lens: showCodeLens,
     },
   };
 
@@ -221,6 +226,14 @@ function registerCommands(
     commands.registerCommand("sourcery.chat.ask", (arg?) => {
       let contextRange = arg && "start" in arg ? arg : null;
       askSourceryCommand(recipeProvider.recipes, contextRange);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.toggleCodeLens", () => {
+      const config = vscode.workspace.getConfiguration();
+      const currentValue = config.get("sourcery.codeLens");
+      config.update("sourcery.codeLens", !currentValue);
     })
   );
 
