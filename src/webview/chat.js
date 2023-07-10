@@ -71,7 +71,7 @@ const LINE_HEIGHT = 36;
   window.addEventListener("message", (event) => {
     const message = event.data;
     if (message.command === "add_result") {
-      withStickyScroll(addMessageToUI)(message.result);
+      addMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
     } else if (message.command === "focus") {
@@ -129,20 +129,28 @@ const LINE_HEIGHT = 36;
 
   function addMessageToUI(result) {
     if (result.role === "assistant") {
-      addAssistantMessageToUI(result);
+      withScroll(addAssistantMessageToUI)(result);
     } else {
-      addUserMessageToUI(result.textContent);
-      addAssistantThinkingMessageToUI();
+      withScroll(addUserMessageToUI, false)(result.textContent);
+      withScroll(addAssistantThinkingMessageToUI, false)();
     }
   }
 
-  function withStickyScroll(wrapped) {
-    return function () {
-      const { scrollHeight: scrollHeightBefore } = messageContainer;
-      wrapped.apply(this, arguments);
-      const { scrollHeight: scrollHeightAfter } = messageContainer;
-      stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
-    };
+  function withScroll(wrapped, stickyOnly = true) {
+    if (stickyOnly) {
+      return function () {
+        const { scrollHeight: scrollHeightBefore } = messageContainer;
+        wrapped.apply(this, arguments);
+        const { scrollHeight: scrollHeightAfter } = messageContainer;
+        stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
+      };
+    } else {
+      return function () {
+        wrapped.apply(this, arguments);
+        const { clientHeight, scrollHeight } = messageContainer;
+        messageContainer.scrollTop = scrollHeight - clientHeight;
+      };
+    }
   }
 
   // If we're already at the bottom, scroll the bottom into view
