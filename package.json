@@ -235,6 +235,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.chat.toggleCodeLens",
+				"title": "Toggle Sourcery Code Lens",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.scan.selectLanguage",
 				"title": "Select Language",
 				"category": "Sourcery"
@@ -360,6 +365,10 @@
 					"when": "sourcery.features.coding_assistant"
 				},
 				{
+					"command": "sourcery.chat.toggleCodeLens",
+					"when": "sourcery.features.coding_assistant"
+				},
+				{
 					"command": "sourcery.scan.selectLanguage",
 					"when": "false"
 				},
@@ -385,6 +394,11 @@
 					"type": "string",
 					"default": "",
 					"description": "Sourcery token. You can find your token at https://sourcery.ai/dashboard"
+				},
+				"sourcery.codeLens": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show code lens for Sourcery's coding assistant."
 				},
 				"sourcery.ruleType.refactorings": {
 					"type": "boolean",
