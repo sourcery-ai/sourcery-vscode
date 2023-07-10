@@ -236,7 +236,7 @@
 			},
 			{
 				"command": "sourcery.chat.toggleCodeLens",
-				"title": "Toggle Sourcery Code Lens",
+				"title": "Toggle Code Lens for Coding Assistant",
 				"category": "Sourcery"
 			},
 			{
