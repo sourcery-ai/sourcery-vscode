@@ -129,40 +129,38 @@ const LINE_HEIGHT = 36;
 
   function addMessageToUI(result) {
     if (result.role === "assistant") {
-      withScroll(addAssistantMessageToUI)(result);
+      withStickyScroll(addAssistantMessageToUI)(result);
     } else {
-      withScroll(addUserMessageToUI, false)(result.textContent);
-      withScroll(addAssistantThinkingMessageToUI, false)();
+      withScroll(addUserMessageToUI)(result.textContent);
+      withScroll(addAssistantThinkingMessageToUI)();
     }
   }
 
-  function withScroll(wrapped, stickyOnly = true) {
-    if (stickyOnly) {
-      return function () {
-        const { scrollHeight: scrollHeightBefore } = messageContainer;
-        wrapped.apply(this, arguments);
-        const { scrollHeight: scrollHeightAfter } = messageContainer;
-        stickyScrollToBottom(scrollHeightAfter - scrollHeightBefore);
-      };
-    } else {
-      return function () {
-        wrapped.apply(this, arguments);
-        const { clientHeight, scrollHeight } = messageContainer;
+  // After the function completes, scroll the message container if it was already scrolled to the bottom
+  function withStickyScroll(wrapped) {
+    return function () {
+      const { scrollHeight: scrollHeightBefore } = messageContainer;
+      wrapped.apply(this, arguments);
+      const { scrollHeight, scrollTop, clientHeight } = messageContainer;
+      const scrollDiff = Math.abs(scrollHeight - clientHeight - scrollTop);
+      const isScrolledToBottom =
+        scrollDiff <= scrollHeight - scrollHeightBefore + 1;
+
+      if (isScrolledToBottom) {
         messageContainer.scrollTop = scrollHeight - clientHeight;
-      };
-    }
+      }
+    };
   }
 
-  // If we're already at the bottom, scroll the bottom into view
-  function stickyScrollToBottom(diff = LINE_HEIGHT) {
-    const { scrollTop, clientHeight, scrollHeight } = messageContainer;
-    const scrollDiff = Math.abs(scrollHeight - clientHeight - scrollTop);
-    const isScrolledToBottom = scrollDiff <= diff + 1;
-
-    if (isScrolledToBottom) {
+  // After the function completes, scroll the message container to the bottom.
+  function withScroll(wrapped) {
+    return function () {
+      wrapped.apply(this, arguments);
+      const { clientHeight, scrollHeight } = messageContainer;
       messageContainer.scrollTop = scrollHeight - clientHeight;
-    }
+    };
   }
+  // If we're already at the bottom, scroll the bottom into view
 
   const setupCopyButton = (block) => {
     if (navigator.clipboard) {
