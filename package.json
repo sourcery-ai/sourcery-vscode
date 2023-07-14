@@ -416,7 +416,17 @@
 					"description": "Show comments."
 				}
 			}
-		}
+		},
+    "keybindings": [
+    {
+        "command": "sourcery.chat.ask",
+        "linux": "ctrl+y",
+        "mac": "cmd+y",
+        "windows": "ctrl+shift+y",
+        "when": "editorTextFocus"
+    }
+]
+
 	},
 	"main": "./out/extension",
 	"scripts": {
