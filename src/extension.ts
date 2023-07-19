@@ -33,7 +33,8 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider, ChatRequest } from "./chat";
-import { Recipe, RecipeProvider } from "./recipes";
+import { RecipeProvider } from "./recipes";
+import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
 
 function createLangServer(): LanguageClient {
@@ -123,6 +124,7 @@ function registerNotifications(
   scanResultTreeView: TreeView<TreeItem>,
   chatProvider: ChatProvider,
   recipeProvider: RecipeProvider,
+  reviewProvider: CodeReviewProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -144,7 +146,11 @@ function registerNotifications(
   });
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addResult(params.result);
+    if (params.mode == "chat") {
+      chatProvider.addResult(params.result);
+    } else if (params.mode == "review") {
+      reviewProvider.addResult(params.result);
+    }
   });
 
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
@@ -585,6 +591,15 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  const reviewProvider = new CodeReviewProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      CodeReviewProvider.viewType,
+      reviewProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
   registerCommands(
     context,
     riProvider,
@@ -605,6 +620,7 @@ export function activate(context: ExtensionContext) {
       treeView,
       chatProvider,
       recipeProvider,
+      reviewProvider,
       context
     );
   });

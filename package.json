@@ -68,6 +68,14 @@
 					"when": "sourcery.features.coding_assistant"
 				},
 				{
+					"id": "sourcery.code_review",
+					"name": "Code Review",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Code Review",
+					"when": "sourcery.features.coding_assistant"
+				},
+				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",

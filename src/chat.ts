@@ -27,7 +27,7 @@ enum ChatResultRole {
   User = "user",
 }
 
-type ChatResult = {
+export type ChatResult = {
   outcome: ChatResultOutcome;
   textContent: string;
   role: ChatResultRole;
@@ -38,6 +38,10 @@ export type ChatRequestData = {
   message: string;
 };
 
+export type CodeReviewRequestData = {
+  kind: "review_request";
+};
+
 export type RecipeRequestData = {
   kind: "recipe_request";
   name: string;
@@ -45,8 +49,8 @@ export type RecipeRequestData = {
 };
 
 export type ChatRequest = {
-  type: "recipe_request" | "chat_request";
-  data: ChatRequestData | RecipeRequestData;
+  type: "recipe_request" | "chat_request" | "review_request";
+  data: ChatRequestData | RecipeRequestData | CodeReviewRequestData;
   context_range?: any;
 };
 
@@ -214,7 +218,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       this._currentAssistantMessage = result.textContent;
     }
 
-    let sanitized = this.renderAssistantMessage(this._currentAssistantMessage);
+    let sanitized = renderAssistantMessage(this._currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",
@@ -223,23 +227,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         outcome: result.outcome,
         textContent: sanitized,
       },
-    });
-  }
-
-  private renderAssistantMessage(message: string) {
-    // Send the whole message we've been streamed so far to the webview,
-    // after converting from markdown to html
-
-    const rendered = marked(message, {
-      gfm: true,
-      breaks: true,
-      mangle: false,
-      headerIds: false,
-    });
-
-    // Allow any classes on span and code blocks or highlightjs classes get removed
-    return sanitizeHtml(rendered, {
-      allowedClasses: { span: false, code: false },
     });
   }
 
@@ -343,4 +330,21 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 			<script nonce="${nonce}" src="${scriptUri}"></script>
 			</html>`;
   }
+}
+
+export function renderAssistantMessage(message: string) {
+  // Send the whole message we've been streamed so far to the webview,
+  // after converting from markdown to html
+
+  const rendered = marked(message, {
+    gfm: true,
+    breaks: true,
+    mangle: false,
+    headerIds: false,
+  });
+
+  // Allow any classes on span and code blocks or highlightjs classes get removed
+  return sanitizeHtml(rendered, {
+    allowedClasses: { span: false, code: false },
+  });
 }

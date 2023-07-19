@@ -33,10 +33,14 @@ const LINE_HEIGHT = 36;
     ".sidebar__chat-assistant--dialogue-container"
   );
   const messageInput = document.getElementById("user-prompt");
-  messageInput.focus();
+  if (messageInput != null) {
+    messageInput.focus();
+  }
 
   const sendButton = document.getElementById("send-button");
-  sendButton.onclick = sendUserMessage;
+  if (sendButton != null) {
+    sendButton.onclick = sendUserMessage;
+  }
 
   const cancelButton = document.getElementById("cancel-button");
   if (cancelButton) {
@@ -80,6 +84,16 @@ const LINE_HEIGHT = 36;
       assistantMessageFinished();
     }
   });
+
+  const reviewButton = document.querySelector(".review-button");
+  if (reviewButton != null) {
+    reviewButton.addEventListener("click", () => {
+      vscode.postMessage({
+        type: "review_request",
+        data: { kind: "review_request" },
+      });
+    });
+  }
 
   function sendRequestToExtension(message) {
     vscode.postMessage({ type: "chat_request", data: message });
@@ -315,23 +329,25 @@ const LINE_HEIGHT = 36;
     adjustTextareaHeight(messageInput);
   }
 
-  // Check for disable/enable send button and sizing
-  messageInput.addEventListener("input", checkTextarea);
+  if (messageInput != null) {
+    // Check for disable/enable send button and sizing
+    messageInput.addEventListener("input", checkTextarea);
 
-  // Check to see if we need to disable send button on backspace
-  messageInput.addEventListener("keydown", function (event) {
-    if (event.key === "Backspace") {
-      setTimeout(checkTextarea, 0);
-    }
-  });
+    // Check to see if we need to disable send button on backspace
+    messageInput.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace") {
+        setTimeout(checkTextarea, 0);
+      }
+    });
 
-  // Listen for return key in order to send user messages
-  messageInput.addEventListener("keypress", (e) => {
-    if (e.which === 13 && !e.shiftKey) {
-      e.preventDefault();
-      sendUserMessage();
-    }
-  });
+    // Listen for return key in order to send user messages
+    messageInput.addEventListener("keypress", (e) => {
+      if (e.which === 13 && !e.shiftKey) {
+        e.preventDefault();
+        sendUserMessage();
+      }
+    });
+  }
 
   const adjustTextareaHeight = (textarea) => {
     // Reset height to auto to get the actual scroll height, and set it to that value
