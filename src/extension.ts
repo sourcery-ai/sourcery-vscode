@@ -35,6 +35,7 @@ import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider, ChatRequest } from "./chat";
 import { Recipe, RecipeProvider } from "./recipes";
 import { askSourceryCommand } from "./ask-sourcery";
+import { TroubleshootingProvider } from "./troubleshooting";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -234,6 +235,15 @@ function registerCommands(
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
       config.update("sourcery.codeLens", !currentValue);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot", (message) => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/troubleshoot",
+        arguments: [message],
+      });
     })
   );
 
@@ -582,6 +592,14 @@ export function activate(context: ExtensionContext) {
       RecipeProvider.viewType,
       recipeProvider,
       { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
+
+  const troubleshootingProvider = new TroubleshootingProvider(context);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      TroubleshootingProvider.viewType,
+      troubleshootingProvider
     )
   );
 
