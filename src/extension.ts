@@ -36,6 +36,7 @@ import { ChatProvider, ChatRequest } from "./chat";
 import { RecipeProvider } from "./recipes";
 import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
+import { TroubleshootingProvider } from "./troubleshooting";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -259,6 +260,15 @@ function registerCommands(
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
       config.update("sourcery.codeLens", !currentValue);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot", (message) => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/troubleshoot",
+        arguments: [message],
+      });
     })
   );
 
@@ -649,6 +659,16 @@ export function activate(context: ExtensionContext) {
       { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
+
+  const troubleshootingProvider = new TroubleshootingProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      TroubleshootingProvider.viewType,
+      troubleshootingProvider
+    )
+  );
+
   registerCommands(
     context,
     riProvider,
