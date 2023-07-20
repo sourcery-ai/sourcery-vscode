@@ -72,6 +72,8 @@ function init(postMessage: PostMessage) {
     ]),
     createElement("section", "troubleshooting__main")
   );
+
+  window.addEventListener("message", ({ data }) => console.log(data));
 }
 
 (function () {

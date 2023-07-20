@@ -1,3 +1,5 @@
+"use strict";
+
 import {
   CancellationToken,
   ExtensionContext,
@@ -5,9 +7,11 @@ import {
   WebviewView,
   WebviewViewProvider,
   WebviewViewResolveContext,
+  commands,
 } from "vscode";
 import { randomBytes } from "crypto";
-import * as vscode from "vscode";
+
+type TroubleshootingResult = any;
 
 interface Message {
   action: string;
@@ -22,6 +26,13 @@ export class TroubleshootingProvider implements WebviewViewProvider {
     this._extensionUri = _context.extensionUri;
   }
 
+  public handleResult(result: TroubleshootingResult) {
+    if (!this._view) {
+      return;
+    }
+    this._view.webview.postMessage(result);
+  }
+
   public async resolveWebviewView(
     webviewView: WebviewView,
     context: WebviewViewResolveContext,
@@ -34,7 +45,7 @@ export class TroubleshootingProvider implements WebviewViewProvider {
     };
 
     webviewView.webview.onDidReceiveMessage(async (message: Message) => {
-      vscode.commands.executeCommand("sourcery.troubleshoot", message);
+      commands.executeCommand("sourcery.troubleshoot", message);
     });
 
     const styleSheets = [
@@ -44,7 +55,7 @@ export class TroubleshootingProvider implements WebviewViewProvider {
       "troubleshooting.css",
     ]
       .map((file) => Uri.joinPath(this._extensionUri, "media", file))
-      .map(webviewView.webview.asWebviewUri)
+      .map((fileUri) => this._view.webview.asWebviewUri(fileUri))
       .map((webviewUri) => `<link href="${webviewUri}" rel="stylesheet">`)
       .join("\n");
 

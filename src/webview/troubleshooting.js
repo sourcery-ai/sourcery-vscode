@@ -48,6 +48,10 @@ function init(postMessage) {
         createPrompt(),
         createSubmitButton(postMessage),
     ]), createElement("section", "troubleshooting__main"));
+    window.addEventListener("message", function (_a) {
+        var data = _a.data;
+        return console.log(data);
+    });
 }
 (function () {
     var vscode = acquireVsCodeApi();

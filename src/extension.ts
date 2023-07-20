@@ -119,15 +119,25 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
   myStatusBarItem.show();
 }
 
-function registerNotifications(
-  languageClient: LanguageClient,
-  scanResultTree: ScanResultProvider,
-  scanResultTreeView: TreeView<TreeItem>,
-  chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider,
+function registerNotifications({
+  languageClient,
+  scanResultTree,
+  scanResultTreeView,
+  chatProvider,
+  recipeProvider,
+  context,
+  reviewProvider,
+  troubleshootingProvider,
+}: {
+  languageClient: LanguageClient;
+  scanResultTree: ScanResultProvider;
+  scanResultTreeView: TreeView<TreeItem>;
+  chatProvider: ChatProvider;
+  recipeProvider: RecipeProvider;
   reviewProvider: CodeReviewProvider,
-  context: ExtensionContext
-) {
+  context: ExtensionContext;
+  troubleshootingProvider: TroubleshootingProvider;
+}) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
     const command = params["command"];
     const args = params["arguments"] || [];
@@ -149,6 +159,13 @@ function registerNotifications(
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
     chatProvider.addResult(params.result);
   });
+
+  languageClient.onNotification(
+    "sourcery/vscode/troubleshootResults",
+    (params) => {
+      troubleshootingProvider.handleResult(params.result);
+    }
+  );
 
   languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
     reviewProvider.addResult(params.result);
@@ -684,15 +701,16 @@ export function activate(context: ExtensionContext) {
   showSourceryStatusBarItem(context);
 
   languageClient.start().then(() => {
-    registerNotifications(
+    registerNotifications({
       languageClient,
-      tree,
-      treeView,
+      scanResultTree: tree,
+      scanResultTreeView: treeView,
       chatProvider,
       recipeProvider,
       reviewProvider,
-      context
-    );
+      context,
+      troubleshootingProvider,
+    });
   });
 }
 
