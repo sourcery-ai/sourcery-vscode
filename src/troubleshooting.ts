@@ -77,7 +77,7 @@ export class TroubleshootingProvider implements WebviewViewProvider {
 
     ${styleSheets}
 </head>
-<body class="troubleshooting" id="main">
+<body class="troubleshooting" id="body">
 
 </body>
 <script nonce="${nonce}" src="${scriptUri}"></script>
