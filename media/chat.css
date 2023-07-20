@@ -155,15 +155,31 @@
   overflow: hidden;
 }
 
-button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+.sidebar__chat-assistant--chat-bubble-text--code-action-buttons {
   visibility: hidden;
-  background: var(--vscode-button-secondaryBackground);
-  border: 1px solid var(--vscode-panel-border);
-  border-radius: var(--spacing-xxs);
+  display: flex;
+  flex-direction: row;
   position: absolute;
-  display: block;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
+}
+
+.sidebar__chat-assistant--chat-bubble-text--code-action-buttons .sidebar__chat-assistant--chat-bubble-text--code-action-button:first-of-type {
+  border-top-left-radius: var(--spacing-xxs);
+  border-bottom-left-radius: var(--spacing-xxs);
+}
+
+.sidebar__chat-assistant--chat-bubble-text--code-action-buttons .sidebar__chat-assistant--chat-bubble-text--code-action-button:last-of-type {
+  border-top-right-radius: var(--spacing-xxs);
+  border-bottom-right-radius: var(--spacing-xxs);
+  border-left: none;
+}
+
+
+button.sidebar__chat-assistant--chat-bubble-text--code-action-button {
+  position: relative;
+  background: var(--vscode-button-secondaryBackground);
+  border: 1px solid var(--vscode-panel-border);
   color: var(--vscode-settings-textInputForeground);
   padding: var(--spacing-md);
   fill: var(--vscode-button-secondaryForeground);
@@ -181,13 +197,13 @@ button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
   top: var(--spacing-xxs);
 }
 
-button.sidebar__chat-assistant--chat-bubble-text--code-copy-button:hover {
+button.sidebar__chat-assistant--chat-bubble-text--code-action-button:hover {
   background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
 .sidebar__chat-assistant--chat-bubble-text
   pre:hover
-  button.sidebar__chat-assistant--chat-bubble-text--code-copy-button {
+  .sidebar__chat-assistant--chat-bubble-text--code-action-buttons {
   visibility: visible;
 }
 
