@@ -37,8 +37,12 @@ function createSubmitButton(postMessage) {
     submitButton.innerText = "Submit";
     submitButton.onclick = function () {
         postMessage({ action: "submit", promptValue: getPrompt().value });
+        getInput().remove();
     };
     return submitButton;
+}
+function getInput() {
+    return document.getElementById("input");
 }
 function getPrompt() {
     // Return the prompt, if it exists (which it should)
@@ -51,13 +55,14 @@ function getBody() {
     return document.getElementById("body");
 }
 function handleMessage(_a) {
-    var data = _a.data;
+    var _b = _a.data, type = _b.type, content = _b.content;
     var mainSection = getMainSection();
     var newMessage = createElement({
         tagName: "p",
         className: "troubleshooting__message"
     });
-    newMessage.textContent = data;
+    newMessage.classList.add("troubleshooting__message--" + type);
+    newMessage.textContent = content;
     mainSection.appendChild(newMessage);
 }
 function init(postMessage) {
@@ -67,6 +72,7 @@ function init(postMessage) {
     getBody().append(createElement({
         tagName: "section",
         className: "troubleshooting__input",
+        id: "input",
         children: [createPrompt(), createSubmitButton(postMessage)]
     }), createElement({
         tagName: "section",

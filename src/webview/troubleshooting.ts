@@ -63,8 +63,13 @@ function createSubmitButton(postMessage: PostMessage): HTMLButtonElement {
   submitButton.innerText = "Submit";
   submitButton.onclick = () => {
     postMessage({ action: "submit", promptValue: getPrompt().value });
+    getInput().remove();
   };
   return submitButton;
+}
+
+function getInput(): HTMLElement {
+  return document.getElementById("input");
 }
 
 function getPrompt(): HTMLTextAreaElement {
@@ -80,13 +85,18 @@ function getBody() {
   return document.getElementById("body");
 }
 
-function handleMessage({ data }: { data: string }) {
+function handleMessage({
+  data: { type, content },
+}: {
+  data: { type: "user" | "feedback" | "assistance"; content: string };
+}) {
   const mainSection = getMainSection();
   const newMessage = createElement({
     tagName: "p",
     className: "troubleshooting__message",
   });
-  newMessage.textContent = data;
+  newMessage.classList.add("troubleshooting__message--" + type);
+  newMessage.textContent = content;
   mainSection.appendChild(newMessage);
 }
 
@@ -98,6 +108,7 @@ function init(postMessage: PostMessage) {
     createElement({
       tagName: "section",
       className: "troubleshooting__input",
+      id: "input",
       children: [createPrompt(), createSubmitButton(postMessage)],
     }),
     createElement({

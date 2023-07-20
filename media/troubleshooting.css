@@ -3,7 +3,7 @@
   flex-direction: column;
   background-color: var(--vscode-sideBar-background);
   gap: 1px solid var(--vscode-sideBar-border);
-  padding: var(--spacing-sm);
+  padding: var(--spacing-md);
   height: 100%;
 }
 
@@ -12,11 +12,13 @@
   flex-grow: 1;
   margin-block-start: 0;
   margin-block-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .troubleshooting__input {
   position: relative;
-  padding: var(--spacing-md);
   flex-shrink: 0;
   flex-grow: 0;
   margin-block-start: 0;
@@ -28,8 +30,7 @@
   font-size: var(--vscode-font-size);
   border-radius: var(--spacing-xxs);
   background-color: var(--vscode-editor-background);
-  padding-right: 3rem;
-  outline: 1px solid transparent;
+  padding: 0.5rem 3rem 0.5rem 0.5rem;
   min-height: 10rem;
   resize: vertical;
 }
@@ -54,4 +55,30 @@
   opacity: 0.2;
 }
 
+.troubleshooting__message {
+  border-radius: var(--spacing-sm);
+  background-color: var(--vscode-settings-textInputBackground);
+  padding: var(--spacing-md);
+}
 
+.troubleshooting__message--user {
+  text-align: right;
+  border-bottom-right-radius: 0;
+  margin-left: var(--spacing-lg);
+}
+
+.troubleshooting__message--feedback {
+  border-bottom-left-radius: 0;
+  margin-right: var(--spacing-lg);
+}
+
+.troubleshooting__message--assistance {
+  border-bottom-left-radius: 0;
+  margin-right: var(--spacing-lg);
+  border: 1px solid var(--vscode-panel-border);
+}
+
+.troubleshooting__message--error {
+  margin-right: var(--spacing-lg);
+  background: var(--vscode-inputValidation-errorBackground);
+}
