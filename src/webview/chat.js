@@ -177,12 +177,11 @@ const LINE_HEIGHT = 36;
       `;
       button.title = "Copy to Clipboard";
       button.classList.add(
-        "sidebar__chat-assistant--chat-bubble-text--code-copy-button"
+        "sidebar__chat-assistant--chat-bubble-text--code-action-button"
       );
-      block.appendChild(button);
       button.onclick = async () => {
         await navigator.clipboard.writeText(text);
-        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="sidebar__chat-assistant--code-block-action-button-icon"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>`;
+        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="sidebar__chat-assistant--code-block-action-button-icon"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>`;
       };
       button.onblur = async () => {
         button.innerHTML = `
@@ -195,7 +194,35 @@ const LINE_HEIGHT = 36;
           </svg>
         `;
       };
+      return button;
     }
+  };
+
+  const setupReplaceButton = (block) => {
+    let text = block.querySelector("code").innerText;
+    let button = document.createElement("button");
+    button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="sidebar__chat-assistant--code-block-action-button-icon" viewBox="0 0 512 512"><path d="M416 448h-84c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h84c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32h-84c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h84c53 0 96 43 96 96v192c0 53-43 96-96 96zm-47-201L201 79c-15-15-41-4.5-41 17v96H24c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24h136v96c0 21.5 26 32 41 17l168-168c9.3-9.4 9.3-24.6 0-34z"/></svg>
+    `;
+    button.title = "Insert code at cursor";
+    button.classList.add(
+      "sidebar__chat-assistant--chat-bubble-text--code-action-button"
+    );
+    button.onclick = async () => {
+      vscode.postMessage({ type: "insert_at_cursor", content: text });
+    };
+    return button;
+  };
+
+  const setupActionButtons = (block) => {
+    let buttonGroup = document.createElement("div");
+    buttonGroup.classList.add(
+      "sidebar__chat-assistant--chat-bubble-text--code-action-buttons"
+    );
+    let copyButton = setupCopyButton(block);
+    let replaceButton = setupReplaceButton(block);
+    buttonGroup.append(copyButton, replaceButton);
+    block.appendChild(buttonGroup);
   };
 
   // Function to add an assistant message or add to the existing one
@@ -210,7 +237,7 @@ const LINE_HEIGHT = 36;
       currentAssistantMessage.innerHTML = message.textContent;
 
       let blocks = currentAssistantMessage.querySelectorAll("pre");
-      blocks.forEach(setupCopyButton);
+      blocks.forEach(setupActionButtons);
 
       let httpLinks =
         currentAssistantMessage.querySelectorAll('a[href*="http"]');

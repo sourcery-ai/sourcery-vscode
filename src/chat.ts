@@ -60,6 +60,11 @@ export type OpenLinkRequest = {
   link: string;
 };
 
+type InsertAtCursorInstruction = {
+  type: "insert_at_cursor";
+  content: string;
+};
+
 export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
 
@@ -100,7 +105,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (request: ChatRequest | CancelRequest | OpenLinkRequest) => {
+      async (
+        request:
+          | ChatRequest
+          | CancelRequest
+          | OpenLinkRequest
+          | InsertAtCursorInstruction
+      ) => {
         switch (request.type) {
           case "chat_request": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
@@ -134,6 +145,25 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               }
             }
             break;
+          }
+          case "insert_at_cursor": {
+            const activeEditor = vscode.window.activeTextEditor;
+            if (!activeEditor) {
+              vscode.window.showErrorMessage("No active text editor!");
+              return;
+            }
+
+            activeEditor.edit((editBuilder) => {
+              // Thank you coding assistant!
+              if (!activeEditor.selection.isEmpty) {
+                editBuilder.replace(activeEditor.selection, request.content);
+              } else {
+                editBuilder.insert(
+                  activeEditor.selection.active,
+                  request.content
+                );
+              }
+            });
           }
         }
       }
