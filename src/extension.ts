@@ -146,11 +146,11 @@ function registerNotifications(
   });
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    if (params.mode == "chat") {
-      chatProvider.addResult(params.result);
-    } else if (params.mode == "review") {
-      reviewProvider.addResult(params.result);
-    }
+    chatProvider.addResult(params.result);
+  });
+
+  languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
+    reviewProvider.addResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
