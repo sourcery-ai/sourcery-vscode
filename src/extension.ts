@@ -186,7 +186,8 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider
+  recipeProvider: RecipeProvider,
+  reviewProvider: CodeReviewProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -225,6 +226,12 @@ function registerCommands(
         .then(() => {
           chatProvider.clearChat();
         });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.clearCodeReview", () => {
+      reviewProvider.clear();
     })
   );
 
@@ -608,7 +615,8 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    recipeProvider
+    recipeProvider,
+    reviewProvider
   );
 
   showSourceryStatusBarItem(context);

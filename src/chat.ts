@@ -16,13 +16,13 @@ marked.use(
   })
 );
 
-enum ChatResultOutcome {
+export enum ChatResultOutcome {
   Success = "success",
   Error = "error",
   Finished = "finished",
 }
 
-enum ChatResultRole {
+export enum ChatResultRole {
   Assistant = "assistant",
   User = "user",
 }
@@ -345,6 +345,10 @@ export function renderAssistantMessage(message: string) {
 
   // Allow any classes on span and code blocks or highlightjs classes get removed
   return sanitizeHtml(rendered, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat([
+      "details",
+      "summary",
+    ]),
     allowedClasses: { span: false, code: false },
   });
 }

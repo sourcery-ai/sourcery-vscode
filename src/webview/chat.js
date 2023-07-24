@@ -73,6 +73,7 @@ const LINE_HEIGHT = 36;
 
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
+    console.log("received message");
     const message = event.data;
     if (message.command === "add_result") {
       addMessageToUI(message.result);

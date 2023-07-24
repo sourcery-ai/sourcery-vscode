@@ -4,13 +4,18 @@ import {
   ChatProvider,
   ChatRequest,
   ChatResult,
+  ChatResultRole,
+  ChatResultOutcome,
   renderAssistantMessage,
 } from "./chat";
+
+import { ColorThemeKind } from "vscode";
 
 export class CodeReviewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.code_review";
 
   private _view?: vscode.WebviewView;
+  private _currentAssistantMessage: string = "";
 
   private _extensionUri: vscode.Uri;
 
@@ -48,17 +53,53 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
 
   public addResult(result: ChatResult) {
     if (this._view) {
-      const sanitized = renderAssistantMessage(result.textContent);
-
-      this._view.webview.postMessage({
-        command: "add_result",
-        result: {
-          role: result.role,
-          outcome: result.outcome,
-          textContent: sanitized,
-        },
-      });
+      if (result.role === ChatResultRole.User) {
+        this.addUserResult(result);
+      } else {
+        this.addAssistantResult(result);
+      }
     }
+  }
+
+  private addUserResult(result: ChatResult) {
+    this._view.webview.postMessage({
+      command: "add_result",
+      result: {
+        role: result.role,
+        outcome: result.outcome,
+        textContent: result.textContent,
+      },
+    });
+  }
+
+  private addAssistantResult(result: ChatResult) {
+    if (result.outcome === ChatResultOutcome.Finished) {
+      this._currentAssistantMessage = "";
+      this._view.webview.postMessage({ command: "assistant_finished" });
+      return;
+    }
+
+    if (result.outcome === ChatResultOutcome.Success) {
+      this._currentAssistantMessage += result.textContent;
+    } else {
+      this._currentAssistantMessage = result.textContent;
+    }
+
+    let sanitized = renderAssistantMessage(this._currentAssistantMessage);
+
+    this._view.webview.postMessage({
+      command: "add_result",
+      result: {
+        role: result.role,
+        outcome: result.outcome,
+        textContent: sanitized,
+      },
+    });
+  }
+
+  public clear() {
+    this._view.webview.postMessage({ command: "clear_chat" });
+    this._currentAssistantMessage = "";
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
@@ -80,6 +121,16 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     const animationsUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "animations.css")
     );
+    let hljsUri;
+    if (vscode.window.activeColorTheme.kind === ColorThemeKind.Light) {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github.min.css")
+      );
+    } else {
+      hljsUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(this._extensionUri, "media", "github-dark.min.css")
+      );
+    }
     // Use a nonce to only allow a specific script to be run.
     const nonce = randomBytes(16).toString("base64");
 
@@ -109,21 +160,22 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
 				
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
-                <link href="${styleMainUri}" rel="stylesheet">
+        <link href="${styleMainUri}" rel="stylesheet">
 				<link href="${animationsUri}" rel="stylesheet">
+        <link href="${hljsUri}" rel="stylesheet">
+
 			</head>
 			<body class="sidebar__chat-assistant-body">
-                <section class="review-button-section">
-                    <div class="btnContainer">
-                        <button class="review-button" >Review My Code</button>
-                    </div>
-                </section>
-                <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
-                <ul class="sidebar__chat-assistant--dialogue-container">
-                    
-                    <li id="anchor"></li>
-                </ul>
-                </section>
+        <section class="review-button-section">
+            <div class="btnContainer">
+                <button class="review-button" >Review My Code</button>
+            </div>
+        </section>
+        <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
+        <ul class="sidebar__chat-assistant--dialogue-container">
+            <li id="anchor"></li>
+        </ul>
+        </section>
 			</body>
             <footer class="sidebar__chat-assistant--footer">
             <section class="sidebar__chat-assistant--textarea-container">

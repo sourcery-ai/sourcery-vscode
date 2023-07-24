@@ -238,6 +238,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.chat.clearCodeReview",
+				"title": "Clear",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.chat.ask",
 				"title": "Ask Sourcery",
 				"category": "Sourcery"
@@ -293,6 +298,11 @@
 				{
 					"command": "sourcery.chat.clearChat",
 					"when": "view == sourcery.chat",
+					"group": "navigation"
+				},
+				{
+					"command": "sourcery.chat.clearCodeReview",
+					"when": "view == sourcery.code_review",
 					"group": "navigation"
 				}
 			],
@@ -366,6 +376,10 @@
 				},
 				{
 					"command": "sourcery.chat.clearChat",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.chat.clearCodeReview",
 					"when": "false"
 				},
 				{
