@@ -7,6 +7,7 @@ import {
   ChatResultRole,
   ChatResultOutcome,
   renderAssistantMessage,
+  CancelRequest,
 } from "./chat";
 
 import { ColorThemeKind } from "vscode";
@@ -41,14 +42,20 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
       webviewView.webview
     );
 
-    webviewView.webview.onDidReceiveMessage(async (request: ChatRequest) => {
-      switch (request.type) {
-        case "review_request": {
-          vscode.commands.executeCommand("sourcery.review_request", request);
-          break;
+    webviewView.webview.onDidReceiveMessage(
+      async (request: ChatRequest | CancelRequest) => {
+        switch (request.type) {
+          case "review_request": {
+            vscode.commands.executeCommand("sourcery.review_request", request);
+            break;
+          }
+          case "cancel_request": {
+            vscode.commands.executeCommand("sourcery.review_cancel_request");
+            break;
+          }
         }
       }
-    });
+    );
   }
 
   public addResult(result: ChatResult) {
