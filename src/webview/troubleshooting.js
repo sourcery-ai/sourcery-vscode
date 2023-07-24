@@ -8,6 +8,18 @@ function createMessagePoster(vscode) {
     // Create a wrapper function which is strongly typed
     return function (message) { return vscode.postMessage(message); };
 }
+function withStickyScroll(container, wrapped) {
+    return function () {
+        var scrollHeightBefore = container.scrollHeight;
+        wrapped.apply(this, arguments);
+        var scrollHeight = container.scrollHeight, scrollTop = container.scrollTop, clientHeight = container.clientHeight;
+        var scrollDiff = Math.abs(scrollHeight - clientHeight - scrollTop);
+        var isScrolledToBottom = scrollDiff <= scrollHeight - scrollHeightBefore + 1;
+        if (isScrolledToBottom) {
+            container.scrollTop = scrollHeight - clientHeight;
+        }
+    };
+}
 function createElement(_a) {
     var tagName = _a.tagName, className = _a.className, id = _a.id, _b = _a.children, children = _b === void 0 ? [] : _b;
     // Generically create an element and attach its children
@@ -16,6 +28,13 @@ function createElement(_a) {
     element.id = id;
     children.forEach(function (child) { return element.appendChild(child); });
     return element;
+}
+function createButtonGroup(children) {
+    return createElement({
+        tagName: "div",
+        className: "troubleshooting__button_group",
+        children: children
+    });
 }
 function createPrompt() {
     // Create the prompt and add custom placeholder and ID
@@ -32,14 +51,43 @@ function createSubmitButton(postMessage) {
     // Would this system be better as a form?
     var submitButton = createElement({
         tagName: "button",
-        className: "troubleshooting__send_button"
+        className: "troubleshooting__button"
     });
+    submitButton.classList.add("troubleshooting__button--submit");
     submitButton.innerText = "Submit";
     submitButton.onclick = function () {
         postMessage({ action: "submit", promptValue: getPrompt().value });
-        getInput().remove();
+        getInput().classList.add("troubleshooting__input--hidden");
     };
     return submitButton;
+}
+function createResetButton(postMessage) {
+    var resetButton = createElement({
+        tagName: "button",
+        className: "troubleshooting__button"
+    });
+    resetButton.classList.add("troubleshooting__button--reset");
+    resetButton.innerText = "Reset";
+    resetButton.onclick = function () {
+        postMessage({ action: "reset" });
+        getMainSection().replaceChildren();
+        getInput().classList.remove("troubleshooting__input--hidden");
+    };
+    return resetButton;
+}
+function createRetryButton(postMessage) {
+    var retryButton = createElement({
+        tagName: "button",
+        className: "troubleshooting__button"
+    });
+    retryButton.classList.add("troubleshooting__button--retry");
+    retryButton.innerText = "Retry";
+    retryButton.onclick = function () {
+        getMainSection().replaceChildren(); // remove all children
+        getInput().classList.add("troubleshooting__input--hidden");
+        postMessage({ action: "retry" });
+    };
+    return retryButton;
 }
 function getInput() {
     return document.getElementById("input");
@@ -78,8 +126,18 @@ function init(postMessage) {
         tagName: "section",
         className: "troubleshooting__main",
         id: "main"
+    }), createElement({
+        tagName: "footer",
+        className: "troubleshooting__footer",
+        id: "footer",
+        children: [
+            createButtonGroup([
+                createRetryButton(postMessage),
+                createResetButton(postMessage),
+            ]),
+        ]
     }));
-    window.addEventListener("message", handleMessage);
+    window.addEventListener("message", withStickyScroll(getMainSection(), handleMessage));
 }
 (function () {
     var vscode = acquireVsCodeApi();

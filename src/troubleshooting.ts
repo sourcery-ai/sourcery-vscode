@@ -13,19 +13,9 @@ import {
 } from "vscode";
 import { randomBytes } from "crypto";
 import { marked } from "marked";
-import hljs from "highlight.js";
-import { markedHighlight } from "marked-highlight";
 import sanitizeHtml from "sanitize-html";
 
-marked.use(
-  markedHighlight({
-    langPrefix: "hljs language-",
-    highlight(code, lang) {
-      const language = hljs.getLanguage(lang) ? lang : "plaintext";
-      return hljs.highlight(code, { language }).value;
-    },
-  })
-);
+// NOTE: marked code block formatting relies on the `marked.use` block in `chat.ts`
 
 type TroubleshootingResult = {
   type: "error" | "assistance" | "feedback" | "user" | string;
