@@ -231,7 +231,15 @@ function registerCommands(
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.clearCodeReview", () => {
-      reviewProvider.clear();
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/clearReview",
+        arguments: [],
+      };
+      languageClient
+        .sendRequest(ExecuteCommandRequest.type, request)
+        .then(() => {
+          reviewProvider.clear();
+        });
     })
   );
 
@@ -462,9 +470,39 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand(
+      "sourcery.review_request",
+      (message: ChatRequest) => {
+        vscode.commands
+          .executeCommand("sourcery.code_review.focus")
+          .then(() => {
+            let request: ExecuteCommandParams = {
+              command: "sourcery/chat/reviewRequest",
+              arguments: [
+                {
+                  message: message,
+                },
+              ],
+            };
+            languageClient.sendRequest(ExecuteCommandRequest.type, request);
+          });
+      }
+    )
+  );
+
+  context.subscriptions.push(
     commands.registerCommand("sourcery.chat_cancel_request", () => {
       languageClient.sendRequest(ExecuteCommandRequest.type, {
         command: "sourcery/chat/cancel",
+        arguments: [],
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.review_cancel_request", () => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/chat/cancelReview",
         arguments: [],
       });
     })

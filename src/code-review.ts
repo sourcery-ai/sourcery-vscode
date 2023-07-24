@@ -44,7 +44,7 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (request: ChatRequest) => {
       switch (request.type) {
         case "review_request": {
-          vscode.commands.executeCommand("sourcery.chat_request", request);
+          vscode.commands.executeCommand("sourcery.review_request", request);
           break;
         }
       }
