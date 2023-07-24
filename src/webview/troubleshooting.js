@@ -62,7 +62,7 @@ function handleMessage(_a) {
         className: "troubleshooting__message"
     });
     newMessage.classList.add("troubleshooting__message--" + type);
-    newMessage.textContent = content;
+    newMessage.innerHTML = content;
     mainSection.appendChild(newMessage);
 }
 function init(postMessage) {

@@ -2,19 +2,55 @@
 
 import {
   CancellationToken,
+  ColorThemeKind,
+  commands,
   ExtensionContext,
   Uri,
   WebviewView,
   WebviewViewProvider,
   WebviewViewResolveContext,
-  commands,
+  window,
 } from "vscode";
 import { randomBytes } from "crypto";
+import { marked } from "marked";
+import hljs from "highlight.js";
+import { markedHighlight } from "marked-highlight";
+import sanitizeHtml from "sanitize-html";
 
-type TroubleshootingResult = any;
+marked.use(
+  markedHighlight({
+    langPrefix: "hljs language-",
+    highlight(code, lang) {
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      return hljs.highlight(code, { language }).value;
+    },
+  })
+);
+
+type TroubleshootingResult = {
+  type: "error" | "assistance" | "feedback" | "user" | string;
+  content: string;
+};
 
 interface Message {
   action: string;
+}
+
+function renderMarkdownMessage(message: string): string {
+  // Send the whole message we've been streamed so far to the webview,
+  // after converting from markdown to html
+
+  const rendered = marked(message, {
+    gfm: true,
+    breaks: true,
+    mangle: false,
+    headerIds: false,
+  });
+
+  // Allow any classes on span and code blocks or highlightjs classes get removed
+  return sanitizeHtml(rendered, {
+    allowedClasses: { span: false, code: false },
+  });
 }
 
 export class TroubleshootingProvider implements WebviewViewProvider {
@@ -25,12 +61,20 @@ export class TroubleshootingProvider implements WebviewViewProvider {
   constructor(private _context: ExtensionContext) {
     this._extensionUri = _context.extensionUri;
   }
-
   public handleResult(result: TroubleshootingResult) {
     if (!this._view) {
       return;
     }
-    this._view.webview.postMessage(result);
+
+    if (result.type === "user") {
+      this._view.webview.postMessage(result);
+    } else {
+      const content = renderMarkdownMessage(result.content);
+      this._view.webview.postMessage({
+        ...result,
+        content,
+      });
+    }
   }
 
   public async resolveWebviewView(
@@ -59,6 +103,17 @@ export class TroubleshootingProvider implements WebviewViewProvider {
       .map((webviewUri) => `<link href="${webviewUri}" rel="stylesheet">`)
       .join("\n");
 
+    let hljsUri;
+    if (window.activeColorTheme.kind === ColorThemeKind.Light) {
+      hljsUri = this._view.webview.asWebviewUri(
+        Uri.joinPath(this._extensionUri, "media", "github.min.css")
+      );
+    } else {
+      hljsUri = this._view.webview.asWebviewUri(
+        Uri.joinPath(this._extensionUri, "media", "github-dark.min.css")
+      );
+    }
+
     const scriptUri = webviewView.webview.asWebviewUri(
       Uri.joinPath(this._extensionUri, "src", "webview", "troubleshooting.js")
     );
@@ -76,6 +131,7 @@ export class TroubleshootingProvider implements WebviewViewProvider {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     ${styleSheets}
+    <link href="${hljsUri}" rel="stylesheet">
 </head>
 <body class="troubleshooting" id="body">
 

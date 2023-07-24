@@ -96,7 +96,7 @@ function handleMessage({
     className: "troubleshooting__message",
   });
   newMessage.classList.add("troubleshooting__message--" + type);
-  newMessage.textContent = content;
+  newMessage.innerHTML = content;
   mainSection.appendChild(newMessage);
 }
 
