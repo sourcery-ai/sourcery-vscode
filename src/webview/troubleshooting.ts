@@ -11,6 +11,10 @@ type SubmitMessage = {
   action: "submit";
   promptValue: string;
 };
+type ResumeMessage = {
+  action: "resume";
+  promptValue: string | boolean;
+};
 
 type RetryMessage = {
   action: "retry";
@@ -20,7 +24,7 @@ type ResetMessage = {
   action: "reset";
 };
 
-type Message = SubmitMessage | RetryMessage | ResetMessage; // anticipating future Message types
+type Message = SubmitMessage | ResumeMessage | RetryMessage | ResetMessage; // anticipating future Message types
 
 type PostMessage = (message: Message) => void;
 
@@ -46,20 +50,20 @@ function withStickyScroll(container: HTMLElement, wrapped) {
 
 type Props<K extends keyof HTMLElementTagNameMap> = {
   tagName: K;
-  className: string;
+  classList?: string[];
   id?: any;
   children?: HTMLElement[];
 };
 
 function createElement<K extends keyof HTMLElementTagNameMap>({
   tagName,
-  className,
+  classList,
   id,
   children = [],
 }: Props<K>): HTMLElementTagNameMap[K] {
   // Generically create an element and attach its children
   const element = document.createElement(tagName);
-  element.className = className;
+  element.classList.add(...classList);
   element.id = id;
   children.forEach((child) => element.appendChild(child));
   return element;
@@ -68,7 +72,7 @@ function createElement<K extends keyof HTMLElementTagNameMap>({
 function createButtonGroup(children: HTMLButtonElement[]): HTMLDivElement {
   return createElement({
     tagName: "div",
-    className: "troubleshooting__button_group",
+    classList: ["troubleshooting__button_group"],
     children,
   });
 }
@@ -77,7 +81,7 @@ function createPrompt(): HTMLTextAreaElement {
   // Create the prompt and add custom placeholder and ID
   const prompt = createElement({
     tagName: "textarea",
-    className: "troubleshooting__prompt",
+    classList: ["troubleshooting__prompt"],
   });
   prompt.id = "prompt";
   prompt.placeholder = "Describe the issue in detail.";
@@ -89,45 +93,14 @@ function createSubmitButton(postMessage: PostMessage): HTMLButtonElement {
   // Would this system be better as a form?
   const submitButton = createElement({
     tagName: "button",
-    className: "troubleshooting__button",
+    classList: ["troubleshooting__button", "troubleshooting__button--submit"],
   });
-  submitButton.classList.add("troubleshooting__button--submit");
   submitButton.innerText = "Submit";
   submitButton.onclick = () => {
     postMessage({ action: "submit", promptValue: getPrompt().value });
     getInput().classList.add("troubleshooting__input--hidden");
   };
   return submitButton;
-}
-
-function createResetButton(postMessage: PostMessage): HTMLButtonElement {
-  const resetButton = createElement({
-    tagName: "button",
-    className: "troubleshooting__button",
-  });
-  resetButton.classList.add("troubleshooting__button--reset");
-  resetButton.innerText = "Reset";
-  resetButton.onclick = () => {
-    postMessage({ action: "reset" });
-    getMainSection().replaceChildren();
-    getInput().classList.remove("troubleshooting__input--hidden");
-  };
-  return resetButton;
-}
-
-function createRetryButton(postMessage: PostMessage): HTMLButtonElement {
-  const retryButton = createElement({
-    tagName: "button",
-    className: "troubleshooting__button",
-  });
-  retryButton.classList.add("troubleshooting__button--retry");
-  retryButton.innerText = "Retry";
-  retryButton.onclick = () => {
-    getMainSection().replaceChildren(); // remove all children
-    getInput().classList.add("troubleshooting__input--hidden");
-    postMessage({ action: "retry" });
-  };
-  return retryButton;
 }
 
 function getInput(): HTMLElement {
@@ -147,19 +120,103 @@ function getBody() {
   return document.getElementById("body");
 }
 
-function handleMessage({
-  data: { type, content },
-}: {
-  data: { type: string; content: string };
-}) {
-  const mainSection = getMainSection();
-  const newMessage = createElement({
-    tagName: "p",
-    className: "troubleshooting__message",
-  });
-  newMessage.classList.add("troubleshooting__message--" + type);
-  newMessage.innerHTML = content;
-  mainSection.appendChild(newMessage);
+function messageHandler(postMessage: PostMessage) {
+  function handleInputMessage({
+    data: { type, content },
+  }: {
+    data: { type: "input"; content: string };
+  }) {
+    const mainSection = getMainSection();
+    const p = createElement({
+      tagName: "p",
+      classList: [
+        "troubleshooting__message",
+        "troubleshooting__message--assistance",
+      ],
+    });
+    p.innerHTML = content;
+    const yesButton = createElement({
+      tagName: "button",
+      classList: ["troubleshooting__button"],
+    });
+    yesButton.innerHTML = `
+      Yes <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+    `;
+
+    const noButton = createElement({
+      tagName: "button",
+      classList: ["troubleshooting__button"],
+    });
+    noButton.innerHTML = `
+      No <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+    `;
+
+    yesButton.onclick = () => {
+      postMessage({ action: "resume", promptValue: true });
+      yesButton.classList.add("troubleshooting__button--disabled");
+      noButton.classList.add(
+        "troubleshooting__button--disabled",
+        "troubleshooting__button--deselected"
+      );
+
+      yesButton.disabled = true;
+      noButton.disabled = true;
+    };
+    noButton.onclick = () => {
+      postMessage({ action: "resume", promptValue: false });
+      yesButton.classList.add(
+        "troubleshooting__button--disabled",
+        "troubleshooting__button--deselected"
+      );
+      noButton.classList.add("troubleshooting__button--disabled");
+
+      yesButton.disabled = true;
+      noButton.disabled = true;
+    };
+
+    const buttonGroup = createButtonGroup([yesButton, noButton]);
+
+    const newMessage = createElement({
+      tagName: "div",
+      classList: ["troubleshooting__message", "troubleshooting__message--user"],
+      children: [buttonGroup],
+    });
+    newMessage.classList.add("troubleshooting__message--user");
+    mainSection.append(p, newMessage);
+  }
+  function handleMessage({
+    data: { type, content },
+  }: {
+    data: { type: string; content: string };
+  }) {
+    switch (type) {
+      case "input":
+        handleInputMessage({
+          data: {
+            type,
+            content,
+          },
+        });
+        break;
+      case "reset":
+        postMessage({ action: "reset" });
+        getMainSection().replaceChildren();
+        getInput().classList.remove("troubleshooting__input--hidden");
+        break;
+      default:
+        const mainSection = getMainSection();
+        const newMessage = createElement({
+          tagName: "p",
+          classList: [
+            "troubleshooting__message",
+            "troubleshooting__message--" + type,
+          ],
+        });
+        newMessage.innerHTML = content;
+        mainSection.appendChild(newMessage);
+    }
+  }
+  return handleMessage;
 }
 
 function init(postMessage: PostMessage) {
@@ -169,31 +226,25 @@ function init(postMessage: PostMessage) {
   getBody().append(
     createElement({
       tagName: "section",
-      className: "troubleshooting__input",
+      classList: ["troubleshooting__input"],
       id: "input",
       children: [createPrompt(), createSubmitButton(postMessage)],
     }),
     createElement({
       tagName: "section",
-      className: "troubleshooting__main",
+      classList: ["troubleshooting__main"],
       id: "main",
     }),
     createElement({
       tagName: "footer",
-      className: "troubleshooting__footer",
+      classList: ["troubleshooting__footer"],
       id: "footer",
-      children: [
-        createButtonGroup([
-          createRetryButton(postMessage),
-          createResetButton(postMessage),
-        ]),
-      ],
     })
   );
 
   window.addEventListener(
     "message",
-    withStickyScroll(getMainSection(), handleMessage)
+    withStickyScroll(getMainSection(), messageHandler(postMessage))
   );
 }
 

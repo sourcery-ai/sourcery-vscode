@@ -238,6 +238,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.troubleshoot.reset",
+				"title": "Reset",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.chat.ask",
 				"title": "Ask Sourcery",
 				"category": "Sourcery"
@@ -293,6 +298,11 @@
 				{
 					"command": "sourcery.chat.clearChat",
 					"when": "view == sourcery.chat",
+					"group": "navigation"
+				},
+				{
+					"command": "sourcery.troubleshoot.reset",
+					"when": "view == sourcery.troubleshooting",
 					"group": "navigation"
 				}
 			],

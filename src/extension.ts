@@ -197,7 +197,8 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider
+  recipeProvider: RecipeProvider,
+  troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -260,6 +261,12 @@ function registerCommands(
         command: "sourcery/troubleshoot",
         arguments: [message],
       });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot.reset", () => {
+      troubleshootingProvider.handleReset();
     })
   );
 
@@ -627,7 +634,8 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    recipeProvider
+    recipeProvider,
+    troubleshootingProvider
   );
 
   showSourceryStatusBarItem(context);

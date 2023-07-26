@@ -46,15 +46,27 @@
   resize: vertical;
 }
 
+.troubleshooting__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  fill: var(--vscode-foreground);
+}
+
+.troubleshooting__button--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.troubleshooting__button--deselected {
+  background-color: var(--vscode-disabledForeground);
+}
+
 .troubleshooting__button--submit {
   outline: none;
   border-radius: var(--spacing-xxs);
   font-size: var(--vscode-sidebar-font-size);
-  transition: background-color 0.3s ease-in-out;
-}
-
-.troubleshooting__button--submit--disabled {
-  pointer-events: none;
 }
 
 .troubleshooting__send_icon {
@@ -75,18 +87,19 @@
 .troubleshooting__message--user {
   text-align: right;
   border-bottom-right-radius: 0;
-  margin-left: var(--spacing-lg);
+  margin-left: 2rem;
 }
 
 .troubleshooting__message--feedback {
-  border-bottom-left-radius: 0;
-  margin-right: var(--spacing-lg);
+  margin-right: 2rem;
+  padding: 0 0 0 var(--spacing-xs);
+  background-color: transparent;
+  color: var(--vscode-list-deemphasizedForeground);
 }
 
 .troubleshooting__message--assistance {
   border-bottom-left-radius: 0;
-  margin-right: var(--spacing-lg);
-  border: 1px solid var(--vscode-panel-border);
+  margin-right: 2rem;
 }
 
 .troubleshooting__message--error {

@@ -51,6 +51,14 @@ export class TroubleshootingProvider implements WebviewViewProvider {
   constructor(private _context: ExtensionContext) {
     this._extensionUri = _context.extensionUri;
   }
+
+  public handleReset() {
+    if (!this._view) {
+      return;
+    }
+    this._view.webview.postMessage({ type: "reset" });
+  }
+
   public handleResult(result: TroubleshootingResult) {
     if (!this._view) {
       return;
