@@ -209,7 +209,8 @@ function registerCommands(
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
   recipeProvider: RecipeProvider,
-  reviewProvider: CodeReviewProvider
+  reviewProvider: CodeReviewProvider,
+  troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -286,6 +287,12 @@ function registerCommands(
         command: "sourcery/troubleshoot",
         arguments: [message],
       });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot.reset", () => {
+      troubleshootingProvider.handleReset();
     })
   );
 
@@ -695,7 +702,8 @@ export function activate(context: ExtensionContext) {
     hubWebviewPanel,
     chatProvider,
     recipeProvider,
-    reviewProvider
+    reviewProvider,
+    troubleshootingProvider
   );
 
   showSourceryStatusBarItem(context);
