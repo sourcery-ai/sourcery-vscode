@@ -1,13 +1,14 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 import {
-  ChatProvider,
   ChatRequest,
   ChatResult,
   ChatResultRole,
   ChatResultOutcome,
   renderAssistantMessage,
   CancelRequest,
+  OpenLinkRequest,
+  InsertAtCursorInstruction,
 } from "./chat";
 
 import { ColorThemeKind } from "vscode";
@@ -55,7 +56,13 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (request: ChatRequest | CancelRequest) => {
+      async (
+        request:
+          | ChatRequest
+          | CancelRequest
+          | OpenLinkRequest
+          | InsertAtCursorInstruction
+      ) => {
         switch (request.type) {
           case "review_request": {
             vscode.commands.executeCommand("sourcery.review_request", request);
@@ -64,6 +71,50 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
           case "cancel_request": {
             vscode.commands.executeCommand("sourcery.review_cancel_request");
             break;
+          }
+          case "open_link_request": {
+            if (request.linkType === "url") {
+              vscode.env.openExternal(vscode.Uri.parse(request.link));
+            } else {
+              let path = vscode.Uri.file(request.link);
+
+              // Make the path relative to the workspace root
+              if (!request.link.startsWith("/")) {
+                const workspaceRoot =
+                  vscode.workspace.workspaceFolders?.[0].uri;
+                if (workspaceRoot) {
+                  path = vscode.Uri.joinPath(workspaceRoot, request.link);
+                }
+              }
+
+              if (request.linkType === "file") {
+                // Open the file in the editor
+                vscode.commands.executeCommand("vscode.open", path);
+              } else {
+                // Reveal the directory in the explorer
+                vscode.commands.executeCommand("revealInExplorer", path);
+              }
+            }
+            break;
+          }
+          case "insert_at_cursor": {
+            const activeEditor = vscode.window.activeTextEditor;
+            if (!activeEditor) {
+              vscode.window.showErrorMessage("No active text editor!");
+              return;
+            }
+
+            activeEditor.edit((editBuilder) => {
+              // Thank you coding assistant!
+              if (!activeEditor.selection.isEmpty) {
+                editBuilder.replace(activeEditor.selection, request.content);
+              } else {
+                editBuilder.insert(
+                  activeEditor.selection.active,
+                  request.content
+                );
+              }
+            });
           }
         }
       }

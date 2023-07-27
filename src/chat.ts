@@ -66,7 +66,7 @@ export type OpenLinkRequest = {
   link: string;
 };
 
-type InsertAtCursorInstruction = {
+export type InsertAtCursorInstruction = {
   type: "insert_at_cursor";
   content: string;
 };
