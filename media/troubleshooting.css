@@ -92,7 +92,7 @@
 
 .troubleshooting__message--feedback {
   margin-right: 2rem;
-  padding: 0 0 0 var(--spacing-xs);
+  padding: 0 0 0 var(--spacing-md);
   background-color: transparent;
   color: var(--vscode-list-deemphasizedForeground);
 }
