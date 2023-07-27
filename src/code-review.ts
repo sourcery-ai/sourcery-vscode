@@ -12,6 +12,11 @@ import {
 
 import { ColorThemeKind } from "vscode";
 
+export type GitBranches = {
+  current: string;
+  main: string;
+};
+
 export class CodeReviewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.code_review";
 
@@ -19,6 +24,8 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
   private _currentAssistantMessage: string = "";
 
   private _extensionUri: vscode.Uri;
+
+  private _branches: GitBranches;
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -41,6 +48,11 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = await this._getHtmlForWebview(
       webviewView.webview
     );
+
+    this._view.webview.postMessage({
+      command: "add_branches",
+      result: this._branches,
+    });
 
     webviewView.webview.onDidReceiveMessage(
       async (request: ChatRequest | CancelRequest) => {
@@ -109,6 +121,12 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     this._currentAssistantMessage = "";
   }
 
+  public populateBranches(branches: GitBranches) {
+    console.log("branches populated");
+    console.log(branches);
+    this._branches = branches;
+  }
+
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(
@@ -174,6 +192,14 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
 			</head>
 			<body class="sidebar__chat-assistant-body">
         <section class="review-button-section">
+            <div class="sidebar__diff-options-container">
+              <div class="sidebar__branch-form">
+                <label for="currentBranch" class="columnOne">Current Branch</label>
+                <input type="text" class="currentBranch columnTwo" nonce="${nonce}">
+                <label for="mainBranch" class="columnOne">Main Branch</label>
+                <input type="text" class="mainBranch columnTwo" nonce="${nonce}">
+              </div>
+            </div>
             <div class="btnContainer">
                 <button class="review-button" >Review My Code</button>
             </div>

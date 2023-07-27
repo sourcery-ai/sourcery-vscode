@@ -403,3 +403,24 @@ button.sidebar__chat-assistant--chat-bubble-text--code-action-button:hover {
 .sidebar__textarea-send-button--disabled svg {
   opacity: 0.2;
 }
+
+.sidebar__branch-form {
+  display: grid;
+  grid-template-columns: min-content auto;
+  align-items: center;
+}
+
+.sidebar__branch-form label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.columnOne {
+  grid-column: 1/2;
+  grid-row: auto;
+}
+
+.columnTwo {
+  grid-column: 2/2;
+  grid-row: auto;
+}

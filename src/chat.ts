@@ -40,6 +40,8 @@ export type ChatRequestData = {
 
 export type CodeReviewRequestData = {
   kind: "review_request";
+  main: string;
+  current: string;
 };
 
 export type RecipeRequestData = {

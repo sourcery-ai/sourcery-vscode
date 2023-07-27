@@ -157,6 +157,10 @@ function registerNotifications(
     recipeProvider.addRecipes(params.recipes);
   });
 
+  languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
+    reviewProvider.populateBranches(params);
+  });
+
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
     commands.executeCommand("workbench.actions.view.problems");
   });

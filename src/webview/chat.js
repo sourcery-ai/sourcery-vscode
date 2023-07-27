@@ -73,7 +73,6 @@ const LINE_HEIGHT = 36;
 
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
-    console.log("received message");
     const message = event.data;
     if (message.command === "add_result") {
       addMessageToUI(message.result);
@@ -83,17 +82,34 @@ const LINE_HEIGHT = 36;
       messageInput.focus();
     } else if (message.command === "assistant_finished") {
       assistantMessageFinished();
+    } else if (message.command === "add_branches") {
+      addBranchesToUI(message.result);
     }
   });
 
   const reviewButton = document.querySelector(".review-button");
   if (reviewButton != null) {
+    const current = document.querySelector(".currentBranch");
+    const main = document.querySelector(".mainBranch");
     reviewButton.addEventListener("click", () => {
       vscode.postMessage({
         type: "review_request",
-        data: { kind: "review_request" },
+        data: {
+          kind: "review_request",
+          main: main.value,
+          current: current.value,
+        },
       });
     });
+  }
+
+  function addBranchesToUI(branches) {
+    const current = document.querySelector(".currentBranch");
+    const main = document.querySelector(".mainBranch");
+    if (main != null && current != null) {
+      current.value = branches.current;
+      main.value = branches.main;
+    }
   }
 
   function sendRequestToExtension(message) {
