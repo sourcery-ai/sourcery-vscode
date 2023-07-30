@@ -73,7 +73,7 @@
 					"type": "webview",
 					"icon": "sourcery-icon.png",
 					"contextualTitle": "Code Review",
-					"when": "sourcery.features.coding_assistant"
+					"when": "sourcery.features.coding_assistant && sourcery.features.code_review"
 				},
 				{
 					"id": "sourcery.rules",
