@@ -11,10 +11,6 @@ const assistantAvatar = `<div class="sidebar__chat-assistant--chat-avatar-contai
   </svg>
 </div>`;
 
-const chatAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container">
-<span class="sidebar__chat-assistant--agent-avatar-image">🧙🏻‍♂️</span>
-</div>`;
-
 const errorAvatar = `<div class="sidebar__chat-assistant--chat-avatar-container" >
     <svg xmlns="http://www.w3.org/2000/svg" height="1.25rem" viewBox="0 0 64 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V320c0 17.7 14.3 32 32 32s32-14.3 32-32V64zM32 480a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/></svg>
 </div>`;
@@ -32,15 +28,6 @@ const LINE_HEIGHT = 36;
   const chatContainer = document.querySelector(
     ".sidebar__chat-assistant--dialogue-container"
   );
-  const messageInput = document.getElementById("user-prompt");
-  if (messageInput != null) {
-    messageInput.focus();
-  }
-
-  const sendButton = document.getElementById("send-button");
-  if (sendButton != null) {
-    sendButton.onclick = sendUserMessage;
-  }
 
   const cancelButton = document.getElementById("cancel-button");
   if (cancelButton) {
@@ -51,25 +38,6 @@ const LINE_HEIGHT = 36;
 
   // Hold the current assistant message so we can direct streaming responses to it
   let currentAssistantMessage;
-  let thinkingMessage;
-
-  function createThinkingMessage() {
-    const templateContents = `
-            <!-- Using an absolute sourcery.ai URL for now, since I'm not sure how does VS Code extensions handle static assets. -->
-            ${assistantAvatar}
-            <div class="sidebar__chat-assistant--chat-bubble-content-assistant">
-              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
-              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
-              <span class="sidebar__chat-assistant--agent-typing-dot"></span>
-            </div>`;
-    const result = document.createElement("li");
-    result.classList.add("sidebar__chat-assistant--chat-bubble");
-    result.classList.add("sidebar__chat-assistant--chat-bubble-agent");
-    result.innerHTML = templateContents;
-    return result;
-  }
-
-  const thinkingMessageElement = createThinkingMessage();
 
   // Communication between the webview and the extension proper
   window.addEventListener("message", (event) => {
@@ -78,8 +46,6 @@ const LINE_HEIGHT = 36;
       addMessageToUI(message.result);
     } else if (message.command === "clear_chat") {
       clearAllMessages();
-    } else if (message.command === "focus") {
-      messageInput.focus();
     } else if (message.command === "assistant_finished") {
       assistantMessageFinished();
     } else if (message.command === "add_branches") {
@@ -141,29 +107,9 @@ const LINE_HEIGHT = 36;
     cancelButton.disabled = true;
   }
 
-  // Function to add a user message to the chat interface
-  function addUserMessageToUI(message) {
-    const templateMessage = `
-            ${chatAvatar}
-            <div class="sidebar__chat-assistant--chat-bubble-content-user">
-              <p class="sidebar__chat-assistant--chat-bubble-text">${message}</p>
-            </div>
-    `;
-    const userMessageElement = document.createElement("li");
-    userMessageElement.classList.add("sidebar__chat-assistant--chat-bubble");
-    userMessageElement.classList.add(
-      "sidebar__chat-assistant--chat-bubble-user"
-    );
-    userMessageElement.innerHTML = templateMessage;
-    chatContainer.append(userMessageElement);
-  }
-
   function addMessageToUI(result) {
     if (result.role === "assistant") {
       withStickyScroll(addAssistantMessageToUI)(result);
-    } else {
-      withScroll(addUserMessageToUI)(result.textContent);
-      withScroll(addAssistantThinkingMessageToUI)();
     }
   }
 
@@ -182,16 +128,6 @@ const LINE_HEIGHT = 36;
       }
     };
   }
-
-  // After the function completes, scroll the message container to the bottom.
-  function withScroll(wrapped) {
-    return function () {
-      wrapped.apply(this, arguments);
-      const { clientHeight, scrollHeight } = messageContainer;
-      messageContainer.scrollTop = scrollHeight - clientHeight;
-    };
-  }
-  // If we're already at the bottom, scroll the bottom into view
 
   const setupCopyButton = (block) => {
     if (navigator.clipboard) {
@@ -259,10 +195,6 @@ const LINE_HEIGHT = 36;
   // Function to add an assistant message or add to the existing one
   function addAssistantMessageToUI(message) {
     cancelButton.disabled = false;
-    if (thinkingMessage != null) {
-      thinkingMessage.remove();
-      thinkingMessage = null;
-    }
 
     const replaceCurrentAssistantMessage = () => {
       currentAssistantMessage.innerHTML = message.textContent;
@@ -326,54 +258,4 @@ const LINE_HEIGHT = 36;
       replaceCurrentAssistantMessage();
     }
   }
-
-  function addAssistantThinkingMessageToUI() {
-    if (thinkingMessage != null) {
-      thinkingMessage.remove();
-      thinkingMessage = null;
-    }
-    thinkingMessage = thinkingMessageElement;
-    chatContainer.append(thinkingMessage);
-  }
-
-  // Enable/Disable send button depending on whether text area is empty
-  function checkTextarea() {
-    if (messageInput.value.trim() !== "") {
-      sendButton.classList.remove("sidebar__textarea-send-button--disabled");
-    } else {
-      sendButton.classList.add("sidebar__textarea-send-button--disabled");
-    }
-    adjustTextareaHeight(messageInput);
-  }
-
-  if (messageInput != null) {
-    // Check for disable/enable send button and sizing
-    messageInput.addEventListener("input", checkTextarea);
-
-    // Check to see if we need to disable send button on backspace
-    messageInput.addEventListener("keydown", function (event) {
-      if (event.key === "Backspace") {
-        setTimeout(checkTextarea, 0);
-      }
-    });
-
-    // Listen for return key in order to send user messages
-    messageInput.addEventListener("keypress", (e) => {
-      if (e.which === 13 && !e.shiftKey) {
-        e.preventDefault();
-        sendUserMessage();
-      }
-    });
-  }
-
-  const adjustTextareaHeight = (textarea) => {
-    // Reset height to auto to get the actual scroll height, and set it to that value
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
-
-    // Check if scrolling occurs after setting the new height
-    if (textarea.clientHeight < textarea.scrollHeight) {
-      textarea.style.height = textarea.scrollHeight + "px";
-    }
-  };
 })();
