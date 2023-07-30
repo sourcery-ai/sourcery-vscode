@@ -305,7 +305,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
           <ul class="sidebar__chat-assistant--dialogue-container">
             
-            <li id="anchor"></li>
           </ul>
         </section>
         <footer class="sidebar__chat-assistant--footer">

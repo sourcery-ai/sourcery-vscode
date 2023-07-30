@@ -181,7 +181,7 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "chat.js")
+      vscode.Uri.joinPath(this._extensionUri, "src", "webview", "review.js")
     );
 
     // Do the same for the stylesheet.
@@ -257,7 +257,6 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
         </section>
         <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
         <ul class="sidebar__chat-assistant--dialogue-container">
-            <li id="anchor"></li>
         </ul>
         </section>
 			</body>
