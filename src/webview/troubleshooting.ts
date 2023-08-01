@@ -7,30 +7,56 @@
 
 declare const acquireVsCodeApi: any;
 
-type SubmitMessage = {
+type SubmitOutboundMessage = {
   action: "submit";
   promptValue: string;
 };
-type ResumeMessage = {
+type ResumeOutboundMessage = {
   action: "resume";
   promptValue: string | boolean;
 };
 
-type RetryMessage = {
+type RetryOutboundMessage = {
   action: "retry";
 };
 
-type ResetMessage = {
+type ResetOutboundMessage = {
   action: "reset";
 };
 
-type Message = SubmitMessage | ResumeMessage | RetryMessage | ResetMessage; // anticipating future Message types
+type OutboundMessage =
+  | SubmitOutboundMessage
+  | ResumeOutboundMessage
+  | RetryOutboundMessage
+  | ResetOutboundMessage; // anticipating future Message types
 
-type PostMessage = (message: Message) => void;
+type InputInboundMessage = {
+  type: "input";
+  kind: "yesno";
+  content: string;
+};
+
+type FeedbackMessage = {
+  type: "feedback";
+  content: string;
+};
+
+type InboundMessage =
+  | InputInboundMessage
+  | FeedbackMessage
+  | {
+      type: "reset";
+    }
+  | {
+      type: "warning" | "user" | "assistance" | "error";
+      content: string;
+    };
+
+type PostMessage = (message: OutboundMessage) => void;
 
 function createMessagePoster(vscode: any): PostMessage {
   // Create a wrapper function which is strongly typed
-  return (message: Message) => vscode.postMessage(message);
+  return (message: OutboundMessage) => vscode.postMessage(message);
 }
 
 function withStickyScroll(container: HTMLElement, wrapped) {
@@ -120,12 +146,15 @@ function getBody() {
   return document.getElementById("body");
 }
 
+function getLastFeedbackMessage() {
+  let feedbackMessages = document.getElementsByClassName(
+    "troubleshooting__message--feedback"
+  );
+  return feedbackMessages.item(feedbackMessages.length - 1);
+}
+
 function messageHandler(postMessage: PostMessage) {
-  function handleInputMessage({
-    data: { type, content },
-  }: {
-    data: { type: "input"; content: string };
-  }) {
+  function handleInputMessage({ content }: InputInboundMessage) {
     const mainSection = getMainSection();
     const p = createElement({
       tagName: "p",
@@ -184,36 +213,45 @@ function messageHandler(postMessage: PostMessage) {
     newMessage.classList.add("troubleshooting__message--user");
     mainSection.append(p, newMessage);
   }
-  function handleMessage({
-    data: { type, content },
-  }: {
-    data: { type: string; content: string };
-  }) {
-    switch (type) {
+
+  function handleFeedbackMessage({ content }: FeedbackMessage) {
+    const newMessage = createElement({
+      tagName: "p",
+      classList: [
+        "troubleshooting__message",
+        "troubleshooting__message--feedback",
+        "troubleshooting__message--running",
+      ],
+    });
+    newMessage.innerHTML = content;
+    getMainSection().appendChild(newMessage);
+  }
+  function handleMessage({ data }: { data: InboundMessage }) {
+    getLastFeedbackMessage()?.classList.remove(
+      "troubleshooting__message--running"
+    );
+    switch (data.type) {
       case "input":
-        handleInputMessage({
-          data: {
-            type,
-            content,
-          },
-        });
+        handleInputMessage(data);
         break;
       case "reset":
         postMessage({ action: "reset" });
         getMainSection().replaceChildren();
         getInput().classList.remove("troubleshooting__input--hidden");
         break;
+      case "feedback":
+        handleFeedbackMessage(data);
+        break;
       default:
-        const mainSection = getMainSection();
         const newMessage = createElement({
           tagName: "p",
           classList: [
             "troubleshooting__message",
-            "troubleshooting__message--" + type,
+            "troubleshooting__message--" + data.type,
           ],
         });
-        newMessage.innerHTML = content;
-        mainSection.appendChild(newMessage);
+        newMessage.innerHTML = data.content;
+        getMainSection().appendChild(newMessage);
     }
   }
   return handleMessage;

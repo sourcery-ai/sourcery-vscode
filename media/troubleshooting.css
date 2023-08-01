@@ -95,6 +95,8 @@
   padding: 0 0 0 var(--spacing-md);
   background-color: transparent;
   color: var(--vscode-list-deemphasizedForeground);
+  display: flex;
+  flex-direction: row;
 }
 
 .troubleshooting__message--assistance {
@@ -110,6 +112,20 @@
 .troubleshooting__message--warning {
   background: var(--vscode-inputValidation-warningBackground);
   border: var(--vscode-inputValidation-warningBorder);
+}
+
+.troubleshooting__message--running::after {
+  display: inline-block;
+  animation: dotty steps(1,end) 1s infinite;
+  content: '';
+}
+
+@keyframes dotty {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
 }
 
 /* Components */

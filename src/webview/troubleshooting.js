@@ -74,9 +74,13 @@ function getMainSection() {
 function getBody() {
     return document.getElementById("body");
 }
+function getLastFeedbackMessage() {
+    var feedbackMessages = document.getElementsByClassName("troubleshooting__message--feedback");
+    return feedbackMessages.item(feedbackMessages.length - 1);
+}
 function messageHandler(postMessage) {
     function handleInputMessage(_a) {
-        var _b = _a.data, type = _b.type, content = _b.content;
+        var content = _a.content;
         var mainSection = getMainSection();
         var p = createElement({
             tagName: "p",
@@ -119,33 +123,45 @@ function messageHandler(postMessage) {
         newMessage.classList.add("troubleshooting__message--user");
         mainSection.append(p, newMessage);
     }
+    function handleFeedbackMessage(_a) {
+        var content = _a.content;
+        var newMessage = createElement({
+            tagName: "p",
+            classList: [
+                "troubleshooting__message",
+                "troubleshooting__message--feedback",
+                "troubleshooting__message--running",
+            ]
+        });
+        newMessage.innerHTML = content;
+        getMainSection().appendChild(newMessage);
+    }
     function handleMessage(_a) {
-        var _b = _a.data, type = _b.type, content = _b.content;
-        switch (type) {
+        var _b;
+        var data = _a.data;
+        (_b = getLastFeedbackMessage()) === null || _b === void 0 ? void 0 : _b.classList.remove("troubleshooting__message--running");
+        switch (data.type) {
             case "input":
-                handleInputMessage({
-                    data: {
-                        type: type,
-                        content: content
-                    }
-                });
+                handleInputMessage(data);
                 break;
             case "reset":
                 postMessage({ action: "reset" });
                 getMainSection().replaceChildren();
                 getInput().classList.remove("troubleshooting__input--hidden");
                 break;
+            case "feedback":
+                handleFeedbackMessage(data);
+                break;
             default:
-                var mainSection = getMainSection();
                 var newMessage = createElement({
                     tagName: "p",
                     classList: [
                         "troubleshooting__message",
-                        "troubleshooting__message--" + type,
+                        "troubleshooting__message--" + data.type,
                     ]
                 });
-                newMessage.innerHTML = content;
-                mainSection.appendChild(newMessage);
+                newMessage.innerHTML = data.content;
+                getMainSection().appendChild(newMessage);
         }
     }
     return handleMessage;
