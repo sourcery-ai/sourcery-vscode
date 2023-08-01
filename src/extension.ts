@@ -689,7 +689,8 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       TroubleshootingProvider.viewType,
-      troubleshootingProvider
+      troubleshootingProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
 
