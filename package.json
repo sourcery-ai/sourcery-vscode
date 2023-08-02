@@ -68,6 +68,14 @@
 					"when": "sourcery.features.coding_assistant"
 				},
 				{
+					"id": "sourcery.code_review",
+					"name": "Code Review",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Code Review",
+					"when": "sourcery.features.coding_assistant && sourcery.features.code_review"
+				},
+				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",
@@ -230,6 +238,11 @@
 				"category": "Sourcery"
 			},
 			{
+				"command": "sourcery.chat.clearCodeReview",
+				"title": "Clear",
+				"category": "Sourcery"
+			},
+			{
 				"command": "sourcery.chat.ask",
 				"title": "Ask Sourcery",
 				"category": "Sourcery"
@@ -285,6 +298,11 @@
 				{
 					"command": "sourcery.chat.clearChat",
 					"when": "view == sourcery.chat",
+					"group": "navigation"
+				},
+				{
+					"command": "sourcery.chat.clearCodeReview",
+					"when": "view == sourcery.code_review",
 					"group": "navigation"
 				}
 			],
@@ -358,6 +376,10 @@
 				},
 				{
 					"command": "sourcery.chat.clearChat",
+					"when": "false"
+				},
+				{
+					"command": "sourcery.chat.clearCodeReview",
 					"when": "false"
 				},
 				{

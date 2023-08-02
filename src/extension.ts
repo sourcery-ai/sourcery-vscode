@@ -33,7 +33,8 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider, ChatRequest } from "./chat";
-import { Recipe, RecipeProvider } from "./recipes";
+import { RecipeProvider } from "./recipes";
+import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
 
 function createLangServer(): LanguageClient {
@@ -123,6 +124,7 @@ function registerNotifications(
   scanResultTreeView: TreeView<TreeItem>,
   chatProvider: ChatProvider,
   recipeProvider: RecipeProvider,
+  reviewProvider: CodeReviewProvider,
   context: ExtensionContext
 ) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
@@ -147,8 +149,16 @@ function registerNotifications(
     chatProvider.addResult(params.result);
   });
 
+  languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
+    reviewProvider.addResult(params.result);
+  });
+
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
     recipeProvider.addRecipes(params.recipes);
+  });
+
+  languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
+    reviewProvider.populateBranches(params);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -180,7 +190,8 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider
+  recipeProvider: RecipeProvider,
+  reviewProvider: CodeReviewProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -218,6 +229,20 @@ function registerCommands(
         .sendRequest(ExecuteCommandRequest.type, request)
         .then(() => {
           chatProvider.clearChat();
+        });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.chat.clearCodeReview", () => {
+      let request: ExecuteCommandParams = {
+        command: "sourcery/chat/clearReview",
+        arguments: [],
+      };
+      languageClient
+        .sendRequest(ExecuteCommandRequest.type, request)
+        .then(() => {
+          reviewProvider.clear();
         });
     })
   );
@@ -449,9 +474,39 @@ function registerCommands(
   );
 
   context.subscriptions.push(
+    commands.registerCommand(
+      "sourcery.review_request",
+      (message: ChatRequest) => {
+        vscode.commands
+          .executeCommand("sourcery.code_review.focus")
+          .then(() => {
+            let request: ExecuteCommandParams = {
+              command: "sourcery/chat/reviewRequest",
+              arguments: [
+                {
+                  message: message,
+                },
+              ],
+            };
+            languageClient.sendRequest(ExecuteCommandRequest.type, request);
+          });
+      }
+    )
+  );
+
+  context.subscriptions.push(
     commands.registerCommand("sourcery.chat_cancel_request", () => {
       languageClient.sendRequest(ExecuteCommandRequest.type, {
         command: "sourcery/chat/cancel",
+        arguments: [],
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.review_cancel_request", () => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/chat/cancelReview",
         arguments: [],
       });
     })
@@ -585,6 +640,15 @@ export function activate(context: ExtensionContext) {
     )
   );
 
+  const reviewProvider = new CodeReviewProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      CodeReviewProvider.viewType,
+      reviewProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
   registerCommands(
     context,
     riProvider,
@@ -593,7 +657,8 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    recipeProvider
+    recipeProvider,
+    reviewProvider
   );
 
   showSourceryStatusBarItem(context);
@@ -605,6 +670,7 @@ export function activate(context: ExtensionContext) {
       treeView,
       chatProvider,
       recipeProvider,
+      reviewProvider,
       context
     );
   });
