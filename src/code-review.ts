@@ -5,7 +5,7 @@ import {
   ChatResult,
   ChatResultRole,
   ChatResultOutcome,
-  renderAssistantMessage,
+  renderMarkdownMessage,
   CancelRequest,
   OpenLinkRequest,
   InsertAtCursorInstruction,
@@ -155,7 +155,7 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
       this._currentAssistantMessage = result.textContent;
     }
 
-    let sanitized = renderAssistantMessage(this._currentAssistantMessage);
+    let sanitized = renderMarkdownMessage(this._currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",

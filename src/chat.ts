@@ -220,7 +220,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       this._currentAssistantMessage = result.textContent;
     }
 
-    let sanitized = renderAssistantMessage(this._currentAssistantMessage);
+    let sanitized = renderMarkdownMessage(this._currentAssistantMessage);
 
     this._view.webview.postMessage({
       command: "add_result",
@@ -333,7 +333,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 }
 
-export function renderAssistantMessage(message: string) {
+export function renderMarkdownMessage(message: string) {
   // Send the whole message we've been streamed so far to the webview,
   // after converting from markdown to html
 

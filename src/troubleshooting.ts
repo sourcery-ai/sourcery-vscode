@@ -14,6 +14,7 @@ import {
 import { randomBytes } from "crypto";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import { renderMarkdownMessage } from "./chat";
 
 // NOTE: marked code block formatting relies on the `marked.use` block in `chat.ts`
 
@@ -24,23 +25,6 @@ type TroubleshootingResult = {
 
 interface Message {
   action: string;
-}
-
-function renderMarkdownMessage(message: string): string {
-  // Send the whole message we've been streamed so far to the webview,
-  // after converting from markdown to html
-
-  const rendered = marked(message, {
-    gfm: true,
-    breaks: true,
-    mangle: false,
-    headerIds: false,
-  });
-
-  // Allow any classes on span and code blocks or highlightjs classes get removed
-  return sanitizeHtml(rendered, {
-    allowedClasses: { span: false, code: false },
-  });
 }
 
 export class TroubleshootingProvider implements WebviewViewProvider {
