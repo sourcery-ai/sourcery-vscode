@@ -171,4 +171,38 @@
   background-color: var(--vscode-editor-background);
   outline: 1px solid var(--vscode-panel-border);
   overflow: hidden;
+  position: relative;
+}
+
+.troubleshooting__code_block_action_button {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  visibility: hidden;
+  background: var(--vscode-button-secondaryBackground);
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: var(--spacing-xxs);
+  color: var(--vscode-settings-textInputForeground);
+  padding: var(--spacing-md);
+  fill: var(--vscode-button-secondaryForeground);
+  margin: 0;
+  width: var(--spacing-lg);
+  height: var(--spacing-lg);
+  outline: none;
+}
+
+.troubleshooting__message pre:hover .troubleshooting__code_block_action_button {
+  visibility: visible;
+}
+
+.troubleshooting__code_block_action_button:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.troubleshooting__code_block_action_button_icon {
+  height: var(--spacing-lg);
+  width: var(--spacing-lg);
+  position: absolute;
+  left: var(--spacing-xxs);
+  top: var(--spacing-xxs);
 }
