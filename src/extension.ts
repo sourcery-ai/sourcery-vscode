@@ -134,7 +134,7 @@ function registerNotifications({
   scanResultTreeView: TreeView<TreeItem>;
   chatProvider: ChatProvider;
   recipeProvider: RecipeProvider;
-  reviewProvider: CodeReviewProvider,
+  reviewProvider: CodeReviewProvider;
   context: ExtensionContext;
   troubleshootingProvider: TroubleshootingProvider;
 }) {
