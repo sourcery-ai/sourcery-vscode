@@ -70,6 +70,8 @@ export class TroubleshootingProvider implements WebviewViewProvider {
       localResourceRoots: [this._extensionUri],
     };
 
+    // messages from inside the webview are sent on to the binary unchanged
+    // it's the job of the troubleshooting handler to decide what to do with the message's `action`.
     webviewView.webview.onDidReceiveMessage(async (message: Message) => {
       commands.executeCommand("sourcery.troubleshoot", message);
     });
