@@ -401,6 +401,10 @@
 					"when": "false"
 				},
 				{
+					"command": "sourcery.troubleshoot.reset",
+					"when": "false"
+				},
+				{
 					"command": "sourcery.chat.ask",
 					"when": "sourcery.features.coding_assistant"
 				},
