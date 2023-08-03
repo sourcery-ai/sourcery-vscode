@@ -213,7 +213,9 @@
   outline: none;
 }
 
-.troubleshooting__message pre:hover .troubleshooting__code_block_action_button_group {
+.troubleshooting__message
+  pre:hover
+  .troubleshooting__code_block_action_button_group {
   visibility: visible;
 }
 
