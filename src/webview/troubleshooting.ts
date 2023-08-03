@@ -30,12 +30,18 @@ type OpenLinkRequestOutboundMessage = {
   target: string;
 };
 
+type InsertAtCursorOutboundMessage = {
+  action: "insertAtCursor";
+  content: string;
+};
+
 type OutboundMessage =
   | SubmitOutboundMessage
   | ResumeOutboundMessage
   | RetryOutboundMessage
   | ResetOutboundMessage
-  | OpenLinkRequestOutboundMessage;
+  | OpenLinkRequestOutboundMessage
+  | InsertAtCursorOutboundMessage;
 
 type InputInboundMessage = {
   type: "input";
@@ -85,40 +91,6 @@ function withStickyScroll(container: HTMLElement, wrapped) {
       container.scrollTop = scrollHeight - clientHeight;
     }
   };
-}
-
-function setupCopyButton(block: HTMLElement) {
-  if (navigator.clipboard) {
-    let text = block.querySelector("code").innerText;
-    let button = document.createElement("button");
-    button.innerHTML = `
-      <svg 
-        viewBox="0 0 512 512" 
-        xmlns="http://www.w3.org/2000/svg"
-        class="troubleshooting__code_block_action_button_icon"
-      >
-        <path d="m272 0h124.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9v220.1c0 26.5-21.5 48-48 48h-192c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48zm-224 128h144v64h-128v256h192v-32h64v48c0 26.5-21.5 48-48 48h-224c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48z" />        
-      </svg>
-    `;
-    button.title = "Copy to Clipboard";
-    button.classList.add("troubleshooting__code_block_action_button");
-    button.onclick = async () => {
-      await navigator.clipboard.writeText(text);
-      button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="troubleshooting__code_block_action_button_icon"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>`;
-    };
-    button.onblur = async () => {
-      button.innerHTML = `
-        <svg 
-          viewBox="0 0 512 512" 
-          xmlns="http://www.w3.org/2000/svg"
-          class="troubleshooting__code_block_action_button_icon"
-        >
-          <path d="m272 0h124.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9v220.1c0 26.5-21.5 48-48 48h-192c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48zm-224 128h144v64h-128v256h192v-32h64v48c0 26.5-21.5 48-48 48h-224c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48z" />        
-        </svg>
-      `;
-    };
-    return button;
-  }
 }
 
 type Props<K extends keyof HTMLElementTagNameMap> = {
@@ -201,6 +173,64 @@ function getLastFeedbackMessage() {
 }
 
 function messageHandler(postMessage: PostMessage) {
+  const setupCopyButton = (block: HTMLElement) => {
+    if (navigator.clipboard) {
+      let text = block.querySelector("code").innerText;
+      let button = document.createElement("button");
+      button.innerHTML = `
+      <svg 
+        viewBox="0 0 512 512" 
+        xmlns="http://www.w3.org/2000/svg"
+        class="troubleshooting__code_block_action_button_icon"
+      >
+        <path d="m272 0h124.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9v220.1c0 26.5-21.5 48-48 48h-192c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48zm-224 128h144v64h-128v256h192v-32h64v48c0 26.5-21.5 48-48 48h-224c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48z" />        
+      </svg>
+    `;
+      button.title = "Copy to Clipboard";
+      button.classList.add("troubleshooting__code_block_action_button");
+      button.onclick = async () => {
+        await navigator.clipboard.writeText(text);
+        button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="troubleshooting__code_block_action_button_icon"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>`;
+      };
+      button.onblur = async () => {
+        button.innerHTML = `
+        <svg 
+          viewBox="0 0 512 512" 
+          xmlns="http://www.w3.org/2000/svg"
+          class="troubleshooting__code_block_action_button_icon"
+        >
+          <path d="m272 0h124.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9v220.1c0 26.5-21.5 48-48 48h-192c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48zm-224 128h144v64h-128v256h192v-32h64v48c0 26.5-21.5 48-48 48h-224c-26.5 0-48-21.5-48-48v-288c0-26.5 21.5-48 48-48z" />        
+        </svg>
+      `;
+      };
+      return button;
+    }
+  };
+
+  const setupReplaceButton = (block: HTMLElement) => {
+    let text = block.querySelector("code").innerText;
+    let button = document.createElement("button");
+    button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="troubleshooting__code_block_action_button_icon" viewBox="0 0 512 512"><path d="M416 448h-84c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h84c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32h-84c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h84c53 0 96 43 96 96v192c0 53-43 96-96 96zm-47-201L201 79c-15-15-41-4.5-41 17v96H24c-13.3 0-24 10.7-24 24v96c0 13.3 10.7 24 24 24h136v96c0 21.5 26 32 41 17l168-168c9.3-9.4 9.3-24.6 0-34z"/></svg>
+    `;
+    button.title = "Insert code at cursor";
+    button.classList.add("troubleshooting__code_block_action_button");
+    button.onclick = async () => {
+      postMessage({ action: "insertAtCursor", content: text });
+    };
+    return button;
+  };
+
+  const setupActionButtons = (block: HTMLElement) => {
+    const copyButton = setupCopyButton(block);
+    const replaceButton = setupReplaceButton(block);
+    return createElement({
+      tagName: "div",
+      classList: ["troubleshooting__code_block_action_button_group"],
+      children: [copyButton, replaceButton],
+    });
+  };
+
   const setupLinks = (block: HTMLElement) => {
     block
       .querySelectorAll('a[href*="http"]')
@@ -309,7 +339,7 @@ function messageHandler(postMessage: PostMessage) {
     });
     newMessage.innerHTML = content;
     newMessage.querySelectorAll("pre").forEach((element) => {
-      element.appendChild(setupCopyButton(element));
+      element.appendChild(setupActionButtons(element));
     });
     setupLinks(newMessage);
     getMainSection().appendChild(newMessage);

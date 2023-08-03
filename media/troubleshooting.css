@@ -148,6 +148,27 @@
   overflow: hidden;
 }
 
+.troubleshooting__code_block_action_button_group {
+  visibility: hidden;
+  display: flex;
+  flex-direction: row;
+  border-radius: var(--spacing-sm);
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  gap: -1px;
+}
+
+.troubleshooting__code_block_action_button_group > button:first-of-type {
+  border-bottom-left-radius: var(--spacing-xxs);
+  border-top-left-radius: var(--spacing-xxs);
+}
+
+.troubleshooting__code_block_action_button_group > button:last-of-type {
+  border-bottom-right-radius: var(--spacing-xxs);
+  border-top-right-radius: var(--spacing-xxs);
+}
+
 /* Markdown re-formatting */
 
 .troubleshooting__message > *:not(:last-child) {
@@ -180,13 +201,9 @@
 }
 
 .troubleshooting__code_block_action_button {
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-  visibility: hidden;
+  position: relative;
   background: var(--vscode-button-secondaryBackground);
   border: 1px solid var(--vscode-panel-border);
-  border-radius: var(--spacing-xxs);
   color: var(--vscode-settings-textInputForeground);
   padding: var(--spacing-md);
   fill: var(--vscode-button-secondaryForeground);
@@ -196,7 +213,7 @@
   outline: none;
 }
 
-.troubleshooting__message pre:hover .troubleshooting__code_block_action_button {
+.troubleshooting__message pre:hover .troubleshooting__code_block_action_button_group {
   visibility: visible;
 }
 

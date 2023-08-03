@@ -43,12 +43,18 @@ type OpenLinkRequestOutboundMessage = {
   target: string;
 };
 
+type InsertAtCursorOutboundMessage = {
+  action: "insertAtCursor";
+  content: string;
+};
+
 type OutboundMessage =
   | SubmitOutboundMessage
   | ResumeOutboundMessage
   | RetryOutboundMessage
   | ResetOutboundMessage
-  | OpenLinkRequestOutboundMessage;
+  | OpenLinkRequestOutboundMessage
+  | InsertAtCursorOutboundMessage;
 
 export class TroubleshootingProvider implements WebviewViewProvider {
   public static readonly viewType = "sourcery.troubleshooting";
@@ -109,6 +115,25 @@ export class TroubleshootingProvider implements WebviewViewProvider {
                 vscode.commands.executeCommand("vscode.open", uri);
                 break;
             }
+            break;
+          case "insertAtCursor":
+            const activeEditor = vscode.window.activeTextEditor;
+            if (!activeEditor) {
+              vscode.window.showErrorMessage("No active text editor!");
+              return;
+            }
+
+            activeEditor.edit((editBuilder) => {
+              // Thank you coding assistant!
+              if (!activeEditor.selection.isEmpty) {
+                editBuilder.replace(activeEditor.selection, message.content);
+              } else {
+                editBuilder.insert(
+                  activeEditor.selection.active,
+                  message.content
+                );
+              }
+            });
             break;
           default:
             commands.executeCommand("sourcery.troubleshoot", message);
