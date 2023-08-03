@@ -24,11 +24,18 @@ type ResetOutboundMessage = {
   action: "reset";
 };
 
+type OpenLinkRequestOutboundMessage = {
+  action: "openLink";
+  linkType: "file" | "url"; // TODO: handle directories
+  target: string;
+};
+
 type OutboundMessage =
   | SubmitOutboundMessage
   | ResumeOutboundMessage
   | RetryOutboundMessage
-  | ResetOutboundMessage; // anticipating future Message types
+  | ResetOutboundMessage
+  | OpenLinkRequestOutboundMessage;
 
 type InputInboundMessage = {
   type: "input";
@@ -194,7 +201,32 @@ function getLastFeedbackMessage() {
 }
 
 function messageHandler(postMessage: PostMessage) {
-  function handleInputMessage({ content }: InputInboundMessage) {
+  const setupLinks = (block: HTMLElement) => {
+    block
+      .querySelectorAll('a[href*="http"]')
+      .forEach((link: HTMLAnchorElement) =>
+        link.addEventListener("click", () =>
+          postMessage({
+            action: "openLink",
+            linkType: "url",
+            target: link.href,
+          })
+        )
+      );
+    block
+      .querySelectorAll('a[href*="file"]')
+      .forEach((link: HTMLAnchorElement) =>
+        link.addEventListener("click", () =>
+          postMessage({
+            action: "openLink",
+            linkType: "file",
+            target: link.href,
+          })
+        )
+      );
+  };
+
+  const handleInputMessage = ({ content }: InputInboundMessage) => {
     const mainSection = getMainSection();
     const p = createElement({
       tagName: "p",
@@ -252,9 +284,9 @@ function messageHandler(postMessage: PostMessage) {
     });
     newMessage.classList.add("troubleshooting__message--user");
     mainSection.append(p, newMessage);
-  }
+  };
 
-  function handleFeedbackMessage({ content }: FeedbackMessage) {
+  const handleFeedbackMessage = ({ content }: FeedbackMessage) => {
     const newMessage = createElement({
       tagName: "p",
       classList: [
@@ -265,9 +297,9 @@ function messageHandler(postMessage: PostMessage) {
     });
     newMessage.innerHTML = content;
     getMainSection().appendChild(newMessage);
-  }
+  };
 
-  function handleAssistanceMessage({ content }: AssistanceMessage) {
+  const handleAssistanceMessage = ({ content }: AssistanceMessage) => {
     const newMessage = createElement({
       tagName: "p",
       classList: [
@@ -279,9 +311,11 @@ function messageHandler(postMessage: PostMessage) {
     newMessage.querySelectorAll("pre").forEach((element) => {
       element.appendChild(setupCopyButton(element));
     });
+    setupLinks(newMessage);
     getMainSection().appendChild(newMessage);
-  }
-  function handleMessage({ data }: { data: InboundMessage }) {
+  };
+
+  const handleMessage = ({ data }: { data: InboundMessage }) => {
     getLastFeedbackMessage()?.classList.remove(
       "troubleshooting__message--running"
     );
@@ -311,7 +345,8 @@ function messageHandler(postMessage: PostMessage) {
         newMessage.innerHTML = data.content;
         getMainSection().appendChild(newMessage);
     }
-  }
+  };
+
   return handleMessage;
 }
 

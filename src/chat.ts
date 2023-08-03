@@ -351,5 +351,6 @@ export function renderMarkdownMessage(message: string) {
       "summary",
     ]),
     allowedClasses: { span: false, code: false },
+    allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(["file"]),
   });
 }

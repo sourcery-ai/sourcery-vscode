@@ -12,20 +12,43 @@ import {
   window,
 } from "vscode";
 import { randomBytes } from "crypto";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
 import { renderMarkdownMessage } from "./chat";
-
-// NOTE: marked code block formatting relies on the `marked.use` block in `chat.ts`
+import * as vscode from "vscode";
 
 type TroubleshootingResult = {
   type: "error" | "assistance" | "feedback" | "user" | string;
   content: string;
 };
 
-interface Message {
-  action: string;
-}
+type SubmitOutboundMessage = {
+  action: "submit";
+  promptValue: string;
+};
+type ResumeOutboundMessage = {
+  action: "resume";
+  promptValue: string | boolean;
+};
+
+type RetryOutboundMessage = {
+  action: "retry";
+};
+
+type ResetOutboundMessage = {
+  action: "reset";
+};
+
+type OpenLinkRequestOutboundMessage = {
+  action: "openLink";
+  linkType: "file" | "url"; // TODO: handle directories
+  target: string;
+};
+
+type OutboundMessage =
+  | SubmitOutboundMessage
+  | ResumeOutboundMessage
+  | RetryOutboundMessage
+  | ResetOutboundMessage
+  | OpenLinkRequestOutboundMessage;
 
 export class TroubleshootingProvider implements WebviewViewProvider {
   public static readonly viewType = "sourcery.troubleshooting";
@@ -70,11 +93,28 @@ export class TroubleshootingProvider implements WebviewViewProvider {
       localResourceRoots: [this._extensionUri],
     };
 
-    // messages from inside the webview are sent on to the binary unchanged
+    // most messages from inside the webview are sent on to the binary unchanged
     // it's the job of the troubleshooting handler to decide what to do with the message's `action`.
-    webviewView.webview.onDidReceiveMessage(async (message: Message) => {
-      commands.executeCommand("sourcery.troubleshoot", message);
-    });
+    // Links are handled by VSCode.
+    webviewView.webview.onDidReceiveMessage(
+      async (message: OutboundMessage) => {
+        switch (message.action) {
+          case "openLink":
+            switch (message.linkType) {
+              case "url":
+                vscode.env.openExternal(vscode.Uri.parse(message.target));
+                break;
+              case "file":
+                let uri = vscode.Uri.parse(message.target);
+                vscode.commands.executeCommand("vscode.open", uri);
+                break;
+            }
+            break;
+          default:
+            commands.executeCommand("sourcery.troubleshoot", message);
+        }
+      }
+    );
 
     const styleSheets = [
       "reset.css",

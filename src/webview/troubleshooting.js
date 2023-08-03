@@ -143,7 +143,31 @@ function getLastFeedbackMessage() {
     return feedbackMessages.item(feedbackMessages.length - 1);
 }
 function messageHandler(postMessage) {
-    function handleInputMessage(_a) {
+    var setupLinks = function (block) {
+        block
+            .querySelectorAll('a[href*="http"]')
+            .forEach(function (link) {
+            return link.addEventListener("click", function () {
+                return postMessage({
+                    action: "openLink",
+                    linkType: "url",
+                    target: link.href
+                });
+            });
+        });
+        block
+            .querySelectorAll('a[href*="file"]')
+            .forEach(function (link) {
+            return link.addEventListener("click", function () {
+                return postMessage({
+                    action: "openLink",
+                    linkType: "file",
+                    target: link.href
+                });
+            });
+        });
+    };
+    var handleInputMessage = function (_a) {
         var content = _a.content;
         var mainSection = getMainSection();
         var p = createElement({
@@ -186,8 +210,8 @@ function messageHandler(postMessage) {
         });
         newMessage.classList.add("troubleshooting__message--user");
         mainSection.append(p, newMessage);
-    }
-    function handleFeedbackMessage(_a) {
+    };
+    var handleFeedbackMessage = function (_a) {
         var content = _a.content;
         var newMessage = createElement({
             tagName: "p",
@@ -199,8 +223,8 @@ function messageHandler(postMessage) {
         });
         newMessage.innerHTML = content;
         getMainSection().appendChild(newMessage);
-    }
-    function handleAssistanceMessage(_a) {
+    };
+    var handleAssistanceMessage = function (_a) {
         var content = _a.content;
         var newMessage = createElement({
             tagName: "p",
@@ -213,9 +237,10 @@ function messageHandler(postMessage) {
         newMessage.querySelectorAll("pre").forEach(function (element) {
             element.appendChild(setupCopyButton(element));
         });
+        setupLinks(newMessage);
         getMainSection().appendChild(newMessage);
-    }
-    function handleMessage(_a) {
+    };
+    var handleMessage = function (_a) {
         var _b;
         var data = _a.data;
         (_b = getLastFeedbackMessage()) === null || _b === void 0 ? void 0 : _b.classList.remove("troubleshooting__message--running");
@@ -245,7 +270,7 @@ function messageHandler(postMessage) {
                 newMessage.innerHTML = data.content;
                 getMainSection().appendChild(newMessage);
         }
-    }
+    };
     return handleMessage;
 }
 function init(postMessage) {
