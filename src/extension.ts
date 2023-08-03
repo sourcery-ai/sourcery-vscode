@@ -36,6 +36,7 @@ import { ChatProvider, ChatRequest } from "./chat";
 import { RecipeProvider } from "./recipes";
 import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
+import { TroubleshootingProvider } from "./troubleshooting";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -118,15 +119,25 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
   myStatusBarItem.show();
 }
 
-function registerNotifications(
-  languageClient: LanguageClient,
-  scanResultTree: ScanResultProvider,
-  scanResultTreeView: TreeView<TreeItem>,
-  chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider,
-  reviewProvider: CodeReviewProvider,
-  context: ExtensionContext
-) {
+function registerNotifications({
+  languageClient,
+  scanResultTree,
+  scanResultTreeView,
+  chatProvider,
+  recipeProvider,
+  context,
+  reviewProvider,
+  troubleshootingProvider,
+}: {
+  languageClient: LanguageClient;
+  scanResultTree: ScanResultProvider;
+  scanResultTreeView: TreeView<TreeItem>;
+  chatProvider: ChatProvider;
+  recipeProvider: RecipeProvider;
+  reviewProvider: CodeReviewProvider;
+  context: ExtensionContext;
+  troubleshootingProvider: TroubleshootingProvider;
+}) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
     const command = params["command"];
     const args = params["arguments"] || [];
@@ -148,6 +159,13 @@ function registerNotifications(
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
     chatProvider.addResult(params.result);
   });
+
+  languageClient.onNotification(
+    "sourcery/vscode/troubleshootResults",
+    (params) => {
+      troubleshootingProvider.handleResult(params.result);
+    }
+  );
 
   languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
     reviewProvider.addResult(params.result);
@@ -191,7 +209,8 @@ function registerCommands(
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
   recipeProvider: RecipeProvider,
-  reviewProvider: CodeReviewProvider
+  reviewProvider: CodeReviewProvider,
+  troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -259,6 +278,21 @@ function registerCommands(
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
       config.update("sourcery.codeLens", !currentValue);
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot", (message) => {
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery/troubleshoot",
+        arguments: [message],
+      });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.troubleshoot.reset", () => {
+      troubleshootingProvider.handleReset();
     })
   );
 
@@ -649,6 +683,17 @@ export function activate(context: ExtensionContext) {
       { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
+
+  const troubleshootingProvider = new TroubleshootingProvider(context);
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      TroubleshootingProvider.viewType,
+      troubleshootingProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
+
   registerCommands(
     context,
     riProvider,
@@ -658,21 +703,23 @@ export function activate(context: ExtensionContext) {
     hubWebviewPanel,
     chatProvider,
     recipeProvider,
-    reviewProvider
+    reviewProvider,
+    troubleshootingProvider
   );
 
   showSourceryStatusBarItem(context);
 
   languageClient.start().then(() => {
-    registerNotifications(
+    registerNotifications({
       languageClient,
-      tree,
-      treeView,
+      scanResultTree: tree,
+      scanResultTreeView: treeView,
       chatProvider,
       recipeProvider,
       reviewProvider,
-      context
-    );
+      context,
+      troubleshootingProvider,
+    });
   });
 }
 
