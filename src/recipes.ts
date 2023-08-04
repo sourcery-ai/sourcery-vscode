@@ -90,25 +90,25 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     return `<!DOCTYPE html>
-			<html lang="en" xmlns="http://www.w3.org/1999/html">
-			<head>
-				<meta charset="UTF-8">
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta http-equiv="Content-Security-Policy" content="${cspStr}">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
-				<link href="${animationsUri}" rel="stylesheet">
-			</head>
-			<body>
-			    <section class="recipe-section">
-			    </section>
-			</body>
-			<script nonce="${nonce}" src="${scriptUri}"></script>
-			</html>`;
+      <html lang="en" xmlns="http://www.w3.org/1999/html">
+      <head>
+        <meta charset="UTF-8">
+        <!--
+          Use a content security policy to only allow loading images from https or from our extension directory,
+          and only allow scripts that have a specific nonce.
+        -->
+        <meta http-equiv="Content-Security-Policy" content="${cspStr}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="${styleResetUri}" rel="stylesheet">
+        <link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${animationsUri}" rel="stylesheet">
+      </head>
+      <body>
+          <section class="recipe-section">
+          </section>
+      </body>
+      <script nonce="${nonce}" src="${scriptUri}"></script>
+      </html>`;
   }
 }
