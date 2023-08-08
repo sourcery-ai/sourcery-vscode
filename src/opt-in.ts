@@ -2,10 +2,6 @@
 
 import { commands, WebviewView, WebviewViewProvider } from "vscode";
 
-type OptInMessage = {
-  command: "opt-in";
-};
-
 export class CodingAssistantOptInProvider implements WebviewViewProvider {
   public static readonly viewType = "sourcery.coding_assistant_opt_in";
 
@@ -14,7 +10,7 @@ export class CodingAssistantOptInProvider implements WebviewViewProvider {
       enableScripts: true,
     };
 
-    webviewView.webview.onDidReceiveMessage(async (_message: OptInMessage) =>
+    webviewView.webview.onDidReceiveMessage(async (_message) =>
       commands.executeCommand("sourcery.coding_assistant.opt_in")
     );
 
@@ -74,7 +70,7 @@ export class CodingAssistantOptInProvider implements WebviewViewProvider {
   function submitForm(event) {
     event.preventDefault();
     const vscode = acquireVsCodeApi();
-    vscode.postMessage({ command: 'opt-in' });
+    vscode.postMessage({});
   }
 </script>
 </html>`;
