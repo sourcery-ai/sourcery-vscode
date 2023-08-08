@@ -169,6 +169,23 @@
   border-top-right-radius: var(--spacing-xxs);
 }
 
+.troubleshooting__prompt_wrapper {
+  position: relative;
+}
+
+.troubleshooting__prompt_submit_button {
+  position: absolute;
+  right: var(--spacing-md);
+  bottom: var(--spacing-sm);
+  background-color: transparent;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--spacing-xxs);
+}
+
 /* Markdown re-formatting */
 
 .troubleshooting__message > *:not(:last-child) {
