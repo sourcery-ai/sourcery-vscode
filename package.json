@@ -52,12 +52,20 @@
 		"views": {
 			"sourcery-explorer": [
 				{
+					"id": "sourcery.coding_assistant_opt_in",
+					"name": "Coding Assistant",
+					"type": "webview",
+					"icon": "sourcery-icon.png",
+					"contextualTitle": "Coding Assistant",
+					"when": "sourcery.features.coding_assistant && !sourcery.config.coding_assistant.enabled"
+				},
+				{
 					"id": "sourcery.chat",
 					"name": "Coding Assistant",
 					"type": "webview",
 					"icon": "sourcery-icon.png",
 					"contextualTitle": "Coding Assistant",
-					"when": "sourcery.features.coding_assistant"
+					"when": "sourcery.features.coding_assistant && sourcery.config.coding_assistant.enabled === true"
 				},
 				{
 					"id": "sourcery.troubleshooting",
@@ -65,7 +73,7 @@
 					"type": "webview",
 					"icon": "sourcery-icon.png",
 					"contextualTitle": "Troubleshooting",
-					"when": "sourcery.features.coding_assistant && sourcery.features.coding_assistant_troubleshooting && sourcery.features.semantic_search"
+					"when": "sourcery.features.coding_assistant && sourcery.config.coding_assistant.enabled === true && sourcery.features.coding_assistant_troubleshooting && sourcery.features.semantic_search"
 				},
 				{
 					"id": "sourcery.recipes",
@@ -73,7 +81,7 @@
 					"type": "webview",
 					"icon": "sourcery-icon.png",
 					"contextualTitle": "Recipes",
-					"when": "sourcery.features.coding_assistant"
+					"when": "sourcery.features.coding_assistant && sourcery.config.coding_assistant.enabled === true"
 				},
 				{
 					"id": "sourcery.code_review",
@@ -81,7 +89,7 @@
 					"type": "webview",
 					"icon": "sourcery-icon.png",
 					"contextualTitle": "Code Review",
-					"when": "sourcery.features.coding_assistant && sourcery.features.code_review"
+					"when": "sourcery.features.coding_assistant && sourcery.config.coding_assistant.enabled === true && sourcery.features.code_review"
 				},
 				{
 					"id": "sourcery.rules",

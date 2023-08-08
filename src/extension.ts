@@ -32,6 +32,7 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
+import { CodingAssistantOptInProvider } from "./opt-in";
 import { ChatProvider, ChatRequest } from "./chat";
 import { RecipeProvider } from "./recipes";
 import { CodeReviewProvider } from "./code-review";
@@ -235,6 +236,16 @@ function registerCommands(
     commands.registerCommand("sourcery.scan.toggleAdvanced", () => {
       // Tell the rules webview to toggle
       riProvider.toggle();
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("sourcery.coding_assistant.opt_in", () => {
+      let request: ExecuteCommandParams = {
+        command: "sourcery.coding_assistant.opt_in",
+        arguments: [],
+      };
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
     })
   );
 
@@ -653,6 +664,15 @@ export function activate(context: ExtensionContext) {
   });
 
   const riProvider = new RuleInputProvider(context);
+
+  const codingAssistantOptInProvider = new CodingAssistantOptInProvider();
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      CodingAssistantOptInProvider.viewType,
+      codingAssistantOptInProvider,
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
 
   const chatProvider = new ChatProvider(context);
 

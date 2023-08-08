@@ -224,53 +224,53 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     /* eslint-enable @typescript-eslint/naming-convention */
 
     return `<!DOCTYPE html>
-			<html lang="en" xmlns="http://www.w3.org/1999/html">
-			<head>
-				<meta charset="UTF-8">
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta http-equiv="Content-Security-Policy" content="${cspStr}">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
+      <html lang="en" xmlns="http://www.w3.org/1999/html">
+      <head>
+        <meta charset="UTF-8">
+        <!--
+          Use a content security policy to only allow loading images from https or from our extension directory,
+          and only allow scripts that have a specific nonce.
+        -->
+        <meta http-equiv="Content-Security-Policy" content="${cspStr}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="${styleResetUri}" rel="stylesheet">
+        <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${styleMainUri}" rel="stylesheet">
-				<link href="${animationsUri}" rel="stylesheet">
+        <link href="${animationsUri}" rel="stylesheet">
         <link href="${hljsUri}" rel="stylesheet">
 
-			</head>
-			<body class="sidebar__chat-assistant-body">
+      </head>
+      <body class="sidebar__chat-assistant-body">
         <section class="review-button-section">
-            <div class="sidebar__diff-options-container">
-              <div class="sidebar__branch-form">
-                <label for="currentBranch" class="columnOne">Current Branch</label>
-                <input type="text" class="currentBranch columnTwo" nonce="${nonce}">
-                <label for="mainBranch" class="columnOne">Main Branch</label>
-                <input type="text" class="mainBranch columnTwo" nonce="${nonce}">
-              </div>
+          <div class="sidebar__diff-options-container">
+            <div class="sidebar__branch-form">
+              <label for="currentBranch" class="columnOne">Current Branch</label>
+              <input type="text" class="currentBranch columnTwo" nonce="${nonce}">
+              <label for="mainBranch" class="columnOne">Main Branch</label>
+              <input type="text" class="mainBranch columnTwo" nonce="${nonce}">
             </div>
-            <div class="btnContainer">
-                <button class="review-button" >Review My Code</button>
-            </div>
+          </div>
+          <div class="btnContainer">
+              <button class="review-button" >Review My Code</button>
+          </div>
         </section>
         <section id="message-container" class="sidebar__section-container active" data-section="chat-assistant">
         <ul class="sidebar__chat-assistant--dialogue-container">
         </ul>
         </section>
-			</body>
-            <footer class="sidebar__chat-assistant--footer">
-            <section class="sidebar__chat-assistant--textarea-container">
-            <button id="cancel-button" class="sidebar__chat-assistant--cancel-button" disabled>
-                <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="sidebar__chat-assistant--regenerate-button-icon">
-                    <path d="m464 256a208 208 0 1 0 -416 0 208 208 0 1 0 416 0zm-464 0a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm224-72v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24z"></path>
-                </svg>
-                <span>Cancel</span>
-            </button>
-            </section>
-          </footer>
-			<script nonce="${nonce}" src="${scriptUri}"></script>
-			</html>`;
+      </body>
+        <footer class="sidebar__chat-assistant--footer">
+          <section class="sidebar__chat-assistant--textarea-container">
+          <button id="cancel-button" class="sidebar__chat-assistant--cancel-button" disabled>
+            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="sidebar__chat-assistant--regenerate-button-icon">
+              <path d="m464 256a208 208 0 1 0 -416 0 208 208 0 1 0 416 0zm-464 0a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm224-72v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v144c0 13.3-10.7 24-24 24s-24-10.7-24-24v-144c0-13.3 10.7-24 24-24s24 10.7 24 24z"></path>
+            </svg>
+            <span>Cancel</span>
+          </button>
+          </section>
+        </footer>
+      <script nonce="${nonce}" src="${scriptUri}"></script>
+      </html>`;
   }
 }
