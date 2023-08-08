@@ -319,7 +319,7 @@ function messageHandler(postMessage) {
     var handleMessage = function (_a) {
         var _b;
         var data = _a.data;
-        (_b = getLastFeedbackMessage()) === null || _b === void 0 ? void 0 : _b.classList.remove("troubleshooting__message--running");
+        (_b = getLastFeedbackMessage()) === null || _b === void 0 ? void 0 : _b.remove();
         switch (data.type) {
             case "input":
                 handleInputMessage(data);

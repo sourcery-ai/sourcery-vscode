@@ -409,9 +409,7 @@ function messageHandler(postMessage: PostMessage) {
   };
 
   const handleMessage = ({ data }: { data: InboundMessage }) => {
-    getLastFeedbackMessage()?.classList.remove(
-      "troubleshooting__message--running"
-    );
+    getLastFeedbackMessage()?.remove();
     switch (data.type) {
       case "input":
         handleInputMessage(data);
