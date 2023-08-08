@@ -73,37 +73,6 @@ function createButtonGroup(children) {
         children: children
     });
 }
-function createPrompt() {
-    // Create the prompt and add custom placeholder and ID
-    var prompt = createElement({
-        tagName: "textarea",
-        classList: ["troubleshooting__prompt"]
-    });
-    prompt.id = "prompt";
-    prompt.placeholder = "Describe the issue in detail.";
-    return prompt;
-}
-function createSubmitButton(postMessage) {
-    // Create the submit button and attach submit action
-    // Would this system be better as a form?
-    var submitButton = createElement({
-        tagName: "button",
-        classList: ["troubleshooting__button", "troubleshooting__button--submit"]
-    });
-    submitButton.innerText = "Submit";
-    submitButton.onclick = function () {
-        postMessage({ action: "submit", promptValue: getPrompt().value });
-        getInput().classList.add("troubleshooting__input--hidden");
-    };
-    return submitButton;
-}
-function getInput() {
-    return document.getElementById("input");
-}
-function getPrompt() {
-    // Return the prompt, if it exists (which it should)
-    return document.getElementById("prompt");
-}
 function getMainSection() {
     return document.getElementById("main");
 }
@@ -246,6 +215,9 @@ function messageHandler(postMessage) {
         });
         var onSubmit = function () {
             var promptValue = textInput.value;
+            if (!promptValue) {
+                return;
+            }
             postMessage({ action: "resume", promptValue: promptValue });
             promptWrapper.remove();
             var par = createElement({ tagName: "p" });
@@ -327,7 +299,7 @@ function messageHandler(postMessage) {
             case "reset":
                 postMessage({ action: "reset" });
                 getMainSection().replaceChildren();
-                getInput().classList.remove("troubleshooting__input--hidden");
+                setTimeout(function () { return postMessage({ action: "init" }); }, 100); // delay a moment to make sure messages are received
                 break;
             case "feedback":
                 handleFeedbackMessage(data);
@@ -355,11 +327,6 @@ function init(postMessage) {
     // the whole extension development host.
     getBody().append(createElement({
         tagName: "section",
-        classList: ["troubleshooting__input"],
-        id: "input",
-        children: [createPrompt(), createSubmitButton(postMessage)]
-    }), createElement({
-        tagName: "section",
         classList: ["troubleshooting__main"],
         id: "main"
     }), createElement({
@@ -368,6 +335,7 @@ function init(postMessage) {
         id: "footer"
     }));
     window.addEventListener("message", withStickyScroll(getMainSection(), messageHandler(postMessage)));
+    setTimeout(function () { return postMessage({ action: "init" }); }, 100); // delay a moment to make sure messages are received
 }
 (function () {
     var vscode = acquireVsCodeApi();

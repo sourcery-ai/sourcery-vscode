@@ -7,19 +7,13 @@
 
 declare const acquireVsCodeApi: any;
 
-type SubmitOutboundMessage = {
-  action: "submit";
-  promptValue: string;
+type InitOutboundMessage = {
+  action: "init";
 };
 type ResumeOutboundMessage = {
   action: "resume";
   promptValue: string | boolean;
 };
-
-type RetryOutboundMessage = {
-  action: "retry";
-};
-
 type ResetOutboundMessage = {
   action: "reset";
 };
@@ -36,9 +30,8 @@ type InsertAtCursorOutboundMessage = {
 };
 
 type OutboundMessage =
-  | SubmitOutboundMessage
+  | InitOutboundMessage
   | ResumeOutboundMessage
-  | RetryOutboundMessage
   | ResetOutboundMessage
   | OpenLinkRequestOutboundMessage
   | InsertAtCursorOutboundMessage;
@@ -121,42 +114,6 @@ function createButtonGroup(children: HTMLButtonElement[]): HTMLDivElement {
     children,
   });
 }
-
-function createPrompt(): HTMLTextAreaElement {
-  // Create the prompt and add custom placeholder and ID
-  const prompt = createElement({
-    tagName: "textarea",
-    classList: ["troubleshooting__prompt"],
-  });
-  prompt.id = "prompt";
-  prompt.placeholder = "Describe the issue in detail.";
-  return prompt;
-}
-
-function createSubmitButton(postMessage: PostMessage): HTMLButtonElement {
-  // Create the submit button and attach submit action
-  // Would this system be better as a form?
-  const submitButton = createElement({
-    tagName: "button",
-    classList: ["troubleshooting__button", "troubleshooting__button--submit"],
-  });
-  submitButton.innerText = "Submit";
-  submitButton.onclick = () => {
-    postMessage({ action: "submit", promptValue: getPrompt().value });
-    getInput().classList.add("troubleshooting__input--hidden");
-  };
-  return submitButton;
-}
-
-function getInput(): HTMLElement {
-  return document.getElementById("input");
-}
-
-function getPrompt(): HTMLTextAreaElement {
-  // Return the prompt, if it exists (which it should)
-  return document.getElementById("prompt") as HTMLTextAreaElement;
-}
-
 function getMainSection(): HTMLElement {
   return document.getElementById("main");
 }
@@ -331,6 +288,11 @@ function messageHandler(postMessage: PostMessage) {
 
     const onSubmit = () => {
       const promptValue = textInput.value;
+
+      if (!promptValue) {
+        return;
+      }
+
       postMessage({ action: "resume", promptValue });
       promptWrapper.remove();
       const par = createElement({ tagName: "p" });
@@ -417,7 +379,7 @@ function messageHandler(postMessage: PostMessage) {
       case "reset":
         postMessage({ action: "reset" });
         getMainSection().replaceChildren();
-        getInput().classList.remove("troubleshooting__input--hidden");
+        setTimeout(() => postMessage({ action: "init" }), 100); // delay a moment to make sure messages are received
         break;
       case "feedback":
         handleFeedbackMessage(data);
@@ -448,12 +410,6 @@ function init(postMessage: PostMessage) {
   getBody().append(
     createElement({
       tagName: "section",
-      classList: ["troubleshooting__input"],
-      id: "input",
-      children: [createPrompt(), createSubmitButton(postMessage)],
-    }),
-    createElement({
-      tagName: "section",
       classList: ["troubleshooting__main"],
       id: "main",
     }),
@@ -468,6 +424,8 @@ function init(postMessage: PostMessage) {
     "message",
     withStickyScroll(getMainSection(), messageHandler(postMessage))
   );
+
+  setTimeout(() => postMessage({ action: "init" }), 100); // delay a moment to make sure messages are received
 }
 
 (function () {

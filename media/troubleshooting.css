@@ -18,19 +18,6 @@
   padding: var(--spacing-lg);
 }
 
-.troubleshooting__input {
-  position: relative;
-  flex-shrink: 0;
-  flex-grow: 0;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  padding: var(--spacing-lg);
-}
-
-.troubleshooting__input--hidden {
-  display: none;
-}
-
 .troubleshooting__footer {
   flex-grow: 0;
   padding: var(--spacing-lg);
@@ -42,7 +29,7 @@
   border-radius: var(--spacing-xxs);
   background-color: var(--vscode-editor-background);
   padding: 0.5rem 3rem 0.5rem 0.5rem;
-  min-height: 10rem;
+  min-height: 4rem;
   resize: vertical;
 }
 
