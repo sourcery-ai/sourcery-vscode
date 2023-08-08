@@ -333,9 +333,12 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 }
 
-export function renderMarkdownMessage(message: string) {
+export function renderMarkdownMessage(message?: string) {
   // Send the whole message we've been streamed so far to the webview,
   // after converting from markdown to html
+  if (message === undefined) {
+    return undefined;
+  }
 
   const rendered = marked(message, {
     gfm: true,
