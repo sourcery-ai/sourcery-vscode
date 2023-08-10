@@ -255,11 +255,8 @@ function registerCommands(
         command: "sourcery/chat/clear",
         arguments: [],
       };
-      languageClient
-        .sendRequest(ExecuteCommandRequest.type, request)
-        .then(() => {
-          chatProvider.clearChat();
-        });
+      chatProvider.clearChat();
+      languageClient.sendRequest(ExecuteCommandRequest.type, request);
     })
   );
 
