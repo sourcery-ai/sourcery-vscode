@@ -33,7 +33,7 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { CodingAssistantOptInProvider } from "./opt-in";
-import { ChatProvider, ChatRequest } from "./chat";
+import { ChatProvider, ServerRequest } from "./chat";
 import { RecipeProvider } from "./recipes";
 import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
@@ -488,7 +488,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.chat_request",
-      (message: ChatRequest) => {
+      (message: ServerRequest) => {
         vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
           // Use the editor selection unless a range was passed through in
           // the message
@@ -521,7 +521,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.review_request",
-      (message: ChatRequest) => {
+      (message: ServerRequest) => {
         vscode.commands
           .executeCommand("sourcery.code_review.focus")
           .then(() => {

@@ -1,17 +1,14 @@
 import * as vscode from "vscode";
+import { ColorThemeKind } from "vscode";
 import { randomBytes } from "crypto";
 import {
-  ChatRequest,
   ChatResult,
-  ChatResultRole,
   ChatResultOutcome,
-  renderMarkdownMessage,
-  CancelRequest,
-  OpenLinkRequest,
-  InsertAtCursorInstruction,
+  ChatResultRole,
+  ExtensionRequest,
+  ServerRequest,
 } from "./chat";
-
-import { ColorThemeKind } from "vscode";
+import { renderMarkdownMessage } from "./renderMarkdownMessage";
 
 export type GitBranches = {
   current: string;
@@ -56,23 +53,17 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (
-        request:
-          | ChatRequest
-          | CancelRequest
-          | OpenLinkRequest
-          | InsertAtCursorInstruction
-      ) => {
+      async (request: ServerRequest | ExtensionRequest) => {
         switch (request.type) {
           case "review_request": {
             vscode.commands.executeCommand("sourcery.review_request", request);
             break;
           }
-          case "cancel_request": {
+          case "cancelRequest": {
             vscode.commands.executeCommand("sourcery.review_cancel_request");
             break;
           }
-          case "open_link_request": {
+          case "openLinkRequest": {
             if (request.linkType === "url") {
               vscode.env.openExternal(vscode.Uri.parse(request.link));
             } else {

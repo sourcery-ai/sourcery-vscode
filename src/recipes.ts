@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
-import { ChatRequest } from "./chat";
+import { ServerRequest } from "./chat";
 
 export type Recipe = {
   id: string;
@@ -43,7 +43,7 @@ export class RecipeProvider implements vscode.WebviewViewProvider {
       result: this.recipes,
     });
 
-    webviewView.webview.onDidReceiveMessage(async (request: ChatRequest) => {
+    webviewView.webview.onDidReceiveMessage(async (request: ServerRequest) => {
       switch (request.type) {
         case "recipe_request": {
           vscode.commands.executeCommand("sourcery.chat_request", request);
