@@ -88,7 +88,7 @@ export class CodeReviewProvider implements vscode.WebviewViewProvider {
             }
             break;
           }
-          case "insert_at_cursor": {
+          case "insertAtCursor": {
             const activeEditor = vscode.window.activeTextEditor;
             if (!activeEditor) {
               vscode.window.showErrorMessage("No active text editor!");
