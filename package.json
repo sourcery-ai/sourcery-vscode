@@ -8,7 +8,7 @@
 		"url": "https://github.com/sourcery-ai/public/issues"
 	},
 	"license": "MIT",
-	"version": "1.6.1-dev.1",
+	"version": "1.7.1-dev.1",
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
@@ -461,16 +461,15 @@
 				}
 			}
 		},
-    "keybindings": [
-    {
-        "command": "sourcery.chat.ask",
-        "linux": "ctrl+y",
-        "mac": "cmd+y",
-        "windows": "ctrl+shift+y",
-        "when": "editorTextFocus"
-    }
-]
-
+		"keybindings": [
+			{
+				"command": "sourcery.chat.ask",
+				"linux": "ctrl+y",
+				"mac": "cmd+y",
+				"windows": "ctrl+shift+y",
+				"when": "editorTextFocus"
+			}
+		]
 	},
 	"main": "./out/extension",
 	"scripts": {
