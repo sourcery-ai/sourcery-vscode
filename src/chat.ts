@@ -310,8 +310,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 	<link rel="stylesheet" href="${bridgeSrc}">
 	<link rel="stylesheet" href="${styleSheetSrc}">
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="height: 100vh;">
+    <div id="root" style="height: 100%;"></div>
 	${scriptTag}
   <script nonce=${injectNonce}>
     (function () {

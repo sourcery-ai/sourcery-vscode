@@ -76,14 +76,6 @@
 					"when": "sourcery.features.coding_assistant_troubleshooting"
 				},
 				{
-					"id": "sourcery.recipes",
-					"name": "Recipes",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Recipes",
-					"when": "sourcery.features.coding_assistant"
-				},
-				{
 					"id": "sourcery.code_review",
 					"name": "Code Review",
 					"type": "webview",
