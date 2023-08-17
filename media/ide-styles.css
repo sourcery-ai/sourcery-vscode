@@ -1,10 +1,11 @@
-
 :root {
-    --background: var(--vscode-sideBar-background);  /* main background */
-    --foreground: var(--vscode-foreground);  /* foreground text */
-    --editor: var(--vscode-editor-background);  /* editor background */
-    --chat: var(--vscode-settings-textInputBackground);  /* chat bubble background */
-    --error: var(--vscode-inputValidation-errorBackground);  /* error background */
-    --disabled: var(--vscode-disabledForeground);  /* disabled foreground */
-    --border: var(--vscode-panel-border);  /* border */
+  --background: var(--vscode-sideBar-background); /* main background */
+  --foreground: var(--vscode-foreground); /* foreground text */
+  --editor: var(--vscode-editor-background); /* editor background */
+  --chat: var(
+    --vscode-settings-textInputBackground
+  ); /* chat bubble background */
+  --error: var(--vscode-inputValidation-errorBackground); /* error background */
+  --disabled: var(--vscode-disabledForeground); /* disabled foreground */
+  --border: var(--vscode-panel-border); /* border */
 }
