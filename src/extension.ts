@@ -34,7 +34,6 @@ import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { CodingAssistantOptInProvider } from "./opt-in";
 import { ChatProvider, ServerRequest } from "./chat";
-import { RecipeProvider } from "./recipes";
 import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
@@ -125,7 +124,6 @@ function registerNotifications({
   scanResultTree,
   scanResultTreeView,
   chatProvider,
-  recipeProvider,
   context,
   reviewProvider,
   troubleshootingProvider,
@@ -134,7 +132,6 @@ function registerNotifications({
   scanResultTree: ScanResultProvider;
   scanResultTreeView: TreeView<TreeItem>;
   chatProvider: ChatProvider;
-  recipeProvider: RecipeProvider;
   reviewProvider: CodeReviewProvider;
   context: ExtensionContext;
   troubleshootingProvider: TroubleshootingProvider;
@@ -173,7 +170,7 @@ function registerNotifications({
   });
 
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
-    recipeProvider.addRecipes(params.recipes);
+    chatProvider.addRecipes(params.recipes);
   });
 
   languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
@@ -209,7 +206,6 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider,
   reviewProvider: CodeReviewProvider,
   troubleshootingProvider: TroubleshootingProvider
 ) {
@@ -280,7 +276,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", (arg?) => {
       let contextRange = arg && "start" in arg ? arg : null;
-      askSourceryCommand(recipeProvider.recipes, contextRange);
+      askSourceryCommand(chatProvider.recipes, contextRange);
     })
   );
 
@@ -684,16 +680,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  const recipeProvider = new RecipeProvider(context);
-
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      RecipeProvider.viewType,
-      recipeProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
   const reviewProvider = new CodeReviewProvider(context);
 
   context.subscriptions.push(
@@ -722,7 +708,6 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    recipeProvider,
     reviewProvider,
     troubleshootingProvider
   );
@@ -735,7 +720,6 @@ export function activate(context: ExtensionContext) {
       scanResultTree: tree,
       scanResultTreeView: treeView,
       chatProvider,
-      recipeProvider,
       reviewProvider,
       context,
       troubleshootingProvider,

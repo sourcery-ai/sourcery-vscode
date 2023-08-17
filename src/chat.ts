@@ -19,6 +19,11 @@ export type ChatResult = {
   role: ChatResultRole;
 };
 
+export type Recipe = {
+  id: string;
+  name: string;
+};
+
 // Requests forwarded to the (language) server
 export type ServerRequest = {
   context_range?: any;
@@ -27,14 +32,18 @@ export type ServerRequest = {
       type: "initialiseChat";
     }
   | {
+      type: "clearRequest";
+    }
+  | {
       type: "chatRequest";
       data: {
         kind: "user_message";
         message: string;
       };
     }
+  | { type: "initialiseRecipes" }
   | {
-      type: "recipe_request";
+      type: "recipeRequest";
       data: {
         kind: "recipe_request";
         name: string;
@@ -62,7 +71,7 @@ export type ExtensionRequest =
       link: string;
     }
   | {
-      type: "insert_at_cursor";
+      type: "insertAtCursor";
       content: string;
     };
 
@@ -78,6 +87,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _currentAssistantMessage: string = "";
 
   private _unhandledMessages: ChatResult[] = [];
+
+  public recipes: Recipe[];
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -118,12 +129,24 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             vscode.commands.executeCommand("sourcery.initialise_chat");
             break;
           }
+          case "clearRequest": {
+            vscode.commands.executeCommand("sourcery.chat.clearChat");
+            break;
+          }
           case "cancelRequest": {
             vscode.commands.executeCommand("sourcery.chat_cancel_request");
             break;
           }
-          case "recipe_request": {
+          case "recipeRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
+            break;
+          }
+          case "initialiseRecipes": {
+            console.log("initialising recipes");
+            this._view.webview.postMessage({
+              command: "add_recipes",
+              result: this.recipes,
+            });
             break;
           }
           case "openLinkRequest": {
@@ -151,7 +174,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             }
             break;
           }
-          case "insert_at_cursor": {
+          case "insertAtCursor": {
             const activeEditor = vscode.window.activeTextEditor;
             if (!activeEditor) {
               vscode.window.showErrorMessage("No active text editor!");
@@ -224,6 +247,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         textContent: result.textContent,
       },
     });
+  }
+
+  public addRecipes(result: Recipe[]) {
+    this.recipes = result;
+    this._view.webview.postMessage({ command: "add_recipes", result: result });
   }
 
   public clearChat() {

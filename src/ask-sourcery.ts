@@ -1,13 +1,12 @@
 import * as vscode from "vscode";
-import { Recipe, RecipeProvider } from "./recipes";
-import { ServerRequest } from "./chat";
+import { Recipe, ServerRequest } from "./chat";
 
 export function askSourceryCommand(recipes: Recipe[], contextRange?) {
   showAskSourceryQuickPick(recipes).then((result: any) => {
     let request: ServerRequest;
     if ("id" in result) {
       request = {
-        type: "recipe_request",
+        type: "recipeRequest",
         data: {
           kind: "recipe_request",
           name: result.label,
