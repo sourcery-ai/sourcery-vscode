@@ -309,11 +309,6 @@
 					"group": "navigation"
 				},
 				{
-					"command": "sourcery.chat.clearChat",
-					"when": "view == sourcery.chat",
-					"group": "navigation"
-				},
-				{
 					"command": "sourcery.chat.clearCodeReview",
 					"when": "view == sourcery.code_review",
 					"group": "navigation"
