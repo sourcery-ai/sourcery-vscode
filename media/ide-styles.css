@@ -9,3 +9,7 @@
   --disabled: var(--vscode-disabledForeground); /* disabled foreground */
   --border: var(--vscode-panel-border); /* border */
 }
+
+html {
+  font-size: var(--vscode-font-size);
+}
