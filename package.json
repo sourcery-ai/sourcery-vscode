@@ -241,11 +241,6 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.chat.clearChat",
-				"title": "Clear",
-				"category": "Sourcery"
-			},
-			{
 				"command": "sourcery.chat.clearCodeReview",
 				"title": "Clear",
 				"category": "Sourcery"
