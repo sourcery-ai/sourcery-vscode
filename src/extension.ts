@@ -34,7 +34,6 @@ import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { CodingAssistantOptInProvider } from "./opt-in";
 import { ChatProvider, ServerRequest } from "./chat";
-import { CodeReviewProvider } from "./code-review";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
 
@@ -125,14 +124,12 @@ function registerNotifications({
   scanResultTreeView,
   chatProvider,
   context,
-  reviewProvider,
   troubleshootingProvider,
 }: {
   languageClient: LanguageClient;
   scanResultTree: ScanResultProvider;
   scanResultTreeView: TreeView<TreeItem>;
   chatProvider: ChatProvider;
-  reviewProvider: CodeReviewProvider;
   context: ExtensionContext;
   troubleshootingProvider: TroubleshootingProvider;
 }) {
@@ -155,7 +152,7 @@ function registerNotifications({
   });
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addResult(params.result);
+    chatProvider.addChatResult(params.result);
   });
 
   languageClient.onNotification(
@@ -166,7 +163,7 @@ function registerNotifications({
   );
 
   languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
-    reviewProvider.addResult(params.result);
+    chatProvider.addReviewResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
@@ -174,7 +171,7 @@ function registerNotifications({
   });
 
   languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
-    reviewProvider.populateBranches(params);
+    chatProvider.populateBranches(params);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -206,7 +203,6 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  reviewProvider: CodeReviewProvider,
   troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
@@ -265,7 +261,7 @@ function registerCommands(
       languageClient
         .sendRequest(ExecuteCommandRequest.type, request)
         .then(() => {
-          reviewProvider.clear();
+          chatProvider.clearReview();
         });
     })
   );
@@ -515,19 +511,15 @@ function registerCommands(
     commands.registerCommand(
       "sourcery.review_request",
       (message: ServerRequest) => {
-        vscode.commands
-          .executeCommand("sourcery.code_review.focus")
-          .then(() => {
-            let request: ExecuteCommandParams = {
-              command: "sourcery/chat/reviewRequest",
-              arguments: [
-                {
-                  message: message,
-                },
-              ],
-            };
-            languageClient.sendRequest(ExecuteCommandRequest.type, request);
-          });
+        let request: ExecuteCommandParams = {
+          command: "sourcery/chat/reviewRequest",
+          arguments: [
+            {
+              message: message,
+            },
+          ],
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
       }
     )
   );
@@ -677,16 +669,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  const reviewProvider = new CodeReviewProvider(context);
-
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      CodeReviewProvider.viewType,
-      reviewProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
   const troubleshootingProvider = new TroubleshootingProvider(context);
 
   context.subscriptions.push(
@@ -705,7 +687,6 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    reviewProvider,
     troubleshootingProvider
   );
 
@@ -717,7 +698,6 @@ export function activate(context: ExtensionContext) {
       scanResultTree: tree,
       scanResultTreeView: treeView,
       chatProvider,
-      reviewProvider,
       context,
       troubleshootingProvider,
     });
