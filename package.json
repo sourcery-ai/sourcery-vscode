@@ -76,14 +76,6 @@
 					"when": "sourcery.features.coding_assistant_troubleshooting"
 				},
 				{
-					"id": "sourcery.code_review",
-					"name": "Code Review",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Code Review",
-					"when": "sourcery.features.code_review"
-				},
-				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",
@@ -241,11 +233,6 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.chat.clearChat",
-				"title": "Clear",
-				"category": "Sourcery"
-			},
-			{
 				"command": "sourcery.chat.clearCodeReview",
 				"title": "Clear",
 				"category": "Sourcery"
@@ -306,11 +293,6 @@
 				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
-					"group": "navigation"
-				},
-				{
-					"command": "sourcery.chat.clearCodeReview",
-					"when": "view == sourcery.code_review",
 					"group": "navigation"
 				},
 				{

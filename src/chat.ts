@@ -24,26 +24,34 @@ export type Recipe = {
   name: string;
 };
 
+export type GitBranches = {
+  current: string;
+  main: string;
+};
+
 // Requests forwarded to the (language) server
 export type ServerRequest = {
   context_range?: any;
 } & (
   | {
-      type: "initialiseChat";
+      type: "chat/initialiseRequest";
     }
   | {
-      type: "clearRequest";
+      type: "chat/clearRequest";
     }
   | {
-      type: "chatRequest";
+      type: "chat/messageRequest";
       data: {
         kind: "user_message";
         message: string;
       };
     }
-  | { type: "initialiseRecipes" }
   | {
-      type: "recipeRequest";
+      type: "chat/cancelRequest";
+    }
+  | { type: "recipes/initialiseRequest" }
+  | {
+      type: "recipes/recipeRequest";
       data: {
         kind: "recipe_request";
         name: string;
@@ -51,7 +59,7 @@ export type ServerRequest = {
       };
     }
   | {
-      type: "review_request";
+      type: "review/reviewRequest";
       data: {
         kind: "review_request";
         main: string;
@@ -59,8 +67,12 @@ export type ServerRequest = {
       };
     }
   | {
-      type: "cancelRequest";
+      type: "review/initialiseRequest";
     }
+  | {
+      type: "review/clearRequest";
+    }
+  | { type: "review/cancelRequest" }
 );
 
 // Requests handled by the extension
@@ -84,11 +96,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private _extensionUri: vscode.Uri;
 
-  private _currentAssistantMessage: string = "";
-
   private _unhandledMessages: ChatResult[] = [];
 
   public recipes: Recipe[];
+
+  private branches: GitBranches;
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -113,40 +125,59 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     webviewView.onDidChangeVisibility(() => {
       if (this._view.visible) {
-        this._view.webview.postMessage({ command: "focus" });
+        this._view.webview.postMessage({ command: "chat/focus" });
       }
     });
 
     webviewView.webview.onDidReceiveMessage(
       async (request: ServerRequest | ExtensionRequest) => {
-        console.log(request);
         switch (request.type) {
-          case "chatRequest": {
+          case "chat/messageRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
           }
-          case "initialiseChat": {
+          case "chat/initialiseRequest": {
             vscode.commands.executeCommand("sourcery.initialise_chat");
             break;
           }
-          case "clearRequest": {
+          case "chat/clearRequest": {
             vscode.commands.executeCommand("sourcery.chat.clearChat");
             break;
           }
-          case "cancelRequest": {
+          case "chat/cancelRequest": {
             vscode.commands.executeCommand("sourcery.chat_cancel_request");
             break;
           }
-          case "recipeRequest": {
+          case "recipes/recipeRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
           }
-          case "initialiseRecipes": {
+          case "recipes/initialiseRequest": {
             console.log("initialising recipes");
             this._view.webview.postMessage({
-              command: "add_recipes",
+              command: "recipes/addRecipes",
               result: this.recipes,
             });
+            break;
+          }
+          case "review/initialiseRequest": {
+            console.log("initialising review");
+            this._view.webview.postMessage({
+              command: "review/addBranches",
+              result: this.branches,
+            });
+            break;
+          }
+          case "review/reviewRequest": {
+            vscode.commands.executeCommand("sourcery.review_request", request);
+            break;
+          }
+          case "review/cancelRequest": {
+            vscode.commands.executeCommand("sourcery.review_cancel_request");
+            break;
+          }
+          case "review/clearRequest": {
+            vscode.commands.executeCommand("sourcery.chat.clearCodeReview");
             break;
           }
           case "openLinkRequest": {
@@ -199,64 +230,64 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     while (this._unhandledMessages.length > 0) {
       const message = this._unhandledMessages.shift();
-      this.addResult(message);
+      this.addChatResult(message);
     }
   }
 
-  public addResult(result: ChatResult) {
+  public addChatResult(result: ChatResult) {
     if (this._view) {
       if (result.role === ChatResultRole.User) {
-        this.addUserResult(result);
+        this._view.webview.postMessage({
+          command: "chat/addResult",
+          result,
+        });
       } else {
-        this.addAssistantResult(result);
+        if (result.outcome === ChatResultOutcome.Finished) {
+          this._view.webview.postMessage({ command: "chat/assistantFinished" });
+        }
+
+        this._view.webview.postMessage({
+          command: "chat/addResult",
+          result,
+        });
       }
     } else {
       this._unhandledMessages.push(result);
     }
   }
 
-  private addUserResult(result: ChatResult) {
-    this._view.webview.postMessage({
-      command: "addResult",
-      result: {
-        role: result.role,
-        outcome: result.outcome,
-        textContent: result.textContent,
-      },
-    });
-  }
-
-  private addAssistantResult(result: ChatResult) {
-    if (result.outcome === ChatResultOutcome.Finished) {
-      this._currentAssistantMessage = "";
-      this._view.webview.postMessage({ command: "assistantFinished" });
-      return;
+  public addReviewResult(result: ChatResult) {
+    switch (result.outcome) {
+      case ChatResultOutcome.Finished:
+        this._view.webview.postMessage({ command: "review/assistantFinished" });
+        break;
+      default:
+        this._view.webview.postMessage({
+          command: "review/addResult",
+          result: result,
+        });
     }
-
-    if (result.outcome === ChatResultOutcome.Success) {
-      this._currentAssistantMessage += result.textContent;
-    } else {
-      this._currentAssistantMessage = result.textContent;
-    }
-
-    this._view.webview.postMessage({
-      command: "addResult",
-      result: {
-        role: result.role,
-        outcome: result.outcome,
-        textContent: result.textContent,
-      },
-    });
   }
 
   public addRecipes(result: Recipe[]) {
     this.recipes = result;
-    this._view.webview.postMessage({ command: "add_recipes", result: result });
+    this._view.webview.postMessage({
+      command: "recipes/addRecipes",
+      result: result,
+    });
+  }
+
+  public populateBranches(branches: GitBranches) {
+    console.log("branches populated: ", branches);
+    this.branches = branches;
   }
 
   public clearChat() {
-    this._view.webview.postMessage({ command: "clearChat" });
-    this._currentAssistantMessage = "";
+    this._view.webview.postMessage({ command: "chat/clear" });
+  }
+
+  public clearReview() {
+    this._view.webview.postMessage({ command: "review/clear" });
   }
 
   private async _getHtmlForWebview(webview: vscode.Webview) {
