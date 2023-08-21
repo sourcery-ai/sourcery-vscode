@@ -29,21 +29,24 @@ export type ServerRequest = {
   context_range?: any;
 } & (
   | {
-      type: "initialiseChat";
+      type: "chat/initialiseRequest";
     }
   | {
-      type: "clearRequest";
+      type: "chat/clearRequest";
     }
   | {
-      type: "chatRequest";
+      type: "chat/messageRequest";
       data: {
         kind: "user_message";
         message: string;
       };
     }
-  | { type: "initialiseRecipes" }
   | {
-      type: "recipeRequest";
+      type: "chat/cancelRequest";
+    }
+  | { type: "recipes/initialiseRequest" }
+  | {
+      type: "recipes/recipeRequest";
       data: {
         kind: "recipe_request";
         name: string;
@@ -51,7 +54,7 @@ export type ServerRequest = {
       };
     }
   | {
-      type: "review_request";
+      type: "review/reviewRequest";
       data: {
         kind: "review_request";
         main: string;
@@ -59,8 +62,9 @@ export type ServerRequest = {
       };
     }
   | {
-      type: "cancelRequest";
+      type: "review/initialiseRequest";
     }
+  | { type: "review/cancelRequest" }
 );
 
 // Requests handled by the extension
@@ -119,29 +123,28 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(
       async (request: ServerRequest | ExtensionRequest) => {
-        console.log(request);
         switch (request.type) {
-          case "chatRequest": {
+          case "chat/messageRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
           }
-          case "initialiseChat": {
+          case "chat/initialiseRequest": {
             vscode.commands.executeCommand("sourcery.initialise_chat");
             break;
           }
-          case "clearRequest": {
+          case "chat/clearRequest": {
             vscode.commands.executeCommand("sourcery.chat.clearChat");
             break;
           }
-          case "cancelRequest": {
+          case "chat/cancelRequest": {
             vscode.commands.executeCommand("sourcery.chat_cancel_request");
             break;
           }
-          case "recipeRequest": {
+          case "recipes/recipeRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
           }
-          case "initialiseRecipes": {
+          case "recipes/initialiseRequest": {
             console.log("initialising recipes");
             this._view.webview.postMessage({
               command: "add_recipes",
@@ -251,7 +254,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   public addRecipes(result: Recipe[]) {
     this.recipes = result;
-    this._view.webview.postMessage({ command: "add_recipes", result: result });
+    this._view.webview.postMessage({
+      command: "recipes/addRecipes",
+      result: result,
+    });
   }
 
   public clearChat() {
