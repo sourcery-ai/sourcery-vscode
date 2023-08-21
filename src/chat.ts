@@ -113,7 +113,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     webviewView.onDidChangeVisibility(() => {
       if (this._view.visible) {
-        this._view.webview.postMessage({ command: "focus" });
+        this._view.webview.postMessage({ command: "chat/focus" });
       }
     });
 
@@ -217,7 +217,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private addUserResult(result: ChatResult) {
     this._view.webview.postMessage({
-      command: "addResult",
+      command: "chat/addResult",
       result: {
         role: result.role,
         outcome: result.outcome,
@@ -229,7 +229,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private addAssistantResult(result: ChatResult) {
     if (result.outcome === ChatResultOutcome.Finished) {
       this._currentAssistantMessage = "";
-      this._view.webview.postMessage({ command: "assistantFinished" });
+      this._view.webview.postMessage({ command: "chat/assistantFinished" });
       return;
     }
 
@@ -240,7 +240,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     }
 
     this._view.webview.postMessage({
-      command: "addResult",
+      command: "chat/addResult",
       result: {
         role: result.role,
         outcome: result.outcome,
@@ -255,7 +255,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public clearChat() {
-    this._view.webview.postMessage({ command: "clearChat" });
+    this._view.webview.postMessage({ command: "chat/clear" });
     this._currentAssistantMessage = "";
   }
 
