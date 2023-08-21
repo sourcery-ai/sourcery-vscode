@@ -501,7 +501,7 @@
 		"@types/vscode": "^1.76.0",
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
-		"@vscode/vsce": "^2.18.0",
+		"@vscode/vsce": "^2.19.0",
 		"esbuild": "^0.18.10",
 		"eslint": "^8.36.0",
 		"mocha": "^10.2.0",
