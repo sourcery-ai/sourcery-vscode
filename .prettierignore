@@ -4,3 +4,6 @@
 # Except src and media:
 !/src
 !/media
+
+# But do ignore resource webview assets
+/src/resources/webview/assets/*
