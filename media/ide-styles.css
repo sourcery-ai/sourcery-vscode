@@ -8,6 +8,8 @@
   --error: var(--vscode-inputValidation-errorBackground); /* error background */
   --disabled: var(--vscode-disabledForeground); /* disabled foreground */
   --border: var(--vscode-panel-border); /* border */
+  --primary: var(--vscode-button-background);
+  --highlight: orange;
 }
 
 html {
