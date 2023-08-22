@@ -347,13 +347,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     return `<!doctype html>
 <html lang="en">
   <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:; script-src 'nonce-${appScriptNonce}' 'nonce-${apiInjectionNonce}';">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:; script-src 'nonce-${appScriptNonce}' 'nonce-${apiInjectionNonce}';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
-	<base href="${baseSrc}" />
-	<link rel="stylesheet" href="${ideStylesSrc}">
-	<link rel="stylesheet" href="${appStylesSrc}">
+    <base href="${baseSrc}" />
+    <link rel="stylesheet" href="${ideStylesSrc}">
+    <link rel="stylesheet" href="${appStylesSrc}">
   </head>
   <body style="height: 100vh;">
     <div id="root" style="height: 100%;"></div>
