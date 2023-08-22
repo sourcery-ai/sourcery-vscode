@@ -290,8 +290,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     this._view.webview.postMessage({ command: "review/clear" });
   }
 
+  // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
   private async _getHtmlForWebview(webview: vscode.Webview) {
-    // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+    // The baseSrc is just a URI declaring the root of the web app.
+    // This is relevant for the interaction between the script and the stylesheet.
+    // It is used in the `<base>` tag below - see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
     const baseSrc = webview.asWebviewUri(
       vscode.Uri.joinPath(
         this._extensionUri,
@@ -301,7 +304,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "index.html"
       )
     );
-    const scriptSrc = webview.asWebviewUri(
+
+    // This is the URI to the main application script.
+    // We bundle this as a single javascript file and inject it directly into the HTML below, alongside the random nonce.
+    // Note that we also include a hard-coded script to attach the VSCode API directly to the window.
+    const appScriptSrc = webview.asWebviewUri(
       vscode.Uri.joinPath(
         this._extensionUri,
         "src",
@@ -311,15 +318,12 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "index.js"
       )
     );
-    const scriptNonce = getNonce();
-    const scriptTag = `<script type="module" nonce="${scriptNonce}" src="${scriptSrc}"></script>`;
-    const injectNonce = getNonce();
 
-    const bridgeSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css")
-    );
-
-    const styleSheetSrc = webview.asWebviewUri(
+    // This is the URI to the main application CSS file.
+    // These are styles and themes handled by the web app itself.
+    // We need to provide some additional CSS, using the `ide-styles.css` file below.
+    // This is to ensure the web app's style matches that of the IDE.
+    const appStylesSrc = webview.asWebviewUri(
       vscode.Uri.joinPath(
         this._extensionUri,
         "src",
@@ -329,22 +333,32 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "index.css"
       )
     );
+
+    // This is the URI to the IDE styles.
+    // This should be bundled as part of the extension (rather than the web app) and defines several colours to get the web app to match the IDE style.
+    const ideStylesSrc = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css")
+    );
+
+    const appScriptNonce = getNonce();
+    const apiInjectionNonce = getNonce();
+
     // language=html
     return `<!doctype html>
 <html lang="en">
   <head>
 	<meta charset="UTF-8">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:; script-src 'nonce-${scriptNonce}' 'nonce-${injectNonce}';">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:; script-src 'nonce-${appScriptNonce}' 'nonce-${apiInjectionNonce}';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React + TS</title>
 	<base href="${baseSrc}" />
-	<link rel="stylesheet" href="${bridgeSrc}">
-	<link rel="stylesheet" href="${styleSheetSrc}">
+	<link rel="stylesheet" href="${ideStylesSrc}">
+	<link rel="stylesheet" href="${appStylesSrc}">
   </head>
   <body style="height: 100vh;">
     <div id="root" style="height: 100%;"></div>
-	${scriptTag}
-  <script nonce=${injectNonce}>
+	<script type="module" nonce="${appScriptNonce}" src="${appScriptSrc}"></script>
+  <script nonce=${apiInjectionNonce}>
     (function () {
       const vscode = acquireVsCodeApi();
       window.sourceryLS = {
