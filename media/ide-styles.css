@@ -94,7 +94,6 @@ body.vscode-light .hljs-deletion {
   background-color: #ffeef0;
 }
 
-
 body.vscode-dark .hljs {
   color: #c9d1d9;
   background: #0d1117;
@@ -172,4 +171,3 @@ body.vscode-dark .hljs-deletion {
   color: #ffdcd7;
   background-color: #67060c;
 }
-
