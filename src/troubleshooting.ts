@@ -1,5 +1,6 @@
 "use strict";
 
+import * as vscode from "vscode";
 import {
   CancellationToken,
   ColorThemeKind,
@@ -12,8 +13,7 @@ import {
   window,
 } from "vscode";
 import { randomBytes } from "crypto";
-import { renderMarkdownMessage } from "./chat";
-import * as vscode from "vscode";
+import { renderMarkdownMessage } from "./renderMarkdownMessage";
 
 type TroubleshootingResult = {
   type: "error" | "assistance" | "feedback" | "user" | string;

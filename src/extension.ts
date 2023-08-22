@@ -33,9 +33,7 @@ import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { CodingAssistantOptInProvider } from "./opt-in";
-import { ChatProvider, ChatRequest } from "./chat";
-import { RecipeProvider } from "./recipes";
-import { CodeReviewProvider } from "./code-review";
+import { ChatProvider, ServerRequest } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
 
@@ -125,17 +123,13 @@ function registerNotifications({
   scanResultTree,
   scanResultTreeView,
   chatProvider,
-  recipeProvider,
   context,
-  reviewProvider,
   troubleshootingProvider,
 }: {
   languageClient: LanguageClient;
   scanResultTree: ScanResultProvider;
   scanResultTreeView: TreeView<TreeItem>;
   chatProvider: ChatProvider;
-  recipeProvider: RecipeProvider;
-  reviewProvider: CodeReviewProvider;
   context: ExtensionContext;
   troubleshootingProvider: TroubleshootingProvider;
 }) {
@@ -158,7 +152,7 @@ function registerNotifications({
   });
 
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addResult(params.result);
+    chatProvider.addChatResult(params.result);
   });
 
   languageClient.onNotification(
@@ -169,15 +163,15 @@ function registerNotifications({
   );
 
   languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
-    reviewProvider.addResult(params.result);
+    chatProvider.addReviewResult(params.result);
   });
 
   languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
-    recipeProvider.addRecipes(params.recipes);
+    chatProvider.addRecipes(params.recipes);
   });
 
   languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
-    reviewProvider.populateBranches(params);
+    chatProvider.populateBranches(params);
   });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
@@ -209,8 +203,6 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  recipeProvider: RecipeProvider,
-  reviewProvider: CodeReviewProvider,
   troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
@@ -269,7 +261,7 @@ function registerCommands(
       languageClient
         .sendRequest(ExecuteCommandRequest.type, request)
         .then(() => {
-          reviewProvider.clear();
+          chatProvider.clearReview();
         });
     })
   );
@@ -277,7 +269,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", (arg?) => {
       let contextRange = arg && "start" in arg ? arg : null;
-      askSourceryCommand(recipeProvider.recipes, contextRange);
+      askSourceryCommand(chatProvider.recipes, contextRange);
     })
   );
 
@@ -485,7 +477,7 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.chat_request",
-      (message: ChatRequest) => {
+      (message: ServerRequest) => {
         vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
           // Use the editor selection unless a range was passed through in
           // the message
@@ -518,20 +510,16 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.review_request",
-      (message: ChatRequest) => {
-        vscode.commands
-          .executeCommand("sourcery.code_review.focus")
-          .then(() => {
-            let request: ExecuteCommandParams = {
-              command: "sourcery/chat/reviewRequest",
-              arguments: [
-                {
-                  message: message,
-                },
-              ],
-            };
-            languageClient.sendRequest(ExecuteCommandRequest.type, request);
-          });
+      (message: ServerRequest) => {
+        let request: ExecuteCommandParams = {
+          command: "sourcery/chat/reviewRequest",
+          arguments: [
+            {
+              message: message,
+            },
+          ],
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
       }
     )
   );
@@ -681,26 +669,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  const recipeProvider = new RecipeProvider(context);
-
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      RecipeProvider.viewType,
-      recipeProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
-  const reviewProvider = new CodeReviewProvider(context);
-
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      CodeReviewProvider.viewType,
-      reviewProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
   const troubleshootingProvider = new TroubleshootingProvider(context);
 
   context.subscriptions.push(
@@ -719,8 +687,6 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    recipeProvider,
-    reviewProvider,
     troubleshootingProvider
   );
 
@@ -732,8 +698,6 @@ export function activate(context: ExtensionContext) {
       scanResultTree: tree,
       scanResultTreeView: treeView,
       chatProvider,
-      recipeProvider,
-      reviewProvider,
       context,
       troubleshootingProvider,
     });

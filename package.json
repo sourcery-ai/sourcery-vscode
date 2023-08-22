@@ -76,22 +76,6 @@
 					"when": "sourcery.features.coding_assistant_troubleshooting"
 				},
 				{
-					"id": "sourcery.recipes",
-					"name": "Recipes",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Recipes",
-					"when": "sourcery.features.coding_assistant"
-				},
-				{
-					"id": "sourcery.code_review",
-					"name": "Code Review",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Code Review",
-					"when": "sourcery.features.code_review"
-				},
-				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",
@@ -249,11 +233,6 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.chat.clearChat",
-				"title": "Clear",
-				"category": "Sourcery"
-			},
-			{
 				"command": "sourcery.chat.clearCodeReview",
 				"title": "Clear",
 				"category": "Sourcery"
@@ -314,16 +293,6 @@
 				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
-					"group": "navigation"
-				},
-				{
-					"command": "sourcery.chat.clearChat",
-					"when": "view == sourcery.chat",
-					"group": "navigation"
-				},
-				{
-					"command": "sourcery.chat.clearCodeReview",
-					"when": "view == sourcery.code_review",
 					"group": "navigation"
 				},
 				{
@@ -398,10 +367,6 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
-					"when": "false"
-				},
-				{
-					"command": "sourcery.chat.clearChat",
 					"when": "false"
 				},
 				{
@@ -485,7 +450,7 @@
 		"compile": "tsc -watch -p ./",
 		"compile-webviews": "tsc -watch ./src/webview/*.ts",
 		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
-		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode",
+		"vscode_local": "SOURCERY_EXECUTABLE=/home/ben/Documents/dev/sourcery-ai/core/run-sourcery.sh yarn run vscode",
 		"format": "prettier --write .",
 		"lint:format": "prettier --check .",
 		"vscode:prepublish": "npm run esbuild-base -- --minify",
