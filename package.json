@@ -370,10 +370,6 @@
 					"when": "false"
 				},
 				{
-					"command": "sourcery.chat.clearChat",
-					"when": "false"
-				},
-				{
 					"command": "sourcery.chat.clearCodeReview",
 					"when": "false"
 				},
