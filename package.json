@@ -52,20 +52,11 @@
 		"views": {
 			"sourcery-explorer": [
 				{
-					"id": "sourcery.coding_assistant_opt_in",
-					"name": "Coding Assistant",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Coding Assistant",
-					"when": "sourcery.coding_assistant.needs-opt-in"
-				},
-				{
 					"id": "sourcery.chat",
 					"name": "Coding Assistant",
 					"type": "webview",
 					"icon": "sourcery-icon.png",
-					"contextualTitle": "Coding Assistant",
-					"when": "sourcery.features.coding_assistant"
+					"contextualTitle": "Coding Assistant"
 				},
 				{
 					"id": "sourcery.troubleshooting",
