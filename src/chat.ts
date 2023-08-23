@@ -34,6 +34,9 @@ export type ServerRequest = {
   context_range?: any;
 } & (
   | {
+      type: "app/contextRequest";
+    }
+  | {
       type: "chat/initialiseRequest";
     }
   | {
