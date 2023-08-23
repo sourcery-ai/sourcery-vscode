@@ -162,7 +162,7 @@ function registerNotifications({
     "sourcery/vscode/troubleshootResults",
     (params) => {
       troubleshootingProvider.handleResult(params.result);
-    },
+    }
   );
 
   languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
@@ -185,7 +185,7 @@ function registerNotifications({
     commands.executeCommand(
       "setContext",
       "acceptRecommendationContextKey",
-      true,
+      true
     );
   });
 
@@ -206,14 +206,14 @@ function registerCommands(
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
   chatProvider: ChatProvider,
-  troubleshootingProvider: TroubleshootingProvider,
+  troubleshootingProvider: TroubleshootingProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       RuleInputProvider.viewType,
       riProvider,
-      { webviewOptions: { retainContextWhenHidden: true } },
-    ),
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
   );
 
   context.subscriptions.push(
@@ -224,14 +224,14 @@ function registerCommands(
           e.revealRange(new Range(start, end), TextEditorRevealType.InCenter);
         });
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.scan.toggleAdvanced", () => {
       // Tell the rules webview to toggle
       riProvider.toggle();
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -243,8 +243,8 @@ function registerCommands(
           arguments: [],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      },
-    ),
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -254,7 +254,7 @@ function registerCommands(
         arguments: [],
       };
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -265,7 +265,7 @@ function registerCommands(
       };
       chatProvider.clearChat();
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -279,14 +279,14 @@ function registerCommands(
         .then(() => {
           chatProvider.clearReview();
         });
-    }),
+    })
   );
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.ask", (arg?) => {
       let contextRange = arg && "start" in arg ? arg : null;
       askSourceryCommand(chatProvider.recipes, contextRange);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -294,7 +294,7 @@ function registerCommands(
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
       config.update("sourcery.codeLens", !currentValue);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -303,13 +303,13 @@ function registerCommands(
         command: "sourcery/troubleshoot",
         arguments: [message],
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.troubleshoot.reset", () => {
       troubleshootingProvider.handleReset();
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -324,25 +324,25 @@ function registerCommands(
         .then((selected) => {
           riProvider.setLanguage(selected);
         });
-    }),
+    })
   );
 
   // Enable/disable effects
   context.subscriptions.push(
     commands.registerCommand("sourcery.effects.enable", () =>
-      effects_set_enabled(true),
-    ),
+      effects_set_enabled(true)
+    )
   );
   context.subscriptions.push(
     commands.registerCommand("sourcery.effects.disable", () =>
-      effects_set_enabled(false),
-    ),
+      effects_set_enabled(false)
+    )
   );
   function effects_set_enabled(enabled: boolean) {
     vscode.commands.executeCommand(
       "setContext",
       "sourcery.effects.enabled",
-      enabled,
+      enabled
     );
     let request: ExecuteCommandParams = {
       command: "sourcery.effects.set_enabled",
@@ -357,7 +357,7 @@ function registerCommands(
         window.showTextDocument(doc).then((e) => {
           e.revealRange(
             new Range(entry.startPosition, entry.endPosition),
-            TextEditorRevealType.InCenter,
+            TextEditorRevealType.InCenter
           );
           for (let edit of entry.edits) {
             const workspaceEdit = new vscode.WorkspaceEdit();
@@ -367,9 +367,9 @@ function registerCommands(
                 edit.range.start.line,
                 edit.range.start.character,
                 edit.range.end.line,
-                edit.range.end.character,
+                edit.range.end.character
               ),
-              edit.newText,
+              edit.newText
             );
 
             // Apply the edit to the current workspace
@@ -379,13 +379,13 @@ function registerCommands(
           }
         });
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
     commands.registerCommand("sourcery.welcome.open", () => {
       openWelcomeFile(context);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -396,7 +396,7 @@ function registerCommands(
         const input = getSelectedText();
         riProvider.setPattern(input);
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -405,9 +405,9 @@ function registerCommands(
       commands.executeCommand(
         "workbench.action.openWalkthrough",
         "sourcery.sourcery#sourcery.walkthrough",
-        true,
+        true
       );
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -421,7 +421,7 @@ function registerCommands(
         .then((values) => {
           openDocument(path.join(workspace.rootPath, ".sourcery.yaml"));
         });
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -458,8 +458,8 @@ function registerCommands(
                 });
             }
           });
-      },
-    ),
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -476,8 +476,8 @@ function registerCommands(
           ],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      },
-    ),
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -487,7 +487,7 @@ function registerCommands(
         arguments: [],
       };
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -519,8 +519,8 @@ function registerCommands(
           };
           languageClient.sendRequest(ExecuteCommandRequest.type, request);
         });
-      },
-    ),
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -536,8 +536,8 @@ function registerCommands(
           ],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      },
-    ),
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -546,7 +546,7 @@ function registerCommands(
         command: "sourcery/chat/cancel",
         arguments: [],
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -555,7 +555,7 @@ function registerCommands(
         command: "sourcery/chat/cancelReview",
         arguments: [],
       });
-    }),
+    })
   );
 
   context.subscriptions.push(
@@ -573,8 +573,8 @@ function registerCommands(
         } else {
           runScan(rule, advanced, fix, language);
         }
-      },
-    ),
+      }
+    )
   );
 
   function runScan(rule, advanced: boolean, fix: boolean, language: string) {
@@ -609,8 +609,8 @@ function registerCommands(
           ],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      },
-    ),
+      }
+    )
   );
 
   // Create the "open hub" command
@@ -638,7 +638,7 @@ function registerCommands(
           ViewColumn.Active,
           {
             enableScripts: true,
-          },
+          }
         );
 
         hubWebviewPanel.webview.html = getHubSrc();
@@ -647,10 +647,10 @@ function registerCommands(
             hubWebviewPanel = undefined;
           },
           null,
-          context.subscriptions,
+          context.subscriptions
         );
       }
-    }),
+    })
   );
 }
 
@@ -672,8 +672,8 @@ export function activate(context: ExtensionContext) {
     vscode.window.registerWebviewViewProvider(
       ChatProvider.viewType,
       chatProvider,
-      { webviewOptions: { retainContextWhenHidden: true } },
-    ),
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
   );
 
   const troubleshootingProvider = new TroubleshootingProvider(context);
@@ -682,8 +682,8 @@ export function activate(context: ExtensionContext) {
     vscode.window.registerWebviewViewProvider(
       TroubleshootingProvider.viewType,
       troubleshootingProvider,
-      { webviewOptions: { retainContextWhenHidden: true } },
-    ),
+      { webviewOptions: { retainContextWhenHidden: true } }
+    )
   );
 
   registerCommands(
@@ -694,7 +694,7 @@ export function activate(context: ExtensionContext) {
     treeView,
     hubWebviewPanel,
     chatProvider,
-    troubleshootingProvider,
+    troubleshootingProvider
   );
 
   showSourceryStatusBarItem(context);
