@@ -32,7 +32,6 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
-import { CodingAssistantOptInProvider } from "./opt-in";
 import { ChatProvider, ServerRequest } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
@@ -666,15 +665,6 @@ export function activate(context: ExtensionContext) {
   });
 
   const riProvider = new RuleInputProvider(context);
-
-  const codingAssistantOptInProvider = new CodingAssistantOptInProvider();
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      CodingAssistantOptInProvider.viewType,
-      codingAssistantOptInProvider,
-      { webviewOptions: { retainContextWhenHidden: true } },
-    ),
-  );
 
   const chatProvider = new ChatProvider(context);
 
