@@ -32,7 +32,6 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
-import { CodingAssistantOptInProvider } from "./opt-in";
 import { ChatProvider, ServerRequest } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
@@ -151,6 +150,10 @@ function registerNotifications({
       "Results - " + params.results + " found in " + params.files + " files.";
   });
 
+  languageClient.onNotification("sourcery/vscode/updateContext", (params) => {
+    chatProvider.updateContext(params.result);
+  });
+
   languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
     chatProvider.addChatResult(params.result);
   });
@@ -229,6 +232,19 @@ function registerCommands(
       // Tell the rules webview to toggle
       riProvider.toggle();
     })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand(
+      "sourcery.coding_assistant.context_request",
+      () => {
+        let request: ExecuteCommandParams = {
+          command: "sourcery.coding_assistant.context_request",
+          arguments: [],
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+      }
+    )
   );
 
   context.subscriptions.push(
@@ -649,15 +665,6 @@ export function activate(context: ExtensionContext) {
   });
 
   const riProvider = new RuleInputProvider(context);
-
-  const codingAssistantOptInProvider = new CodingAssistantOptInProvider();
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      CodingAssistantOptInProvider.viewType,
-      codingAssistantOptInProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
 
   const chatProvider = new ChatProvider(context);
 

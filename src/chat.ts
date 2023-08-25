@@ -34,6 +34,10 @@ export type ServerRequest = {
   context_range?: any;
 } & (
   | {
+      type: "context/contextRequest";
+    }
+  | { type: "optIn/enableRequest" }
+  | {
       type: "chat/initialiseRequest";
     }
   | {
@@ -98,9 +102,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private _unhandledMessages: ChatResult[] = [];
 
-  public recipes: Recipe[];
+  public recipes: Recipe[] = [];
 
-  private branches: GitBranches;
+  private branches: GitBranches = { current: "main", main: "main" };
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -132,6 +136,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(
       async (request: ServerRequest | ExtensionRequest) => {
         switch (request.type) {
+          case "context/contextRequest": {
+            vscode.commands.executeCommand(
+              "sourcery.coding_assistant.context_request"
+            );
+            break;
+          }
+          case "optIn/enableRequest": {
+            vscode.commands.executeCommand("sourcery.coding_assistant.opt_in");
+            break;
+          }
           case "chat/messageRequest": {
             vscode.commands.executeCommand("sourcery.chat_request", request);
             break;
@@ -231,6 +245,15 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     while (this._unhandledMessages.length > 0) {
       const message = this._unhandledMessages.shift();
       this.addChatResult(message);
+    }
+  }
+
+  public updateContext(result: object) {
+    if (this._view) {
+      this._view.webview.postMessage({
+        command: "context/update",
+        updates: result,
+      });
     }
   }
 
