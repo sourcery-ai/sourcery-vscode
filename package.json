@@ -224,11 +224,6 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.chat.clearCodeReview",
-				"title": "Clear",
-				"category": "Sourcery"
-			},
-			{
 				"command": "sourcery.troubleshoot.reset",
 				"title": "Reset",
 				"category": "Sourcery"
@@ -358,10 +353,6 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
-					"when": "false"
-				},
-				{
-					"command": "sourcery.chat.clearCodeReview",
 					"when": "false"
 				},
 				{

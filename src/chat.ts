@@ -140,33 +140,55 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       async (request: ServerRequest | ExtensionRequest) => {
         switch (request.type) {
           case "context/contextRequest": {
-            vscode.commands.executeCommand(
-              "sourcery.coding_assistant.context_request"
-            );
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "app",
+              request: "context",
+            });
             break;
           }
           case "optIn/enableRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant.opt_in");
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "app",
+              request: "optIn",
+            });
             break;
           }
           case "chat/messageRequest": {
-            vscode.commands.executeCommand("sourcery.chat_request", request);
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "chat",
+              request: "sendMessage",
+              message: request,
+            });
             break;
           }
           case "chat/initialiseRequest": {
-            vscode.commands.executeCommand("sourcery.initialise_chat");
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "chat",
+              request: "initialise",
+            });
             break;
           }
           case "chat/clearRequest": {
-            vscode.commands.executeCommand("sourcery.chat.clearChat");
+            this.clearChat();
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "chat",
+              request: "clear",
+            });
             break;
           }
           case "chat/cancelRequest": {
-            vscode.commands.executeCommand("sourcery.chat_cancel_request");
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "chat",
+              request: "cancel",
+            });
             break;
           }
           case "recipes/recipeRequest": {
-            vscode.commands.executeCommand("sourcery.chat_request", request);
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "chat",
+              request: "sendMessage",
+              message: request,
+            });
             break;
           }
           case "recipes/initialiseRequest": {
@@ -186,15 +208,26 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             break;
           }
           case "review/reviewRequest": {
-            vscode.commands.executeCommand("sourcery.review_request", request);
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "review",
+              request: "sendMessage",
+              message: request,
+            });
             break;
           }
           case "review/cancelRequest": {
-            vscode.commands.executeCommand("sourcery.review_cancel_request");
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "review",
+              request: "cancel",
+            });
             break;
           }
           case "review/clearRequest": {
-            vscode.commands.executeCommand("sourcery.chat.clearCodeReview");
+            this.clearReview();
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              view: "review",
+              request: "clear",
+            });
             break;
           }
           case "openLinkRequest": {
