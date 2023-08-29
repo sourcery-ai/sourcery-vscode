@@ -239,8 +239,8 @@ function registerCommands(
       "sourcery.coding_assistant.context_request",
       () => {
         let request: ExecuteCommandParams = {
-          command: "sourcery.coding_assistant.context_request",
-          arguments: [],
+          command: "sourcery.coding_assistant",
+          arguments: [{ view: "app", request: "context" }],
         };
         languageClient.sendRequest(ExecuteCommandRequest.type, request);
       }
@@ -250,8 +250,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.coding_assistant.opt_in", () => {
       let request: ExecuteCommandParams = {
-        command: "sourcery.coding_assistant.opt_in",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "app", request: "optIn" }],
       };
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
     })
@@ -260,8 +260,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.clearChat", () => {
       let request: ExecuteCommandParams = {
-        command: "sourcery/chat/clear",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "chat", request: "clear" }],
       };
       chatProvider.clearChat();
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
@@ -271,8 +271,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat.clearCodeReview", () => {
       let request: ExecuteCommandParams = {
-        command: "sourcery/chat/clearReview",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "review", request: "clear" }],
       };
       languageClient
         .sendRequest(ExecuteCommandRequest.type, request)
@@ -483,8 +483,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.initialise_chat", () => {
       let request: ExecuteCommandParams = {
-        command: "sourcery/chat/initialise",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "chat", request: "initialise" }],
       };
       languageClient.sendRequest(ExecuteCommandRequest.type, request);
     })
@@ -507,9 +507,11 @@ function registerCommands(
           let { activeFile, allFiles } = activeFiles();
 
           let request: ExecuteCommandParams = {
-            command: "sourcery/chat/request",
+            command: "sourcery.coding_assistant",
             arguments: [
               {
+                view: "chat",
+                request: "sendMessage",
                 message: message,
                 selected: selectionLocation,
                 active_file: activeFile,
@@ -528,9 +530,11 @@ function registerCommands(
       "sourcery.review_request",
       (message: ServerRequest) => {
         let request: ExecuteCommandParams = {
-          command: "sourcery/chat/reviewRequest",
+          command: "sourcery.coding_assistant",
           arguments: [
             {
+              view: "review",
+              request: "sendMessage",
               message: message,
             },
           ],
@@ -543,8 +547,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.chat_cancel_request", () => {
       languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery/chat/cancel",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "chat", request: "cancel" }],
       });
     })
   );
@@ -552,8 +556,8 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.review_cancel_request", () => {
       languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery/chat/cancelReview",
-        arguments: [],
+        command: "sourcery.coding_assistant",
+        arguments: [{ view: "review", request: "cancel" }],
       });
     })
   );
