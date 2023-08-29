@@ -441,7 +441,7 @@
 		"compile": "tsc -watch -p ./",
 		"compile-webviews": "tsc -watch ./src/webview/*.ts",
 		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
-		"vscode_local": "SOURCERY_EXECUTABLE=/home/ben/Documents/dev/sourcery-ai/core/run-sourcery.sh yarn run vscode",
+		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode",
 		"format": "prettier --write .",
 		"lint:format": "prettier --check .",
 		"vscode:prepublish": "npm run esbuild-base -- --minify",
