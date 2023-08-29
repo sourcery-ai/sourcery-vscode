@@ -22,7 +22,11 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
       };
     }
 
-    vscode.commands.executeCommand("sourcery.chat_request", request);
+    vscode.commands.executeCommand("sourcery.coding_assistant", {
+      view: "chat",
+      request: "sendMessage",
+      message: request,
+    });
   });
 }
 
