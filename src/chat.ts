@@ -29,67 +29,39 @@ export type GitBranches = {
   main: string;
 };
 
-// Requests forwarded to the (language) server
-export type ServerRequest = {
-  context_range?: any;
-} & (
-  | {
-      type: "context/contextRequest";
-    }
-  | { type: "optIn/enableRequest" }
-  | {
-      type: "chat/initialiseRequest";
-    }
-  | {
-      type: "chat/clearRequest";
-    }
-  | {
-      type: "chat/messageRequest";
-      data: {
-        kind: "user_message";
-        message: string;
-      };
-    }
-  | {
-      type: "chat/cancelRequest";
-    }
-  | { type: "recipes/initialiseRequest" }
-  | {
-      type: "recipes/recipeRequest";
-      data: {
-        kind: "recipe_request";
-        name: string;
-        id: string;
-      };
-    }
-  | {
-      type: "review/reviewRequest";
-      data: {
-        kind: "review_request";
-        main: string;
-        current: string;
-      };
-    }
-  | {
-      type: "review/initialiseRequest";
-    }
-  | {
-      type: "review/clearRequest";
-    }
-  | { type: "review/cancelRequest" }
-);
-
 // Requests handled by the extension
 export type ExtensionRequest =
   | {
-      type: "openLinkRequest";
+      target: "extension";
+      request: "openLink";
       linkType: "url" | "file" | "directory";
       link: string;
     }
   | {
-      type: "insertAtCursor";
+      target: "extension";
+      request: "insertAtCursor";
       content: string;
+    }
+  // Review and Recipes initialised through extension for now
+  | {
+      target: "extension";
+      view: "review";
+      request: "initialise";
+    }
+  | {
+      target: "extension";
+      view: "recipes";
+      request: "initialise";
     };
+
+type OutboundRequest =
+  | {
+      target: "languageServer";
+      // don't care about additional fields
+    }
+  | ExtensionRequest;
+
+interface ExtensionOutboundRequest {}
 
 const getNonce = () => randomBytes(16).toString("base64");
 
@@ -134,143 +106,48 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (request: ServerRequest | ExtensionRequest) => {
-        switch (request.type) {
-          case "context/contextRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "app",
-              request: "context",
-            });
+      async (request: OutboundRequest) => {
+        switch (request.target) {
+          case "languageServer":
+            // Language server requests are passed onwards without further changes.
+            // Note: the command (registered in extension.ts) attaches additional workspace context.
+            console.log(request);
+            vscode.commands.executeCommand(
+              "sourcery.coding_assistant",
+              request
+            );
             break;
-          }
-          case "optIn/enableRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "app",
-              request: "optIn",
-            });
-            break;
-          }
-          case "chat/messageRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "chat",
-              request: "sendMessage",
-              message: request,
-            });
-            break;
-          }
-          case "chat/initialiseRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "chat",
-              request: "initialise",
-            });
-            break;
-          }
-          case "chat/clearRequest": {
-            this.clearChat();
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "chat",
-              request: "clear",
-            });
-            break;
-          }
-          case "chat/cancelRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "chat",
-              request: "cancel",
-            });
-            break;
-          }
-          case "recipes/recipeRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "chat",
-              request: "sendMessage",
-              message: request,
-            });
-            break;
-          }
-          case "recipes/initialiseRequest": {
-            console.log("initialising recipes");
-            this._view.webview.postMessage({
-              command: "recipes/addRecipes",
-              result: this.recipes,
-            });
-            break;
-          }
-          case "review/initialiseRequest": {
-            console.log("initialising review");
-            this._view.webview.postMessage({
-              command: "review/addBranches",
-              result: this.branches,
-            });
-            break;
-          }
-          case "review/reviewRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "review",
-              request: "sendMessage",
-              message: request,
-            });
-            break;
-          }
-          case "review/cancelRequest": {
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "review",
-              request: "cancel",
-            });
-            break;
-          }
-          case "review/clearRequest": {
-            this.clearReview();
-            vscode.commands.executeCommand("sourcery.coding_assistant", {
-              view: "review",
-              request: "clear",
-            });
-            break;
-          }
-          case "openLinkRequest": {
-            if (request.linkType === "url") {
-              vscode.env.openExternal(vscode.Uri.parse(request.link));
-            } else {
-              let path = vscode.Uri.file(request.link);
-
-              // Make the path relative to the workspace root
-              if (!request.link.startsWith("/")) {
-                const workspaceRoot =
-                  vscode.workspace.workspaceFolders?.[0].uri;
-                if (workspaceRoot) {
-                  path = vscode.Uri.joinPath(workspaceRoot, request.link);
+          case "extension":
+            switch (request.request) {
+              case "openLink":
+                this.handleOpenLinkRequest(request);
+                break;
+              case "insertAtCursor": {
+                this.handleInsertAtCursorRequest(request);
+                break;
+              }
+              // TODO: these should not be handled by the extension and will be removed
+              case "initialise": {
+                switch (request.view) {
+                  case "recipes": {
+                    console.log("initialising recipes");
+                    this._view.webview.postMessage({
+                      command: "recipes/addRecipes",
+                      result: this.recipes,
+                    });
+                    break;
+                  }
+                  case "review": {
+                    console.log("initialising review");
+                    this._view.webview.postMessage({
+                      command: "review/addBranches",
+                      result: this.branches,
+                    });
+                    break;
+                  }
                 }
               }
-
-              if (request.linkType === "file") {
-                // Open the file in the editor
-                vscode.commands.executeCommand("vscode.open", path);
-              } else {
-                // Reveal the directory in the explorer
-                vscode.commands.executeCommand("revealInExplorer", path);
-              }
             }
-            break;
-          }
-          case "insertAtCursor": {
-            const activeEditor = vscode.window.activeTextEditor;
-            if (!activeEditor) {
-              vscode.window.showErrorMessage("No active text editor!");
-              return;
-            }
-
-            activeEditor.edit((editBuilder) => {
-              // Thank you coding assistant!
-              if (!activeEditor.selection.isEmpty) {
-                editBuilder.replace(activeEditor.selection, request.content);
-              } else {
-                editBuilder.insert(
-                  activeEditor.selection.active,
-                  request.content
-                );
-              }
-            });
-          }
         }
       }
     );
@@ -279,6 +156,61 @@ export class ChatProvider implements vscode.WebviewViewProvider {
       const message = this._unhandledMessages.shift();
       this.addChatResult(message);
     }
+  }
+
+  private handleOpenLinkRequest({
+    link,
+    linkType,
+  }: {
+    target: "extension";
+    request: "openLink";
+    linkType: "url" | "file" | "directory";
+    link: string;
+  }) {
+    if (linkType === "url") {
+      vscode.env.openExternal(vscode.Uri.parse(link));
+    } else {
+      let path = vscode.Uri.file(link);
+
+      // Make the path relative to the workspace root
+      if (!link.startsWith("/")) {
+        const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
+        if (workspaceRoot) {
+          path = vscode.Uri.joinPath(workspaceRoot, link);
+        }
+      }
+
+      if (linkType === "file") {
+        // Open the file in the editor
+        vscode.commands.executeCommand("vscode.open", path);
+      } else {
+        // Reveal the directory in the explorer
+        vscode.commands.executeCommand("revealInExplorer", path);
+      }
+    }
+  }
+
+  private handleInsertAtCursorRequest({
+    content,
+  }: {
+    target: "extension";
+    request: "insertAtCursor";
+    content: string;
+  }) {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+      vscode.window.showErrorMessage("No active text editor!");
+      return;
+    }
+
+    activeEditor.edit((editBuilder) => {
+      // Thank you coding assistant!
+      if (!activeEditor.selection.isEmpty) {
+        editBuilder.replace(activeEditor.selection, content);
+      } else {
+        editBuilder.insert(activeEditor.selection.active, content);
+      }
+    });
   }
 
   public updateContext(result: object) {

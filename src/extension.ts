@@ -32,7 +32,7 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
-import { ChatProvider, ServerRequest } from "./chat";
+import { ChatProvider } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
 
@@ -435,43 +435,25 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.coding_assistant",
-      ({
-        view,
-        request,
-        message,
-      }: {
-        view: string;
-        request: string;
-        message?: ServerRequest;
-      }) => {
-        vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-          // Use the editor selection unless a range was passed through in
-          // the message
-          let selectionLocation = getSelectionLocation();
-          if (message?.context_range) {
-            selectionLocation = {
-              uri: selectionLocation.uri,
-              range: message.context_range,
-            };
-          }
-          let { activeFile, allFiles } = activeFiles();
+      (request: { selected?: { uri: string; range: vscode.Range } }) => {
+        // Note: request has other keys - we're only declaring the ones that are relevant to this function.
+        // It's not necessary or useful to provide additional keys because this function is never called
+        // explicitly, so there's never any type checking.
+        let selectionLocation = getSelectionLocation();
+        let { activeFile, allFiles } = activeFiles();
 
-          let params: ExecuteCommandParams = {
-            command: "sourcery.coding_assistant",
-            arguments: [
-              {
-                view,
-                request,
-                message,
-                selected: selectionLocation,
-                active_file: activeFile,
-                all_open_files: allFiles,
-              },
-            ],
-          };
-          console.log(params);
-          languageClient.sendRequest(ExecuteCommandRequest.type, params);
-        });
+        let params: ExecuteCommandParams = {
+          command: "sourcery.coding_assistant",
+          arguments: [
+            {
+              active_file: activeFile,
+              all_open_files: allFiles,
+              ...request,
+              selected: { ...selectionLocation, ...request.selected }, // request may override selected
+            },
+          ],
+        };
+        languageClient.sendRequest(ExecuteCommandRequest.type, params);
       }
     )
   );
