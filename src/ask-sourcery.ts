@@ -5,28 +5,31 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
   showAskSourceryQuickPick(recipes).then((result: any) => {
     let request: ServerRequest;
     if ("id" in result) {
+      // the user selected a specific recipe
       request = {
-        type: "recipeRequest",
-        data: {
-          kind: "recipe_request",
-          name: result.label,
-          id: result.id,
+        target: "languageServer",
+        view: "chat",
+        request: "executeRecipe",
+        recipeId: result.id,
+        name: result.label,
+        selected: {
+          range: contextRange,
         },
-        context_range: contextRange,
       };
     } else {
+      // the user entered some custom text
       request = {
-        type: "chatRequest",
-        data: { kind: "user_message", message: result.label },
-        context_range: contextRange,
+        target: "languageServer",
+        view: "chat",
+        request: "sendMessage",
+        message: result.label,
+        selected: {
+          range: contextRange,
+        },
       };
     }
 
-    vscode.commands.executeCommand("sourcery.coding_assistant", {
-      view: "chat",
-      request: "sendMessage",
-      message: request,
-    });
+    vscode.commands.executeCommand("sourcery.coding_assistant", request);
   });
 }
 
