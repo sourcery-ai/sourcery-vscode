@@ -117,11 +117,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         }
       }
     );
-
-    while (this._unhandledMessages.length > 0) {
-      const message = this._unhandledMessages.shift();
-      this.addChatResult(message);
-    }
   }
 
   postCommand(params: any) {
@@ -181,28 +176,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         editBuilder.insert(activeEditor.selection.active, content);
       }
     });
-  }
-
-  public addChatResult(result: ChatResult) {
-    if (this._view) {
-      if (result.role === ChatResultRole.User) {
-        this._view.webview.postMessage({
-          command: "chat/addResult",
-          result,
-        });
-      } else {
-        if (result.outcome === ChatResultOutcome.Finished) {
-          this._view.webview.postMessage({ command: "chat/assistantFinished" });
-        } else {
-          this._view.webview.postMessage({
-            command: "chat/addResult",
-            result,
-          });
-        }
-      }
-    } else {
-      this._unhandledMessages.push(result);
-    }
   }
 
   public addReviewResult(result: ChatResult) {
