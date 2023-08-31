@@ -218,14 +218,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     }
   }
 
-  public addRecipes(result: Recipe[]) {
-    this.recipes = result;
-    this._view.webview.postMessage({
-      command: "recipes/addRecipes",
-      result: result,
-    });
-  }
-
   public populateBranches(branches: GitBranches) {
     this._view.webview.postMessage({
       command: "review/addBranches",
