@@ -159,10 +159,6 @@ function registerNotifications({
     chatProvider.addReviewResult(params.result);
   });
 
-  languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
-    chatProvider.addRecipes(params.recipes);
-  });
-
   languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
     chatProvider.populateBranches(params);
   });
