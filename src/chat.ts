@@ -121,6 +121,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  postCommand(params: any) {
+    this._view.webview.postMessage(params);
+  }
+
   private handleOpenLinkRequest({
     link,
     linkType,
@@ -174,15 +178,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         editBuilder.insert(activeEditor.selection.active, content);
       }
     });
-  }
-
-  public updateContext(result: object) {
-    if (this._view) {
-      this._view.webview.postMessage({
-        command: "context/update",
-        updates: result,
-      });
-    }
   }
 
   public addChatResult(result: ChatResult) {
