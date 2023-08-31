@@ -42,15 +42,10 @@ export type ExtensionRequest =
       request: "insertAtCursor";
       content: string;
     }
-  // Review and Recipes initialised through extension for now
+  // Review initialised through extension for now
   | {
       target: "extension";
       view: "review";
-      request: "initialise";
-    }
-  | {
-      target: "extension";
-      view: "recipes";
       request: "initialise";
     };
 
@@ -60,8 +55,6 @@ type LanguageServerRequest = {
 };
 
 type OutboundRequest = LanguageServerRequest | ExtensionRequest;
-
-interface ExtensionOutboundRequest {}
 
 const getNonce = () => randomBytes(16).toString("base64");
 
@@ -74,7 +67,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private _unhandledMessages: ChatResult[] = [];
 
-  public recipes: Recipe[] = [];
+  public recipes: Recipe[] = []; // this data is used in the "Ask Sourcery" command prompt, so can't be removed
 
   private branches: GitBranches = { current: "main", main: "main" };
 
@@ -129,14 +122,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               // TODO: these should not be handled by the extension and will be removed
               case "initialise": {
                 switch (request.view) {
-                  case "recipes": {
-                    console.log("initialising recipes");
-                    this._view.webview.postMessage({
-                      command: "recipes/addRecipes",
-                      result: this.recipes,
-                    });
-                    break;
-                  }
                   case "review": {
                     console.log("initialising review");
                     this._view.webview.postMessage({
