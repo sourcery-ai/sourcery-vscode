@@ -42,12 +42,6 @@ export type ExtensionRequest =
       target: "extension";
       request: "insertAtCursor";
       content: string;
-    }
-  // Review initialised through extension for now
-  | {
-      target: "extension";
-      view: "review";
-      request: "initialise";
     };
 
 type LanguageServerRequest = {
@@ -70,8 +64,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _unhandledMessages: ChatResult[] = [];
 
   public recipes: Recipe[] = []; // this data is used in the "Ask Sourcery" command prompt, so can't be removed
-
-  private branches: GitBranches = { current: "main", main: "main" };
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
@@ -107,7 +99,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
           case "languageServer":
             // Language server requests are passed onwards without further changes.
             // Note: the command (registered in extension.ts) attaches additional workspace context.
-            console.log(request);
             vscode.commands.executeCommand(
               "sourcery.coding_assistant",
               request,
@@ -121,19 +112,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               case "insertAtCursor": {
                 this.handleInsertAtCursorRequest(request);
                 break;
-              }
-              // TODO: these should not be handled by the extension and will be removed
-              case "initialise": {
-                switch (request.view) {
-                  case "review": {
-                    console.log("initialising review");
-                    this._view.webview.postMessage({
-                      command: "review/addBranches",
-                      result: this.branches,
-                    });
-                    break;
-                  }
-                }
               }
             }
         }
@@ -254,8 +232,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public populateBranches(branches: GitBranches) {
-    console.log("branches populated: ", branches);
-    this.branches = branches;
+    this._view.webview.postMessage({
+      command: "review/addBranches",
+      result: branches,
+    });
   }
 
   public clearChat() {
