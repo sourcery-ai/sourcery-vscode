@@ -144,10 +144,6 @@ function registerNotifications({
     chatProvider.postCommand(params);
   });
 
-  languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addChatResult(params.result);
-  });
-
   languageClient.onNotification(
     "sourcery/vscode/troubleshootResults",
     (params) => {
