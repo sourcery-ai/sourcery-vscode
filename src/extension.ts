@@ -87,16 +87,6 @@ function createLangServer(): LanguageClient {
   return new LanguageClient(command, serverOptions, clientOptions);
 }
 
-export function getSelectionLocation(): { uri: string; range: Range } | null {
-  const editor = window.activeTextEditor;
-
-  if (editor) {
-    return { uri: editor.document.uri.toString(), range: editor.selection }; // Selection extends Range
-  }
-
-  return null;
-}
-
 export function getSelectedText(): string | null {
   const editor = window.activeTextEditor;
 
@@ -435,21 +425,29 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand(
       "sourcery.coding_assistant",
-      (request: { selected?: { uri: string; range: vscode.Range } }) => {
-        // Note: request has other keys - we're only declaring the ones that are relevant to this function.
-        // It's not necessary or useful to provide additional keys because this function is never called
-        // explicitly, so there's never any type checking.
-        let selectionLocation = getSelectionLocation();
-        let { activeFile, allFiles } = activeFiles();
+      ({
+        message,
+        ideState,
+      }: {
+        message: any; // we don't care about the details of the message
+        // the request may override any of the IDE fields if necessary
+        ideState?: Partial<IDEState>;
+      }) => {
+        const localIDEState = getLocalIDEState();
 
         let params: ExecuteCommandParams = {
           command: "sourcery.coding_assistant",
           arguments: [
             {
-              active_file: activeFile,
-              all_open_files: allFiles,
-              ...request,
-              selected: { ...selectionLocation, ...request.selected }, // request may override selected
+              message,
+              ideState: {
+                ...localIDEState,
+                ...ideState,
+                selectionLocation: {
+                  ...localIDEState.selectionLocation,
+                  ...ideState?.selectionLocation,
+                },
+              },
             },
           ],
         };
@@ -622,19 +620,33 @@ function openDocument(document_path: string) {
   });
 }
 
-function activeFiles(): { activeFile: URI | null; allFiles: URI[] } {
-  const activeEditor = window.activeTextEditor;
-  let activeFile = null;
-  if (activeEditor) {
-    activeFile = activeEditor.document.uri;
-  }
-  const allFiles = [];
-  for (const tabGroup of vscode.window.tabGroups.all) {
-    for (const tab of tabGroup.tabs) {
-      if (tab.input instanceof vscode.TabInputText) {
-        allFiles.push(tab.input.uri);
+type IDEState = {
+  activeFile?: URI;
+  allOpenFiles: URI[];
+  selectionLocation?: {
+    uri: URI;
+    range: Range;
+  };
+};
+
+function getLocalIDEState(): IDEState {
+  const { activeTextEditor } = window;
+  const activeFile = activeTextEditor?.document.uri.toString();
+  const allOpenFiles = vscode.window.tabGroups.all.flatMap((tabGroup) =>
+    tabGroup.tabs
+      .map((tab) => tab.input)
+      .filter(
+        (input): input is vscode.TabInputText =>
+          input instanceof vscode.TabInputText
+      )
+      .map((input) => input.uri.toString())
+  );
+  const selectionLocation = activeTextEditor
+    ? {
+        uri: activeTextEditor.document.uri.toString(),
+        range: activeTextEditor.selection,
       }
-    }
-  }
-  return { activeFile, allFiles };
+    : undefined;
+
+  return { activeFile, allOpenFiles, selectionLocation };
 }

@@ -31,7 +31,7 @@ export type GitBranches = {
 };
 
 // Requests handled by the extension
-export type ExtensionRequest =
+export type ExtensionMessage =
   | {
       target: "extension";
       request: "openLink";
@@ -44,12 +44,12 @@ export type ExtensionRequest =
       content: string;
     };
 
-type LanguageServerRequest = {
+type LanguageServerMessage = {
   target: "languageServer";
   // don't care about additional fields
 };
 
-type OutboundRequest = LanguageServerRequest | ExtensionRequest;
+type OutboundMessage = LanguageServerMessage | ExtensionMessage;
 
 const getNonce = () => randomBytes(16).toString("base64");
 
@@ -73,7 +73,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   public async resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
-    _token: vscode.CancellationToken,
+    _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
 
@@ -84,7 +84,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = await this._getHtmlForWebview(
-      webviewView.webview,
+      webviewView.webview
     );
 
     webviewView.onDidChangeVisibility(() => {
@@ -94,28 +94,28 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
 
     webviewView.webview.onDidReceiveMessage(
-      async (request: OutboundRequest) => {
-        switch (request.target) {
+      async ({ message, ...rest }: { message: OutboundMessage }) => {
+        switch (message.target) {
           case "languageServer":
             // Language server requests are passed onwards without further changes.
             // Note: the command (registered in extension.ts) attaches additional workspace context.
-            vscode.commands.executeCommand(
-              "sourcery.coding_assistant",
-              request,
-            );
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              message,
+              ...rest,
+            });
             break;
           case "extension":
-            switch (request.request) {
+            switch (message.request) {
               case "openLink":
-                this.handleOpenLinkRequest(request);
+                this.handleOpenLinkRequest(message);
                 break;
               case "insertAtCursor": {
-                this.handleInsertAtCursorRequest(request);
+                this.handleInsertAtCursorRequest(message);
                 break;
               }
             }
         }
-      },
+      }
     );
 
     while (this._unhandledMessages.length > 0) {
@@ -274,7 +274,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     // This is the URI to the IDE styles.
     // This should be bundled as part of the extension (rather than the web app) and defines several colours to get the web app to match the IDE style.
     const ideStylesSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css"),
+      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css")
     );
 
     const appScriptNonce = getNonce();
