@@ -54,12 +54,12 @@ export type ExtensionRequest =
       request: "initialise";
     };
 
-type OutboundRequest =
-  | {
-      target: "languageServer";
-      // don't care about additional fields
-    }
-  | ExtensionRequest;
+type LanguageServerRequest = {
+  target: "languageServer";
+  // don't care about additional fields
+};
+
+type OutboundRequest = LanguageServerRequest | ExtensionRequest;
 
 interface ExtensionOutboundRequest {}
 
@@ -85,7 +85,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   public async resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
-    _token: vscode.CancellationToken
+    _token: vscode.CancellationToken,
   ) {
     this._view = webviewView;
 
@@ -96,7 +96,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = await this._getHtmlForWebview(
-      webviewView.webview
+      webviewView.webview,
     );
 
     webviewView.onDidChangeVisibility(() => {
@@ -114,7 +114,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             console.log(request);
             vscode.commands.executeCommand(
               "sourcery.coding_assistant",
-              request
+              request,
             );
             break;
           case "extension":
@@ -149,7 +149,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               }
             }
         }
-      }
+      },
     );
 
     while (this._unhandledMessages.length > 0) {
@@ -289,8 +289,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "src",
         "resources",
         "webview",
-        "index.html"
-      )
+        "index.html",
+      ),
     );
 
     // This is the URI to the main application script.
@@ -303,8 +303,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "resources",
         "webview",
         "assets",
-        "index.js"
-      )
+        "index.js",
+      ),
     );
 
     // This is the URI to the main application CSS file.
@@ -318,14 +318,14 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "resources",
         "webview",
         "assets",
-        "index.css"
-      )
+        "index.css",
+      ),
     );
 
     // This is the URI to the IDE styles.
     // This should be bundled as part of the extension (rather than the web app) and defines several colours to get the web app to match the IDE style.
     const ideStylesSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css")
+      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css"),
     );
 
     const appScriptNonce = getNonce();
