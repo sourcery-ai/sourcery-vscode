@@ -23,6 +23,8 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
       };
     }
 
+    vscode.commands.executeCommand("sourcery.chat.focus");
+
     vscode.commands.executeCommand("sourcery.coding_assistant", {
       message,
       ideState: {
