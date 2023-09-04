@@ -151,10 +151,6 @@ function registerNotifications({
     }
   );
 
-  languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
-    chatProvider.populateBranches(params);
-  });
-
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
     commands.executeCommand("workbench.actions.view.problems");
   });
