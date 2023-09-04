@@ -1,32 +1,9 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 
-// TODO: align types between extension and app
-export enum ChatResultOutcome {
-  Success = "success",
-  Error = "error",
-  Finished = "finished",
-}
-
-export enum ChatResultRole {
-  Assistant = "assistant",
-  User = "user",
-}
-
-export type ChatResult = {
-  outcome: ChatResultOutcome;
-  textContent: string;
-  role: ChatResultRole;
-};
-
 export type Recipe = {
   id: string;
   name: string;
-};
-
-export type GitBranches = {
-  current: string;
-  main: string;
 };
 
 // Requests handled by the extension
@@ -59,8 +36,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   private _extensionUri: vscode.Uri;
 
-  private _unhandledMessages: ChatResult[] = [];
-
   public recipes: Recipe[] = []; // this data is used in the "Ask Sourcery" command prompt, so can't be removed
 
   constructor(private _context: vscode.ExtensionContext) {
@@ -70,7 +45,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   public async resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
-    _token: vscode.CancellationToken,
+    _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
 
@@ -81,7 +56,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = await this._getHtmlForWebview(
-      webviewView.webview,
+      webviewView.webview
     );
 
     webviewView.onDidChangeVisibility(() => {
@@ -112,7 +87,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               }
             }
         }
-      },
+      }
     );
   }
 
@@ -175,21 +150,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     });
   }
 
-  public populateBranches(branches: GitBranches) {
-    this._view.webview.postMessage({
-      command: "review/addBranches",
-      result: branches,
-    });
-  }
-
-  public clearChat() {
-    this._view.webview.postMessage({ command: "chat/clear" });
-  }
-
-  public clearReview() {
-    this._view.webview.postMessage({ command: "review/clear" });
-  }
-
   // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
   private async _getHtmlForWebview(webview: vscode.Webview) {
     // The baseSrc is just a URI declaring the root of the web app.
@@ -201,8 +161,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "src",
         "resources",
         "webview",
-        "index.html",
-      ),
+        "index.html"
+      )
     );
 
     // This is the URI to the main application script.
@@ -215,8 +175,8 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "resources",
         "webview",
         "assets",
-        "index.js",
-      ),
+        "index.js"
+      )
     );
 
     // This is the URI to the main application CSS file.
@@ -230,14 +190,14 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         "resources",
         "webview",
         "assets",
-        "index.css",
-      ),
+        "index.css"
+      )
     );
 
     // This is the URI to the IDE styles.
     // This should be bundled as part of the extension (rather than the web app) and defines several colours to get the web app to match the IDE style.
     const ideStylesSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css"),
+      vscode.Uri.joinPath(this._extensionUri, "media", "ide-styles.css")
     );
 
     const appScriptNonce = getNonce();
