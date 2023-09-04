@@ -33,9 +33,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "sourcery.chat";
 
   private _view?: vscode.WebviewView;
-
   private _extensionUri: vscode.Uri;
-
   public recipes: Recipe[] = []; // this data is used in the "Ask Sourcery" command prompt, so can't be removed
 
   constructor(private _context: vscode.ExtensionContext) {
@@ -58,12 +56,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = await this._getHtmlForWebview(
       webviewView.webview,
     );
-
-    webviewView.onDidChangeVisibility(() => {
-      if (this._view.visible) {
-        this._view.webview.postMessage({ command: "chat/focus" });
-      }
-    });
 
     webviewView.webview.onDidReceiveMessage(
       async ({ message, ...rest }: { message: OutboundMessage }) => {
@@ -92,6 +84,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public postCommand(command: any) {
+    // Intercept the addRecipes command to make sure they're added to the UI
+    switch (command.command) {
+      case "recipes/addRecipes": {
+        this.recipes = command.recipes;
+        break;
+      }
+    }
     this._view.webview.postMessage(command);
   }
 
@@ -134,7 +133,6 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     request: "insertAtCursor";
     content: string;
   }) {
-    console.log(content);
     const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
       vscode.window.showErrorMessage("No active text editor!");
