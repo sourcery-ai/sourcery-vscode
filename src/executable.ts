@@ -4,17 +4,36 @@ import * as path from "path";
 import * as fs from "fs";
 
 export function getCodingAssistantAssetsPath(): string {
+  // Allow complete local override
   if (process.env.SOURCERY_CODING_ASSISTANT_ASSETS_PATH) {
-    console.log(process.env.SOURCERY_CODING_ASSISTANT_ASSETS_PATH);
+    console.log(
+      "Environment-provided Sourcery Coding Assistant Assets Path: ",
+      process.env.SOURCERY_CODING_ASSISTANT_ASSETS_PATH
+    );
     return process.env.SOURCERY_CODING_ASSISTANT_ASSETS_PATH;
   }
 
-  return path.join(path.dirname(getExecutablePath()), "assets");
+  // Otherwise, production subdirectory should be set up to match development subdirectory
+  const executablePath = getExecutablePath();
+  const absoluteExecutablePath = path.isAbsolute(executablePath)
+    ? executablePath
+    : path.join(process.cwd(), executablePath);
+
+  return path.join(
+    absoluteExecutablePath,
+    "..",
+    "coding-assistant-app",
+    "dist",
+    "assets"
+  );
 }
 
 export function getExecutablePath(): string {
   if (process.env.SOURCERY_EXECUTABLE) {
-    console.log(process.env.SOURCERY_EXECUTABLE);
+    console.log(
+      "Environment-provided Sourcery Executable Path: ",
+      process.env.SOURCERY_EXECUTABLE
+    );
     return process.env.SOURCERY_EXECUTABLE;
   }
   const sourcery_binaries = path.join(__dirname, "..", "sourcery_binaries");

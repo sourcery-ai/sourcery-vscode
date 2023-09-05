@@ -321,6 +321,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     // The baseSrc is just a URI declaring the root of the web app.
     // This is relevant for the interaction between the script and the stylesheet.
     // It is used in the `<base>` tag below - see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    // This is a synthetic URI and doesn't need to refer to an actual file.
     const baseSrc = webview.asWebviewUri(
       vscode.Uri.joinPath(this._assetsUri, "..", "index.html")
     );
