@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
+import { getCodingAssistantAssetsPath } from "./executable";
 
 // TODO: align types between extension and app
 export enum ChatResultOutcome {
@@ -99,6 +100,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
 
   private _extensionUri: vscode.Uri;
+  private _assetsUri: vscode.Uri;
 
   private _unhandledMessages: ChatResult[] = [];
 
@@ -108,6 +110,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
+    this._assetsUri = vscode.Uri.parse(getCodingAssistantAssetsPath());
   }
 
   public async resolveWebviewView(
@@ -120,7 +123,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     webviewView.webview.options = {
       // Allow scripts in the webview
       enableScripts: true,
-      localResourceRoots: [this._extensionUri],
+      localResourceRoots: [this._extensionUri, this._assetsUri],
     };
 
     webviewView.webview.html = await this._getHtmlForWebview(
@@ -318,28 +321,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     // The baseSrc is just a URI declaring the root of the web app.
     // This is relevant for the interaction between the script and the stylesheet.
     // It is used in the `<base>` tag below - see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    // This is a synthetic URI and doesn't need to refer to an actual file.
     const baseSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "src",
-        "resources",
-        "webview",
-        "index.html"
-      )
+      vscode.Uri.joinPath(this._assetsUri, "..", "index.html")
     );
 
     // This is the URI to the main application script.
     // We bundle this as a single javascript file and inject it directly into the HTML below, alongside the random nonce.
     // Note that we also include a hard-coded script to attach the VSCode API directly to the window.
     const appScriptSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "src",
-        "resources",
-        "webview",
-        "assets",
-        "index.js"
-      )
+      vscode.Uri.joinPath(this._assetsUri, "index.js")
     );
 
     // This is the URI to the main application CSS file.
@@ -347,14 +338,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     // We need to provide some additional CSS, using the `ide-styles.css` file below.
     // This is to ensure the web app's style matches that of the IDE.
     const appStylesSrc = webview.asWebviewUri(
-      vscode.Uri.joinPath(
-        this._extensionUri,
-        "src",
-        "resources",
-        "webview",
-        "assets",
-        "index.css"
-      )
+      vscode.Uri.joinPath(this._assetsUri, "index.css")
     );
 
     // This is the URI to the IDE styles.
@@ -373,22 +357,22 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:; script-src 'nonce-${appScriptNonce}' 'nonce-${apiInjectionNonce}';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Sourcery</title>
     <base href="${baseSrc}" />
     <link rel="stylesheet" href="${ideStylesSrc}">
     <link rel="stylesheet" href="${appStylesSrc}">
   </head>
   <body style="height: 100vh;">
     <div id="root" style="height: 100%;"></div>
-	<script type="module" nonce="${appScriptNonce}" src="${appScriptSrc}"></script>
-  <script nonce=${apiInjectionNonce}>
-    (function () {
-      const vscode = acquireVsCodeApi();
-      window.sourceryLS = {
-        postMessage: vscode.postMessage,
-      };
-    }())
-  </script>
+    <script type="module" nonce="${appScriptNonce}" src="${appScriptSrc}"></script>
+    <script nonce=${apiInjectionNonce}>
+      (function () {
+        const vscode = acquireVsCodeApi();
+        window.sourceryLS = {
+          postMessage: vscode.postMessage,
+        };
+      }())
+    </script>
   </body>
 </html>
 `;
