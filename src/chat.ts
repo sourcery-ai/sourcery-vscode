@@ -84,7 +84,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   }
 
   public postCommand(command: any) {
-    // Intercept the addRecipes command to make sure they're added to the UI
+    // Intercept the addRecipes command
+    // The "Ask Sourcery" user interface needs to have the recipes available
+    // and gets them from this class. When the update comes in, we add them to
+    // the class before forwarding into the web view.
     switch (command.command) {
       case "recipes/addRecipes": {
         this.recipes = command.recipes;
