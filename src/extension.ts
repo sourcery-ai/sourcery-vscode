@@ -32,7 +32,7 @@ import {
 import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
-import { ChatProvider, ServerRequest } from "./chat";
+import { ChatProvider } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
 import { TroubleshootingProvider } from "./troubleshooting";
 
@@ -85,16 +85,6 @@ function createLangServer(): LanguageClient {
   };
 
   return new LanguageClient(command, serverOptions, clientOptions);
-}
-
-export function getSelectionLocation(): { uri: string; range: Range } | null {
-  const editor = window.activeTextEditor;
-
-  if (editor) {
-    return { uri: editor.document.uri.toString(), range: editor.selection }; // Selection extends Range
-  }
-
-  return null;
 }
 
 export function getSelectedText(): string | null {
@@ -150,12 +140,8 @@ function registerNotifications({
       "Results - " + params.results + " found in " + params.files + " files.";
   });
 
-  languageClient.onNotification("sourcery/vscode/updateContext", (params) => {
-    chatProvider.updateContext(params.result);
-  });
-
-  languageClient.onNotification("sourcery/vscode/chatResults", (params) => {
-    chatProvider.addChatResult(params.result);
+  languageClient.onNotification("sourcery/codingAssistant", (params) => {
+    chatProvider.postCommand(params);
   });
 
   languageClient.onNotification(
@@ -164,18 +150,6 @@ function registerNotifications({
       troubleshootingProvider.handleResult(params.result);
     }
   );
-
-  languageClient.onNotification("sourcery/vscode/reviewResults", (params) => {
-    chatProvider.addReviewResult(params.result);
-  });
-
-  languageClient.onNotification("sourcery/vscode/recipeList", (params) => {
-    chatProvider.addRecipes(params.recipes);
-  });
-
-  languageClient.onNotification("sourcery/vscode/gitBranches", (params) => {
-    chatProvider.populateBranches(params);
-  });
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
     commands.executeCommand("workbench.actions.view.problems");
@@ -231,54 +205,6 @@ function registerCommands(
     commands.registerCommand("sourcery.scan.toggleAdvanced", () => {
       // Tell the rules webview to toggle
       riProvider.toggle();
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand(
-      "sourcery.coding_assistant.context_request",
-      () => {
-        let request: ExecuteCommandParams = {
-          command: "sourcery.coding_assistant.context_request",
-          arguments: [],
-        };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request);
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.coding_assistant.opt_in", () => {
-      let request: ExecuteCommandParams = {
-        command: "sourcery.coding_assistant.opt_in",
-        arguments: [],
-      };
-      languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.chat.clearChat", () => {
-      let request: ExecuteCommandParams = {
-        command: "sourcery/chat/clear",
-        arguments: [],
-      };
-      chatProvider.clearChat();
-      languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.chat.clearCodeReview", () => {
-      let request: ExecuteCommandParams = {
-        command: "sourcery/chat/clearReview",
-        arguments: [],
-      };
-      languageClient
-        .sendRequest(ExecuteCommandRequest.type, request)
-        .then(() => {
-          chatProvider.clearReview();
-        });
     })
   );
 
@@ -481,81 +407,37 @@ function registerCommands(
   );
 
   context.subscriptions.push(
-    commands.registerCommand("sourcery.initialise_chat", () => {
-      let request: ExecuteCommandParams = {
-        command: "sourcery/chat/initialise",
-        arguments: [],
-      };
-      languageClient.sendRequest(ExecuteCommandRequest.type, request);
-    })
-  );
-
-  context.subscriptions.push(
     commands.registerCommand(
-      "sourcery.chat_request",
-      (message: ServerRequest) => {
-        vscode.commands.executeCommand("sourcery.chat.focus").then(() => {
-          // Use the editor selection unless a range was passed through in
-          // the message
-          let selectionLocation = getSelectionLocation();
-          if (message.context_range != null) {
-            selectionLocation = {
-              uri: selectionLocation.uri,
-              range: message.context_range,
-            };
-          }
-          let { activeFile, allFiles } = activeFiles();
+      "sourcery.coding_assistant",
+      ({
+        message,
+        ideState,
+      }: {
+        message: any; // we don't care about the details of the message
+        // the request may override any of the IDE fields if necessary
+        ideState?: Partial<IDEState>;
+      }) => {
+        const localIDEState = getLocalIDEState();
 
-          let request: ExecuteCommandParams = {
-            command: "sourcery/chat/request",
-            arguments: [
-              {
-                message: message,
-                selected: selectionLocation,
-                active_file: activeFile,
-                all_open_files: allFiles,
-              },
-            ],
-          };
-          languageClient.sendRequest(ExecuteCommandRequest.type, request);
-        });
-      }
-    )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand(
-      "sourcery.review_request",
-      (message: ServerRequest) => {
-        let request: ExecuteCommandParams = {
-          command: "sourcery/chat/reviewRequest",
+        let params: ExecuteCommandParams = {
+          command: "sourcery.coding_assistant",
           arguments: [
             {
-              message: message,
+              message,
+              ideState: {
+                ...localIDEState,
+                ...ideState,
+                selectionLocation: {
+                  ...localIDEState.selectionLocation,
+                  ...ideState?.selectionLocation,
+                },
+              },
             },
           ],
         };
-        languageClient.sendRequest(ExecuteCommandRequest.type, request);
+        languageClient.sendRequest(ExecuteCommandRequest.type, params);
       }
     )
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.chat_cancel_request", () => {
-      languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery/chat/cancel",
-        arguments: [],
-      });
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.review_cancel_request", () => {
-      languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery/chat/cancelReview",
-        arguments: [],
-      });
-    })
   );
 
   context.subscriptions.push(
@@ -722,19 +604,33 @@ function openDocument(document_path: string) {
   });
 }
 
-function activeFiles(): { activeFile: URI | null; allFiles: URI[] } {
-  const activeEditor = window.activeTextEditor;
-  let activeFile = null;
-  if (activeEditor) {
-    activeFile = activeEditor.document.uri;
-  }
-  const allFiles = [];
-  for (const tabGroup of vscode.window.tabGroups.all) {
-    for (const tab of tabGroup.tabs) {
-      if (tab.input instanceof vscode.TabInputText) {
-        allFiles.push(tab.input.uri);
+type IDEState = {
+  activeFile?: URI;
+  allOpenFiles: URI[];
+  selectionLocation?: {
+    uri: URI;
+    range: Range;
+  };
+};
+
+function getLocalIDEState(): IDEState {
+  const { activeTextEditor } = window;
+  const activeFile = activeTextEditor?.document.uri.toString();
+  const allOpenFiles = vscode.window.tabGroups.all.flatMap((tabGroup) =>
+    tabGroup.tabs
+      .map((tab) => tab.input)
+      .filter(
+        (input): input is vscode.TabInputText =>
+          input instanceof vscode.TabInputText
+      )
+      .map((input) => input.uri.toString())
+  );
+  const selectionLocation = activeTextEditor
+    ? {
+        uri: activeTextEditor.document.uri.toString(),
+        range: activeTextEditor.selection,
       }
-    }
-  }
-  return { activeFile, allFiles };
+    : undefined;
+
+  return { activeFile, allOpenFiles, selectionLocation };
 }
