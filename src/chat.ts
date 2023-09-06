@@ -203,7 +203,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     <link rel="stylesheet" href="${appStylesSrc}">
   </head>
   <body style="height: 100vh;">
-    <div id="root" style="height: 100%;"></div>
+    <div id="root" style="height: 100%; overflow-y: hidden;"></div>
     <script type="module" nonce="${appScriptNonce}" src="${appScriptSrc}"></script>
     <script nonce=${apiInjectionNonce}>
       (function () {

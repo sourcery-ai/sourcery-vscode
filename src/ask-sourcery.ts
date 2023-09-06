@@ -19,7 +19,7 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
         target: "languageServer",
         view: "chat",
         request: "sendMessage",
-        message: result.label,
+        textContent: result.label,
       };
     }
 
