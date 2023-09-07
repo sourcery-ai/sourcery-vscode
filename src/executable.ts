@@ -30,7 +30,7 @@ export function getCodingAssistantAssetsPath(): string {
   console.log(
     "Derived Sourcery Coding Assistant Assets Path: ",
     codingAssistantAssetsPath
-  )
+  );
 
   return codingAssistantAssetsPath;
 }
