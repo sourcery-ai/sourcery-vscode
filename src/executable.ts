@@ -17,15 +17,22 @@ export function getCodingAssistantAssetsPath(): string {
   const executablePath = getExecutablePath();
   const absoluteExecutablePath = path.isAbsolute(executablePath)
     ? executablePath
-    : path.join(process.cwd(), executablePath);
+    : path.join(__dirname, "..", executablePath);
 
-  return path.join(
+  let codingAssistantAssetsPath = path.join(
     absoluteExecutablePath,
     "..",
     "coding-assistant-app",
     "dist",
     "assets"
   );
+
+  console.log(
+    "Derived Sourcery Coding Assistant Assets Path: ",
+    codingAssistantAssetsPath
+  )
+
+  return codingAssistantAssetsPath;
 }
 
 export function getExecutablePath(): string {
