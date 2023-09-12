@@ -12,6 +12,7 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
         request: "executeRecipe",
         recipeId: result.id,
         name: result.label,
+        trigger: "askSourcery",
       };
     } else {
       // the user entered some custom text
