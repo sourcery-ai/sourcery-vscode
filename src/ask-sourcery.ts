@@ -21,7 +21,6 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
         view: "chat",
         request: "sendMessage",
         textContent: result.label,
-        trigger: "askSourcery",
       };
     }
 
