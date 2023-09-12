@@ -12,7 +12,7 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
         request: "executeRecipe",
         recipeId: result.id,
         name: result.label,
-        trigger: "askSourcery"
+        trigger: "askSourcery",
       };
     } else {
       // the user entered some custom text
@@ -21,7 +21,7 @@ export function askSourceryCommand(recipes: Recipe[], contextRange?) {
         view: "chat",
         request: "sendMessage",
         textContent: result.label,
-        trigger: "askSourcery"
+        trigger: "askSourcery",
       };
     }
 
