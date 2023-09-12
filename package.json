@@ -59,14 +59,6 @@
 					"contextualTitle": "Coding Assistant"
 				},
 				{
-					"id": "sourcery.troubleshooting",
-					"name": "Troubleshooting",
-					"type": "webview",
-					"icon": "sourcery-icon.png",
-					"contextualTitle": "Troubleshooting",
-					"when": "sourcery.features.coding_assistant_troubleshooting"
-				},
-				{
 					"id": "sourcery.rules",
 					"name": "Rules",
 					"type": "webview",
@@ -224,11 +216,6 @@
 				"category": "Sourcery"
 			},
 			{
-				"command": "sourcery.troubleshoot.reset",
-				"title": "Reset",
-				"category": "Sourcery"
-			},
-			{
 				"command": "sourcery.chat.ask",
 				"title": "Ask Sourcery",
 				"category": "Sourcery"
@@ -279,11 +266,6 @@
 				{
 					"command": "sourcery.scan.toggleAdvanced",
 					"when": "view == sourcery.rules",
-					"group": "navigation"
-				},
-				{
-					"command": "sourcery.troubleshoot.reset",
-					"when": "view == sourcery.troubleshooting",
 					"group": "navigation"
 				}
 			],
@@ -353,10 +335,6 @@
 				},
 				{
 					"command": "sourcery.scan.toggleAdvanced",
-					"when": "false"
-				},
-				{
-					"command": "sourcery.troubleshoot.reset",
 					"when": "false"
 				},
 				{
@@ -430,7 +408,6 @@
 	"scripts": {
 		"vscode:uninstall": "node ./out/uninstall",
 		"compile": "tsc -watch -p ./",
-		"compile-webviews": "tsc -watch ./src/webview/*.ts",
 		"vscode": "npm run vscode:prepublish && VSCODE=$(which code-insiders || which code || echo echo ERROR: neither the code nor code-insiders vscode executable is installed); USER=dummy-dont-share-vscode-instance \"$VSCODE\" --user-data-dir=$PWD/.vscode-dev/user-data --verbose --extensionHomePath=$PWD/.vscode-dev/extensions --extensionDevelopmentPath=$PWD $*",
 		"vscode_local": "SOURCERY_EXECUTABLE=../core/run-sourcery.sh yarn run vscode",
 		"format": "prettier --write .",
