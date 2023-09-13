@@ -169,7 +169,7 @@ function registerCommands(
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
-  chatProvider: ChatProvider,
+  chatProvider: ChatProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -539,7 +539,7 @@ export function activate(context: ExtensionContext) {
     tree,
     treeView,
     hubWebviewPanel,
-    chatProvider,
+    chatProvider
   );
 
   showSourceryStatusBarItem(context);
