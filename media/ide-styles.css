@@ -5,7 +5,8 @@
   --chat: var(
     --vscode-settings-textInputBackground
   ); /* chat bubble background */
-  --error: var(--vscode-inputValidation-errorBackground); /* error background */
+  --warning: var(--vscode-statusBarItem-warningBackground); /* warning background */
+  --error: var(--vscode-statusBarItem-errorBackground); /* error background */
   --disabled: var(--vscode-disabledForeground); /* disabled foreground */
   --border: var(--vscode-panel-border); /* border */
   --primary: var(--vscode-button-background);
