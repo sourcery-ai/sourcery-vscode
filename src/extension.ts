@@ -34,7 +34,6 @@ import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider } from "./chat";
 import { askSourceryCommand } from "./ask-sourcery";
-import { TroubleshootingProvider } from "./troubleshooting";
 
 function createLangServer(): LanguageClient {
   const token = workspace.getConfiguration("sourcery").get<string>("token");
@@ -113,14 +112,12 @@ function registerNotifications({
   scanResultTreeView,
   chatProvider,
   context,
-  troubleshootingProvider,
 }: {
   languageClient: LanguageClient;
   scanResultTree: ScanResultProvider;
   scanResultTreeView: TreeView<TreeItem>;
   chatProvider: ChatProvider;
   context: ExtensionContext;
-  troubleshootingProvider: TroubleshootingProvider;
 }) {
   languageClient.onNotification("sourcery/vscode/executeCommand", (params) => {
     const command = params["command"];
@@ -143,13 +140,6 @@ function registerNotifications({
   languageClient.onNotification("sourcery/codingAssistant", (params) => {
     chatProvider.postCommand(params);
   });
-
-  languageClient.onNotification(
-    "sourcery/vscode/troubleshootResults",
-    (params) => {
-      troubleshootingProvider.handleResult(params.result);
-    }
-  );
 
   languageClient.onNotification("sourcery/vscode/viewProblems", () => {
     commands.executeCommand("workbench.actions.view.problems");
@@ -179,8 +169,7 @@ function registerCommands(
   tree: ScanResultProvider,
   treeView: TreeView<TreeItem>,
   hubWebviewPanel: WebviewPanel,
-  chatProvider: ChatProvider,
-  troubleshootingProvider: TroubleshootingProvider
+  chatProvider: ChatProvider
 ) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -220,21 +209,6 @@ function registerCommands(
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
       config.update("sourcery.codeLens", !currentValue);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.troubleshoot", (message) => {
-      languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery/troubleshoot",
-        arguments: [message],
-      });
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand("sourcery.troubleshoot.reset", () => {
-      troubleshootingProvider.handleReset();
     })
   );
 
@@ -558,16 +532,6 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  const troubleshootingProvider = new TroubleshootingProvider(context);
-
-  context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider(
-      TroubleshootingProvider.viewType,
-      troubleshootingProvider,
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
   registerCommands(
     context,
     riProvider,
@@ -575,8 +539,7 @@ export function activate(context: ExtensionContext) {
     tree,
     treeView,
     hubWebviewPanel,
-    chatProvider,
-    troubleshootingProvider
+    chatProvider
   );
 
   showSourceryStatusBarItem(context);
@@ -588,7 +551,6 @@ export function activate(context: ExtensionContext) {
       scanResultTreeView: treeView,
       chatProvider,
       context,
-      troubleshootingProvider,
     });
   });
 }
