@@ -1,176 +1,20 @@
 :root {
-  --background: var(--vscode-sideBar-background); /* main background */
-  --foreground: var(--vscode-foreground); /* foreground text */
-  --editor: var(--vscode-editor-background); /* editor background */
-  --chat: var(
-    --vscode-settings-textInputBackground
-  ); /* chat bubble background */
-  --warning: var(
-    --vscode-statusBarItem-warningBackground
-  ); /* warning background */
-  --error: var(--vscode-statusBarItem-errorBackground); /* error background */
-  --disabled: var(--vscode-disabledForeground); /* disabled foreground */
-  --border: var(--vscode-panel-border); /* border */
-  --primary: var(--vscode-button-background);
-  --highlight: orange;
+  --ide-text: var(--vscode-sideBar-foreground);
+  --ide-disabled-text: var(--vscode-disabledForeground);
+  --ide-window-bg: var(--vscode-sideBar-background);
+  --ide-editor-bg: var(--vscode-editor-background);
+  --ide-chat-input-text: var(--vscode-settings-textInputForeground);
+  --ide-chat-input-bg: var(--vscode-settings-textInputBackground);
+  --ide-warning-text: var(--vscode-statusBarItem-warningForeground);
+  --ide-warning-bg: var(--vscode-statusBarItem-warningBackground);
+  --ide-error-text: var(--vscode-inputValidation-errorForeground);
+  --ide-error-bg: var(--vscode-inputValidation-errorBackground);
+  --ide-border: var(--vscode-panel-border);
+  --ide-primary-btn-text: var(--vscode-button-foreground);
+  --ide-primary-btn-bg: var(--vscode-button-background);
+  --ide-highlight: orange;
 }
 
 html {
   font-size: var(--vscode-font-size);
-}
-
-body.vscode-light .hljs {
-  color: #24292e;
-  background: #fff;
-}
-body.vscode-light .hljs-doctag,
-body.vscode-light .hljs-keyword,
-body.vscode-light .hljs-meta body.vscode-light .hljs-keyword,
-body.vscode-light .hljs-template-tag,
-body.vscode-light .hljs-template-variable,
-body.vscode-light .hljs-type,
-body.vscode-light .hljs-variable.language_ {
-  color: #d73a49;
-}
-body.vscode-light .hljs-title,
-body.vscode-light .hljs-title.class_,
-body.vscode-light .hljs-title.class_.inherited__,
-body.vscode-light .hljs-title.function_ {
-  color: #6f42c1;
-}
-body.vscode-light .hljs-attr,
-body.vscode-light .hljs-attribute,
-body.vscode-light .hljs-literal,
-body.vscode-light .hljs-meta,
-body.vscode-light .hljs-number,
-body.vscode-light .hljs-operator,
-body.vscode-light .hljs-selector-attr,
-body.vscode-light .hljs-selector-class,
-body.vscode-light .hljs-selector-id,
-body.vscode-light .hljs-variable {
-  color: #005cc5;
-}
-body.vscode-light .hljs-meta body.vscode-light .hljs-string,
-body.vscode-light .hljs-regexp,
-body.vscode-light .hljs-string {
-  color: #032f62;
-}
-body.vscode-light .hljs-built_in,
-body.vscode-light .hljs-symbol {
-  color: #e36209;
-}
-body.vscode-light .hljs-code,
-body.vscode-light .hljs-comment,
-body.vscode-light .hljs-formula {
-  color: #6a737d;
-}
-body.vscode-light .hljs-name,
-body.vscode-light .hljs-quote,
-body.vscode-light .hljs-selector-pseudo,
-body.vscode-light .hljs-selector-tag {
-  color: #22863a;
-}
-body.vscode-light .hljs-subst {
-  color: #24292e;
-}
-body.vscode-light .hljs-section {
-  color: #005cc5;
-  font-weight: 700;
-}
-body.vscode-light .hljs-bullet {
-  color: #735c0f;
-}
-body.vscode-light .hljs-emphasis {
-  color: #24292e;
-  font-style: italic;
-}
-body.vscode-light .hljs-strong {
-  color: #24292e;
-  font-weight: 700;
-}
-body.vscode-light .hljs-addition {
-  color: #22863a;
-  background-color: #f0fff4;
-}
-body.vscode-light .hljs-deletion {
-  color: #b31d28;
-  background-color: #ffeef0;
-}
-
-body.vscode-dark .hljs {
-  color: #c9d1d9;
-  background: #0d1117;
-}
-body.vscode-dark .hljs-doctag,
-body.vscode-dark .hljs-keyword,
-body.vscode-dark .hljs-meta body.vscode-dark .hljs-keyword,
-body.vscode-dark .hljs-template-tag,
-body.vscode-dark .hljs-template-variable,
-body.vscode-dark .hljs-type,
-body.vscode-dark .hljs-variable.language_ {
-  color: #ff7b72;
-}
-body.vscode-dark .hljs-title,
-body.vscode-dark .hljs-title.class_,
-body.vscode-dark .hljs-title.class_.inherited__,
-body.vscode-dark .hljs-title.function_ {
-  color: #d2a8ff;
-}
-body.vscode-dark .hljs-attr,
-body.vscode-dark .hljs-attribute,
-body.vscode-dark .hljs-literal,
-body.vscode-dark .hljs-meta,
-body.vscode-dark .hljs-number,
-body.vscode-dark .hljs-operator,
-body.vscode-dark .hljs-selector-attr,
-body.vscode-dark .hljs-selector-class,
-body.vscode-dark .hljs-selector-id,
-body.vscode-dark .hljs-variable {
-  color: #79c0ff;
-}
-body.vscode-dark .hljs-meta body.vscode-dark .hljs-string,
-body.vscode-dark .hljs-regexp,
-body.vscode-dark .hljs-string {
-  color: #a5d6ff;
-}
-body.vscode-dark .hljs-built_in,
-body.vscode-dark .hljs-symbol {
-  color: #ffa657;
-}
-body.vscode-dark .hljs-code,
-body.vscode-dark .hljs-comment,
-body.vscode-dark .hljs-formula {
-  color: #8b949e;
-}
-body.vscode-dark .hljs-name,
-body.vscode-dark .hljs-quote,
-body.vscode-dark .hljs-selector-pseudo,
-body.vscode-dark .hljs-selector-tag {
-  color: #7ee787;
-}
-body.vscode-dark .hljs-subst {
-  color: #c9d1d9;
-}
-body.vscode-dark .hljs-section {
-  color: #1f6feb;
-  font-weight: 700;
-}
-body.vscode-dark .hljs-bullet {
-  color: #f2cc60;
-}
-body.vscode-dark .hljs-emphasis {
-  color: #c9d1d9;
-  font-style: italic;
-}
-body.vscode-dark .hljs-strong {
-  color: #c9d1d9;
-  font-weight: 700;
-}
-body.vscode-dark .hljs-addition {
-  color: #aff5b4;
-  background-color: #033a16;
-}
-body.vscode-dark .hljs-deletion {
-  color: #ffdcd7;
-  background-color: #67060c;
 }
