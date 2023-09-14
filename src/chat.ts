@@ -211,6 +211,14 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         window.sourceryLS = {
           postMessage: vscode.postMessage,
         };
+
+        const updateTheme = () => {
+          const theme = document.body.classList.contains("vscode-light") ? "light" : "dark";
+          document.documentElement.classList.remove("light", "dark");
+          document.documentElement.classList.add(theme);
+        };
+        updateTheme();
+        new MutationObserver(updateTheme).observe(document.body, {attributes: true});
       }())
     </script>
   </body>
