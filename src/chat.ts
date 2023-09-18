@@ -17,6 +17,11 @@ export type ExtensionMessage =
     }
   | {
       target: "extension";
+      request: "copyToClipboard";
+      content: string;
+    }
+  | {
+      target: "extension";
       request: "insertAtCursor";
       content: string;
     };
@@ -77,6 +82,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               case "openLink":
                 this.handleOpenLinkRequest(message);
                 break;
+              case "copyToClipboard": {
+                this.handleCopyToClipboardRequest(message);
+                break;
+              }
               case "insertAtCursor": {
                 this.handleInsertAtCursorRequest(message);
                 break;
@@ -131,6 +140,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         vscode.commands.executeCommand("revealInExplorer", path);
       }
     }
+  }
+
+  private handleCopyToClipboardRequest({
+    content,
+  }: {
+    target: "extension";
+    request: "copyToClipboard";
+    content: string;
+  }) {
+    vscode.env.clipboard.writeText(content);
   }
 
   private handleInsertAtCursorRequest({
