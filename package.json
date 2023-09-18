@@ -397,7 +397,7 @@
 		"keybindings": [
 			{
 				"command": "sourcery.chat.ask",
-				"linux": "ctrl+y",
+				"linux": "ctrl+shift+y",
 				"mac": "cmd+y",
 				"windows": "ctrl+shift+y",
 				"when": "editorTextFocus"
