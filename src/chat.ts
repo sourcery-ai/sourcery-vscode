@@ -17,6 +17,11 @@ export type ExtensionMessage =
     }
   | {
       target: "extension";
+      request: "copyToClipboard";
+      content: string;
+    }
+  | {
+      target: "extension";
       request: "insertAtCursor";
       content: string;
     };
@@ -77,6 +82,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               case "openLink":
                 this.handleOpenLinkRequest(message);
                 break;
+              case "copyToClipboard": {
+                this.handleCopyToClipboardRequest(message);
+                break;
+              }
               case "insertAtCursor": {
                 this.handleInsertAtCursorRequest(message);
                 break;
@@ -131,6 +140,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         vscode.commands.executeCommand("revealInExplorer", path);
       }
     }
+  }
+
+  private handleCopyToClipboardRequest({
+    content,
+  }: {
+    target: "extension";
+    request: "copyToClipboard";
+    content: string;
+  }) {
+    vscode.env.clipboard.writeText(content);
   }
 
   private handleInsertAtCursorRequest({
@@ -211,6 +230,18 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         window.sourceryLS = {
           postMessage: vscode.postMessage,
         };
+
+        const updateTheme = () => {
+          // The theme class can be vscode-light, vscode-dark, vscode-high-contrast and only
+          // vscode-light is a light theme. The others are dark themes
+          const theme = document.body.classList.contains("vscode-light") ? "light" : "dark";
+
+          // Set the theme class on the document element so that the webview can style itself
+          document.documentElement.classList.remove("light", "dark");
+          document.documentElement.classList.add(theme);
+        };
+        updateTheme();
+        new MutationObserver(updateTheme).observe(document.body, {attributes: true});
       }())
     </script>
   </body>
