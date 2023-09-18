@@ -213,7 +213,11 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         };
 
         const updateTheme = () => {
+          // The theme class can be vscode-light, vscode-dark, vscode-high-contrast and only
+          // vscode-light is a light theme. The others are dark themes
           const theme = document.body.classList.contains("vscode-light") ? "light" : "dark";
+
+          // Set the theme class on the document element so that the webview can style itself
           document.documentElement.classList.remove("light", "dark");
           document.documentElement.classList.add(theme);
         };
