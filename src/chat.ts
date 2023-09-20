@@ -46,7 +46,10 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
   constructor(private _context: vscode.ExtensionContext) {
     this._extensionUri = _context.extensionUri;
-    this._assetsUri = vscode.Uri.parse(getCodingAssistantAssetsPath());
+    const _assetsPath = getCodingAssistantAssetsPath();
+    // Parsing the path using `file` rather than `parse` allows it to work on Windows
+    // See https://github.com/microsoft/vscode-uri/blob/5af89bac2109c0dc7f904b20cc88cac0568747b1/src/uri.ts#L309-L311
+    this._assetsUri = vscode.Uri.file(_assetsPath);
   }
 
   public async resolveWebviewView(
@@ -55,6 +58,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
+    console.log(
+      `Initialising webview. Assets URI: ${this._assetsUri}; Extension URI: ${this._extensionUri}`
+    );
 
     webviewView.webview.options = {
       // Allow scripts in the webview
