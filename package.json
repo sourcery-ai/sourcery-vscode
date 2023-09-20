@@ -342,10 +342,6 @@
 					"when": "sourcery.features.coding_assistant"
 				},
 				{
-					"command": "sourcery.chat.toggleCodeLens",
-					"when": "sourcery.features.coding_assistant"
-				},
-				{
 					"command": "sourcery.scan.selectLanguage",
 					"when": "false"
 				},
