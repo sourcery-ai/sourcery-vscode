@@ -58,7 +58,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
-    console.log(`Initialising webview. Assets URI: ${this._assetsUri}; Extension URI: ${this._extensionUri}`);
+    console.log(
+      `Initialising webview. Assets URI: ${this._assetsUri}; Extension URI: ${this._extensionUri}`
+    );
 
     webviewView.webview.options = {
       // Allow scripts in the webview
