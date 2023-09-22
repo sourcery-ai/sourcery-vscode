@@ -7,17 +7,18 @@
 # and click the button to log in.
 
 # Or, open the command palette (Ctrl/Cmd+Shift+P) and
-# execute `Sourcery: login`.
+# execute `Sourcery: Login`.
 
 # Sourcery works in 2 ways:
 # 1. Gives you instant suggestions for improvements and
 # refactorings to your Python, JavaScript, and TypeScript
-# code. All of this runs fully locally
-# 2. Acts as a pair programmer allowing you to ask it
-# questions, write new code, and interact with existing code.
+# code. All of this runs fully locally.
+# 2. Acts as an AI powered pair programmer allowing you to ask it
+# questions, write new code, and interact with existing code. This
+# piece of Sourcery does not run locally.
 
-# To start using the pair programmer seection of Sourcery,
-# click the Sourcery sidebar option and click the Opt In button.
+# To start using the pair programmer section of Sourcery,
+# click the Sourcery sidebar option and click the Opt In button. 
 
 # Now you can start asking Sourcery questions or asking it
 # to interact with sections of your code. Let's take a look
@@ -26,7 +27,8 @@
 # Above each function you'll see a few commands - these are
 # Code Lenses that you can use to interact with Sourcery. 
 # Try clicking the "Ask Sourcery" Code Lens and asking it to
-# update the code to use `dateutil`
+# update the code to use `dateutil`. The answer will appear in
+# the Sourcery sidebar chat.
 
 
 def days_between_dates(date1, date2):
@@ -42,7 +44,7 @@ def days_between_dates(date1, date2):
 # Sourcery has a series of built in "recipes" you can quickly use
 # to interact with sections of code. 
 
-# Try clicking the Explain Code lens above this next function:
+# Try clicking the Generate Docstrings lens above this next function:
 
 def calculate_weighted_moving_average(prices, weights):
     if not prices or not weights:
@@ -61,7 +63,7 @@ def calculate_weighted_moving_average(prices, weights):
     
     return wma
 
-# Now try clicking Generate Tests or Generate Docstrings for the
+# Now try clicking Generate Tests or Explain Code for the
 # same function!
 
 # There are also recipes for Optimizing and Simplifying Code.
@@ -144,3 +146,4 @@ def is_powerful(magic):
 def print_all(spells: list):
     for i in range(len(spells)):
         print(spells[i])
+        
