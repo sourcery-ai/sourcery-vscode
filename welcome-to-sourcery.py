@@ -17,7 +17,7 @@
 # questions, write new code, and interact with existing code.
 
 # To start using the pair programmer seection of Sourcery,
-# click the Sourcery sidebar option and clic the Opt In button.
+# click the Sourcery sidebar option and click the Opt In button.
 
 # Now you can start asking Sourcery questions or asking it
 # to interact with sections of your code. Let's take a look
