@@ -146,4 +146,3 @@ def is_powerful(magic):
 def print_all(spells: list):
     for i in range(len(spells)):
         print(spells[i])
-        
