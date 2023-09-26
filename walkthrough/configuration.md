@@ -39,6 +39,23 @@ github:
 
 Here is the full list of configurable settings
 
+## Enabling or Disabling the Coding Assistant
+You can control whether or not the Sourcery Coding Assistant (Chat, Recipes, & Code Reviews) is enabled through your user level `sourcery.yaml` file or your project level `.sourcery.yaml` file.
+
+To enable the coding assistant add in the following lines:
+
+```yaml
+coding_assistant:
+  enabled: True
+```
+
+To disable it, update the code above to:
+
+```yaml
+coding_assistant:
+  enabled: False
+```
+
 ## Ignoring Paths or Files
 
 Any path or file you specify to be ignored will be ignored both in your IDE & in
@@ -290,8 +307,3 @@ For example:
 github:
   sourcery_branch: sourcery/{base_branch}
 ```
-
-## Advanced Features
-
-For refactorings related to the detect clones feature please see our section on
-[Advanced Features](https://docs.sourcery.ai/Advanced-Features.md)
