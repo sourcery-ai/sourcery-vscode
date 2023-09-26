@@ -1,13 +1,78 @@
 
-# Welcome to Sourcery!
+# Welcome to Sourcery! We're here to be your pair programmer
+# anytime you're working in VS Code.
 
-# To get started log into your Sourcery account.
-# Open the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: login`.
+# To get started log into your Sourcery account. Click on
+# the Sourcery logo (the hexagon) on your VS Code sidebar
+# and click the button to log in.
 
-# We're here to help you write cleaner, clearer code.
-# When you log in to Sourcery you'll start to see parts 
-# of your code like this start to get underlined. 
-# This means Sourcery has a suggestion.
+# Or, open the command palette (Ctrl/Cmd+Shift+P) and
+# execute `Sourcery: Login`.
+
+# Sourcery works in 2 ways:
+# 1. Gives you instant suggestions for improvements and
+# refactorings to your Python, JavaScript, and TypeScript
+# code. All of this runs fully locally.
+# 2. Acts as an AI powered pair programmer allowing you to ask it
+# questions, write new code, and interact with existing code. This
+# piece of Sourcery does not run locally.
+
+# To start using the pair programmer section of Sourcery,
+# click the Sourcery sidebar option and click the Opt In button. 
+
+# Now you can start asking Sourcery questions or asking it
+# to interact with sections of your code. Let's take a look
+# at a few examples:
+
+# Above each function you'll see a few commands - these are
+# Code Lenses that you can use to interact with Sourcery. 
+# Try clicking the "Ask Sourcery" Code Lens and asking it to
+# update the code to use `dateutil`. The answer will appear in
+# the Sourcery sidebar chat.
+
+
+def days_between_dates(date1, date2):
+    d1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
+    d2 = datetime.datetime.strptime(date2, '%Y-%m-%d').date()
+    delta = d2 - d1
+    return delta.days
+
+# With the Ask Sourcery command or the chat in the sidebar you
+# can ask Sourcery questions, have it write new code for you, or
+# update existing code.
+
+# Sourcery has a series of built in "recipes" you can quickly use
+# to interact with sections of code. 
+
+# Try clicking the Generate Docstrings lens above this next function:
+
+def calculate_weighted_moving_average(prices, weights):
+    if not prices or not weights:
+        raise ValueError("Both prices and weights must be provided.")
+    
+    if len(weights) > len(prices):
+        raise ValueError("Length of weights must be less than or equal to length of prices.")
+    
+    total_weight = sum(weights)
+    normalized_weights = [w / total_weight for w in weights]
+    
+    wma = []
+    for i in range(len(prices) - len(weights) + 1):
+        weighted_sum = sum(prices[i + j] * normalized_weights[j] for j in range(len(weights)))
+        wma.append(weighted_sum)
+    
+    return wma
+
+# Now try clicking Generate Tests or Explain Code for the
+# same function!
+
+# There are also recipes for Optimizing and Simplifying Code.
+# You can access these by clicking Ask Sourcery and choosing them
+# from the dropdown or by selecting a section of code and clicking
+# the recipe button in the sidebar.
+
+# In your code you'll also see sections start to get underlined.
+# This means Sourcery has a suggestion to improve it.
 
 def refactoring_example(spellbook):
     result = []
@@ -53,25 +118,10 @@ def magical_hoist(magic):
 #    the VS Code window) to bring up the Sourcery Hub. Click on "Settings" and
 #    then you can toggle individual rule types on or off
 
-# You can also have Sourcery review multiple files at once or check for
-# duplicate code across your project. Right click on any file or folder
-# in the Explorer window, choose the Sourcery menu item and choose
-# "Scan for refactorings" or "Detect Clones".
-
-# Both of these advanced features require you to login.
-# Open the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: login`.
-
-# If you want to have Sourcery review more of your code at once you should check
-# out the Sourcery CLI. Run `pip install sourcery-cli` to get started, then run
-# `sourcery login` and finally run `sourcery review <path>` to have Sourcery 
-# check all of the files in that path
-
 # For more details check out our documentation here:
 # https://docs.sourcery.ai/
 
-# Now open up some Python files and look out for the suggestions!
-
-# Or if you want to play around a bit more, here are some more examples.
+# If you want to play around a bit more, here are some more examples of Sourcery's in-line suggestions.
 # These include cases where Sourcery has chained together suggestions to come
 # up with more powerful refactorings.
 
