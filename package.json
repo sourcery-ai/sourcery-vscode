@@ -84,7 +84,7 @@
 					{
 						"id": "sourcery.login",
 						"title": "Login",
-						"description": "Unlock all of Sourcery's features, including 14 a day trial of Sourcery Pro\n[Login](command:sourcery.login)",
+						"description": "Unlock all of Sourcery's features, including a 14 day trial of Sourcery Pro\n[Login](command:sourcery.login)",
 						"media": {
 							"markdown": "walkthrough/login.md"
 						},
@@ -95,7 +95,7 @@
 					{
 						"id": "sourcery.openWelcomeFile",
 						"title": "Explore Sourcery",
-						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Ask Sourcery a question to improve your code. \n You can enable or disable the Sourcery Code Lenses(command:sourcery.chat.toggleCodeLens) above code for easy access.",
+						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Ask Sourcery a question to improve your code. \n You can enable or disable the Sourcery Code Lenses above code for easy access. \n[Toggle Code Lens](command:sourcery.chat.toggleCodeLens)\n",
 						"media": {
 							"markdown": "walkthrough/view_welcome_file.md"
 						},
@@ -106,7 +106,7 @@
 					{
 						"id": "sourcery.acceptRecommendation",
 						"title": "Use Sourcery's In-Line Suggestions",
-						"description": "Sourcery suggests ways to improve your code quality while you work. Put your cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n Take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
+						"description": "Sourcery suggests ways to improve your code quality while you work. Put your cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n To see this in action scroll down to the `refactoring_example` function and take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
 						"media": {
 							"markdown": "walkthrough/accept_recommendation.md"
 						},

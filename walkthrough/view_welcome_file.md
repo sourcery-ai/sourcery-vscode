@@ -4,7 +4,7 @@ Sourcery works in 2 ways:
 1. Gives you instant suggestions for improvements and refactorings to your Python, JavaScript, and TypeScript code.
 2. Acts as an AI powered pair programmer allowing you to ask it questions, write new code, and interact with existing code
 
-Let's take a look at how you can use interact with it in VS Code
+Let's take a look at how you can interact with it in VS Code
 
 ### In the tutorial
 
