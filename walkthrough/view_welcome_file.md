@@ -1,34 +1,28 @@
-## Finding Your First Refactoring
+## Using Sourcery as Your Pair Programmer
 
-Sourcery continually checks your code and looks for opportunities to refactor it
-to make it clearer, cleaner, and easier to work with. In your IDE, Sourcery will
-underline or highlight any section of code where it can make a refactoring. 
+Sourcery works in 2 ways:
+1. Gives you instant suggestions for improvements and refactorings to your Python, JavaScript, and TypeScript code.
+2. Acts as an AI powered pair programmer allowing you to ask it questions, write new code, and interact with existing code
+
+Let's take a look at how you can interact with it in VS Code
 
 ### In the tutorial
 
 Once you open the tutorial you should see this example:
 
 ```python
-def refactoring_example(spellbook):
-    result = []
-    for spell in spellbook:
-        if spell.is_awesome:
-            result.append(spell)
-    return result
+def days_between_dates(date1, date2):
+    d1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
+    d2 = datetime.datetime.strptime(date2, '%Y-%m-%d').date()
+    delta = d2 - d1
+    return delta.days
 ```
 
-You should see Sourcery immediately highlight the `result = []` line with a
-refactoring suggestion.
+Above the function you'll see a few commands - these are Code Lenses that you can use to interact with Sourcery.  Try clicking the "Ask Sourcery" Code Lens and asking it to update the code to use `dateutil`. The answer will appear in the Sourcery sidebar chat.
 
-Hover your mouse over the underlined section to see a description of the change
-and a diff of Sourcery's refactoring.
+![Sourcery updating code](Ask_Sourcery.gif)
 
-To accept one of Sourcery's changes, bring up the code actions/quick fix menu,
-and choose to apply the changes. Or you can click on the lightbulb icon to apply
-the changes.
+### More ways Sourcery can help
 
-![Accepting Changes In VS Code](Sourcery_3_Ways_to_Refactor_VS_Code.gif)
-
-You can also bring up all of the changes Sourcery is suggesting to your open
-files by opening up the Problems window.
+Sourcery can interact with your code in a number of other ways. On the same function try clicking the `Generate Docstrings`, `Generate Tests`, and `Explain Code`Code Lenses.
 

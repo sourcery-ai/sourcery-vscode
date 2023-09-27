@@ -84,7 +84,7 @@
 					{
 						"id": "sourcery.login",
 						"title": "Login",
-						"description": "Unlock all of Sourcery's features, including 14 a day trial of Sourcery Pro\n[Login](command:sourcery.login)",
+						"description": "Unlock all of Sourcery's features, including a 14 day trial of Sourcery Pro\n[Login](command:sourcery.login)",
 						"media": {
 							"markdown": "walkthrough/login.md"
 						},
@@ -94,8 +94,8 @@
 					},
 					{
 						"id": "sourcery.openWelcomeFile",
-						"title": "Get your first recommendation",
-						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Put the cursor over the underlined code to see the refactoring suggestion. \n You can see all Sourcery's recommendations in the [Problems Pane](command:workbench.actions.view.problems)",
+						"title": "Explore Sourcery",
+						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Ask Sourcery a question to improve your code. \n You can enable or disable the Sourcery Code Lenses above code for easy access. \n[Toggle Code Lens](command:sourcery.chat.toggleCodeLens)\n",
 						"media": {
 							"markdown": "walkthrough/view_welcome_file.md"
 						},
@@ -105,8 +105,8 @@
 					},
 					{
 						"id": "sourcery.acceptRecommendation",
-						"title": "Accept your first recommendation",
-						"description": "Put the cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n Take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
+						"title": "Use Sourcery's In-Line Suggestions",
+						"description": "Sourcery suggests ways to improve your code quality while you work. Put your cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n To see this in action scroll down to the `refactoring_example` function and take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
 						"media": {
 							"markdown": "walkthrough/accept_recommendation.md"
 						},
@@ -123,25 +123,6 @@
 						},
 						"completionEvents": [
 							"onCommand:sourcery.config.create"
-						]
-					},
-					{
-						"id": "sourcery.customRules",
-						"title": "Add custom rules",
-						"description": "You can add your own custom rules to Sourcery!\nFollow the tutorial to find out how.",
-						"media": {
-							"markdown": "walkthrough/custom_rules_tutorial.md"
-						}
-					},
-					{
-						"id": "sourcery.advancedFeatures",
-						"title": "Advanced Features",
-						"description": "With a Sourcery Pro account you can use Sourcery's advanced features on any project. Otherwise, you can use them on any open source project. \nThese include:\nRight click on a folder and choose 'Sourcery - Scan for refactorings'\n\n You can also try out 'Sourcery - Detect Clones' to find duplicate or near-duplicate code\nTo find out about our Team plan, including pre-commit hook and CLI:\n[Open our documentation](https://docs.sourcery.ai/Plans/Sourcery-Team/)\n",
-						"media": {
-							"markdown": "walkthrough/refactoring_scan.md"
-						},
-						"completionEvents": [
-							"onCommand:sourcery.refactor.workspace"
 						]
 					}
 				]

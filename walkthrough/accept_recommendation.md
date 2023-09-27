@@ -1,3 +1,10 @@
+## In-Line Suggestions
+In addition to interacting with Sourcery through chat or through recipes and code lenses, Sourcery will also passively review your code and make suggestions to improve your code quality, readability, and maintainability.
+
+In Python, JavaScript, and TypeScript files you'll start to see Sourcery underline sections of your code where it has a reccomendation. You can hover over these underlined pieces of code to see the suggestion Sourcery is proposing.
+
+![Refactoring code with Sourcery](Sourcery_3_Ways_to_Refactor_VS_Code.gif)
+
 ### Accept a Suggestion
 
 To accept a suggestion you can:
