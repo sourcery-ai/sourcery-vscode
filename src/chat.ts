@@ -128,19 +128,34 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     if (linkType === "url") {
       vscode.env.openExternal(vscode.Uri.parse(link));
     } else {
-      let path = vscode.Uri.file(link);
+      // Split link on ":" into path and line
+      let [path, line] = link.split(":");
+      let lineNumber: number | undefined;
 
+      // Check if line was provided
+      if (line) {
+        // Parse line as number
+        lineNumber = parseInt(line);
+      }
       // Make the path relative to the workspace root
-      if (!link.startsWith("/")) {
+      if (!path.startsWith("/")) {
         const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceRoot) {
-          path = vscode.Uri.joinPath(workspaceRoot, link);
+          path = vscode.Uri.joinPath(workspaceRoot, path);
         }
       }
 
       if (linkType === "file") {
         // Open the file in the editor
-        vscode.commands.executeCommand("vscode.open", path);
+        let openPath = vscode.Uri.parse(path);
+        vscode.workspace.openTextDocument(openPath).then((doc) => {
+          vscode.window.showTextDocument(doc).then((editor) => {
+            if (line) {
+              let range = new vscode.Range(lineNumber, 0, lineNumber, 0);
+              editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+            }
+          });
+        });
       } else {
         // Reveal the directory in the explorer
         vscode.commands.executeCommand("revealInExplorer", path);
