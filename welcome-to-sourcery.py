@@ -1,35 +1,16 @@
+# Welcome to Sourcery! We're here to be your pair programmer anytime you're
+# working in VS Code.
 
-# Welcome to Sourcery! We're here to be your pair programmer
-# anytime you're working in VS Code.
-
-# To get started log into your Sourcery account. Click on
-# the Sourcery logo (the hexagon) on your VS Code sidebar
-# and click the button to log in.
-
-# Or, open the command palette (Ctrl/Cmd+Shift+P) and
-# execute `Sourcery: Login`.
+# To get started log into your Sourcery account. Click on the Sourcery logo
+# (the hexagon) on your VS Code sidebar and click the login button, or open
+# the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: Login`.
 
 # Sourcery works in 2 ways:
-# 1. Gives you instant suggestions for improvements and
-# refactorings to your Python, JavaScript, and TypeScript
-# code. All of this runs fully locally.
-# 2. Acts as an AI powered pair programmer allowing you to ask it
-# questions, write new code, and interact with existing code. This
-# piece of Sourcery does not run locally.
-
-# To start using the pair programmer section of Sourcery,
-# click the Sourcery sidebar option and click the Opt In button. 
-
-# Now you can start asking Sourcery questions or asking it
-# to interact with sections of your code. Let's take a look
-# at a few examples:
-
-# Above each function you'll see a few commands - these are
-# Code Lenses that you can use to interact with Sourcery. 
-# Try clicking the "Ask Sourcery" Code Lens and asking it to
-# update the code to use `dateutil`. The answer will appear in
-# the Sourcery sidebar chat.
-
+# 1. A cloud-based AI powered coding assistant allowing you to ask it
+#    questions, write new code, and interact with existing code. To get 
+#    started opt in via the Sourcery sidebar.
+# 2. Local analysis to give you instant suggestions for improving your
+#    Python, JavaScript, and TypeScript code.
 
 def days_between_dates(date1, date2):
     d1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
@@ -37,13 +18,16 @@ def days_between_dates(date1, date2):
     delta = d2 - d1
     return delta.days
 
-# With the Ask Sourcery command or the chat in the sidebar you
-# can ask Sourcery questions, have it write new code for you, or
-# update existing code.
+# Let's start with the coding assistant:
+# Above each function you'll see a few commands - these are Code Lenses that
+# you can use to interact with Sourcery. Try clicking on "Ask Sourcery" and
+# asking it to update the code to use `dateutil`. The answer will appear in
+# the Sourcery sidebar chat.
 
-# Sourcery has a series of built in "recipes" you can quickly use
-# to interact with sections of code. 
+# With the Ask Sourcery command or the chat in the sidebar you can ask Sourcery
+# questions, have it write new code for you, or update existing code.
 
+# Sourcery also has a series of "recipes" to do different things with code.
 # Try clicking the Generate Docstrings lens above this next function:
 
 def calculate_weighted_moving_average(prices, weights):
@@ -63,13 +47,12 @@ def calculate_weighted_moving_average(prices, weights):
     
     return wma
 
-# Now try clicking Generate Tests or Explain Code for the
-# same function!
+# Now try clicking Generate Tests or Explain Code for the same function!
 
-# There are also recipes for Optimizing and Simplifying Code.
-# You can access these by clicking Ask Sourcery and choosing them
-# from the dropdown or by selecting a section of code and clicking
-# the recipe button in the sidebar.
+# There are also recipes for Optimizing Performance and Simplifying Code.
+# You can access these by clicking Ask Sourcery and choosing them from the 
+# dropdown or by selecting a section of code and clicking the recipe button 
+# in the sidebar.
 
 # In your code you'll also see sections start to get underlined.
 # This means Sourcery has a suggestion to improve it.
