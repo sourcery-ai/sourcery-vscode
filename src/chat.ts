@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 import { getCodingAssistantAssetsPath } from "./executable";
+import * as path from "path";
 
 export type Recipe = {
   id: string;
@@ -130,18 +131,18 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     if (linkType === "url") {
       vscode.env.openExternal(vscode.Uri.parse(link));
     } else {
-      let path = vscode.Uri.file(link);
+      let filePath = vscode.Uri.file(link);
       // Make the path relative to the workspace root
-      if (!link.startsWith("/")) {
+      if (!path.isAbsolute(link)) {
         const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceRoot) {
-          path = vscode.Uri.joinPath(workspaceRoot, link);
+          filePath = vscode.Uri.joinPath(workspaceRoot, link);
         }
       }
 
       if (linkType === "file") {
         // Open the file in the editor
-        vscode.workspace.openTextDocument(path).then((doc) => {
+        vscode.workspace.openTextDocument(filePath).then((doc) => {
           vscode.window.showTextDocument(doc).then((editor) => {
             if (lineNumber) {
               let range = new vscode.Range(lineNumber, 0, lineNumber, 0);
