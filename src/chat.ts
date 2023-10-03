@@ -145,8 +145,16 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         vscode.workspace.openTextDocument(filePath).then((doc) => {
           vscode.window.showTextDocument(doc).then((editor) => {
             if (lineNumber) {
-              let range = new vscode.Range(lineNumber, 0, lineNumber, 0);
-              editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+              editor.selection = new vscode.Selection(
+                lineNumber,
+                0,
+                lineNumber,
+                0
+              );
+              editor.revealRange(
+                editor.selection,
+                vscode.TextEditorRevealType.InCenter
+              );
             }
           });
         });
