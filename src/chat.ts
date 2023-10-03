@@ -8,6 +8,16 @@ export type Recipe = {
   name: string;
 };
 
+type DocumentPosition = {
+  line: number;
+  character: number;
+};
+
+type DocumentRange = {
+  start: DocumentPosition;
+  end: DocumentPosition;
+};
+
 // Requests handled by the extension
 export type ExtensionMessage =
   | {
@@ -120,13 +130,13 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private handleOpenLinkRequest({
     link,
     linkType,
-    lineNumber,
+    documentRange,
   }: {
     target: "extension";
     request: "openLink";
     linkType: "url" | "file" | "directory";
     link: string;
-    lineNumber: number | undefined;
+    documentRange: DocumentRange | null;
   }) {
     if (linkType === "url") {
       vscode.env.openExternal(vscode.Uri.parse(link));
@@ -144,12 +154,12 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         // Open the file in the editor
         vscode.workspace.openTextDocument(filePath).then((doc) => {
           vscode.window.showTextDocument(doc).then((editor) => {
-            if (lineNumber) {
+            if (documentRange) {
               editor.selection = new vscode.Selection(
-                lineNumber,
-                0,
-                lineNumber,
-                0
+                documentRange.start.line,
+                documentRange.start.character,
+                documentRange.end.line,
+                documentRange.end.character
               );
               editor.revealRange(
                 editor.selection,
