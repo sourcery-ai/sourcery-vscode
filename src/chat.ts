@@ -1,10 +1,21 @@
 import * as vscode from "vscode";
 import { randomBytes } from "crypto";
 import { getCodingAssistantAssetsPath } from "./executable";
+import * as path from "path";
 
 export type Recipe = {
   id: string;
   name: string;
+};
+
+type DocumentPosition = {
+  line: number;
+  character: number;
+};
+
+type DocumentRange = {
+  start: DocumentPosition;
+  end: DocumentPosition;
 };
 
 // Requests handled by the extension
@@ -119,31 +130,47 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private handleOpenLinkRequest({
     link,
     linkType,
+    documentRange,
   }: {
     target: "extension";
     request: "openLink";
     linkType: "url" | "file" | "directory";
     link: string;
+    documentRange: DocumentRange | null;
   }) {
     if (linkType === "url") {
       vscode.env.openExternal(vscode.Uri.parse(link));
     } else {
-      let path = vscode.Uri.file(link);
-
+      let filePath = vscode.Uri.file(link);
       // Make the path relative to the workspace root
-      if (!link.startsWith("/")) {
+      if (!path.isAbsolute(link)) {
         const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceRoot) {
-          path = vscode.Uri.joinPath(workspaceRoot, link);
+          filePath = vscode.Uri.joinPath(workspaceRoot, link);
         }
       }
 
       if (linkType === "file") {
         // Open the file in the editor
-        vscode.commands.executeCommand("vscode.open", path);
+        vscode.workspace.openTextDocument(filePath).then((doc) => {
+          vscode.window.showTextDocument(doc).then((editor) => {
+            if (documentRange) {
+              editor.selection = new vscode.Selection(
+                documentRange.start.line,
+                documentRange.start.character,
+                documentRange.end.line,
+                documentRange.end.character
+              );
+              editor.revealRange(
+                editor.selection,
+                vscode.TextEditorRevealType.InCenter
+              );
+            }
+          });
+        });
       } else {
         // Reveal the directory in the explorer
-        vscode.commands.executeCommand("revealInExplorer", path);
+        vscode.commands.executeCommand("revealInExplorer", link);
       }
     }
   }
