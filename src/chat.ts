@@ -170,7 +170,17 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         });
       } else {
         // Reveal the directory in the explorer
-        vscode.commands.executeCommand("revealInExplorer", filePath);
+        vscode.commands
+          .executeCommand("revealInExplorer", filePath)
+          .then(() =>
+            // This is a little hack.
+            // 
+            // There's some issue with the revealInExplorer command which means when the panel changes 
+            // (e.g. from sourcery to the explorer) the instruction to actually focus the file path
+            // seems to get dropped. By calling it again (after the first command succeeds) we can 
+            // make sure the file actually gets navigated to.
+            vscode.commands.executeCommand("revealInExplorer", filePath)
+          );
       }
     }
   }
