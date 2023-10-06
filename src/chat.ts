@@ -170,7 +170,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         });
       } else {
         // Reveal the directory in the explorer
-        vscode.commands.executeCommand("revealInExplorer", link);
+        vscode.commands.executeCommand("revealInExplorer", filePath);
       }
     }
   }
