@@ -125,8 +125,9 @@ function registerNotifications({
     commands.executeCommand(command, ...args);
   });
 
-  languageClient.onNotification("sourcery/vscode/showSettings", () => {
-    commands.executeCommand("workbench.action.openSettings", "sourcery");
+  languageClient.onNotification("sourcery/vscode/showSettings", (params) => {
+    console.log(params.section);
+    commands.executeCommand("workbench.action.openSettings", params.section);
   });
 
   languageClient.onNotification("sourcery/vscode/scanResults", (params) => {
