@@ -58,10 +58,7 @@ def calculate_weighted_moving_average(prices, weights):
 # This means Sourcery has a suggestion to improve it.
 
 def refactoring_example(spellbook):
-    result = []
-    for spell in spellbook:
-        if spell.is_awesome:
-            result.append(spell)
+    result = [spell for spell in spellbook if spell.is_awesome]
     print(result)
 
 # Hover over the underlined code to see details of the changes including a diff.
@@ -79,11 +76,9 @@ def refactoring_example(spellbook):
 # code quality - hover over the function definition below to see this report.
 
 def magical_hoist(magic):
-    if is_powerful(magic):
-        result = 'Magic'
-    else:
+    if not is_powerful(magic):
         print("Not powerful.")
-        result = 'Magic'
+    result = 'Magic'
     print(result)
 
 # What if we don't want to make the change Sourcery suggests?
@@ -109,23 +104,13 @@ def magical_hoist(magic):
 # up with more powerful refactorings.
 
 def find_more(magicks):
-    powerful_magic = []
-    for magic in magicks:
-        if not is_powerful(magic):
-            continue
-        powerful_magic.append(magic)
-    return powerful_magic
+    return [magic for magic in magicks if is_powerful(magic)]
 
 
 def is_powerful(magic):
-    if magic == 'Sourcery':
-        return True
-    elif magic == 'More Sourcery':
-        return True
-    else:
-        return False
+    return magic in ['Sourcery', 'More Sourcery']
 
 
 def print_all(spells: list):
-    for i in range(len(spells)):
-        print(spells[i])
+    for spell in spells:
+        print(spell)
