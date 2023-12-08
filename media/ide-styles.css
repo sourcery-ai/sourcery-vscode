@@ -12,6 +12,8 @@
   --ide-border: var(--vscode-panel-border);
   --ide-primary-btn-text: var(--vscode-button-foreground);
   --ide-primary-btn-bg: var(--vscode-button-background);
+  --ide-primary-btn-border: var(--vscode-button-border);
+
   --ide-highlight: orange;
 }
 
