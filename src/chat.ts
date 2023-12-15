@@ -40,9 +40,10 @@ export type ExtensionMessage =
   | {
       target: "extension";
       request: "updateConfiguration";
-      section: string;
-      value: any;
-      configurationTarget: boolean;
+      section: "sourcery.codeLens";
+      value: boolean;
+      // https://code.visualstudio.com/api/references/vscode-api#ConfigurationTarget
+      configurationTarget: vscode.ConfigurationTarget;
     };
 
 type LanguageServerMessage = {
