@@ -209,7 +209,11 @@ function registerCommands(
     commands.registerCommand("sourcery.chat.toggleCodeLens", () => {
       const config = vscode.workspace.getConfiguration();
       const currentValue = config.get("sourcery.codeLens");
-      config.update("sourcery.codeLens", !currentValue, vscode.ConfigurationTarget.Global);
+      config.update(
+        "sourcery.codeLens",
+        !currentValue,
+        vscode.ConfigurationTarget.Global
+      );
     })
   );
 
