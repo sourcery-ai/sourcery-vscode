@@ -25,6 +25,7 @@ export type ExtensionMessage =
       request: "openLink";
       linkType: "url" | "file" | "directory";
       link: string;
+      documentRange: DocumentRange | null;
     }
   | {
       target: "extension";
@@ -35,6 +36,14 @@ export type ExtensionMessage =
       target: "extension";
       request: "insertAtCursor";
       content: string;
+    }
+  | {
+      target: "extension";
+      request: "updateConfiguration";
+      section: "sourcery.codeLens";
+      value: boolean;
+      // https://code.visualstudio.com/api/references/vscode-api#ConfigurationTarget
+      configurationTarget: vscode.ConfigurationTarget;
     };
 
 type LanguageServerMessage = {
@@ -106,6 +115,15 @@ export class ChatProvider implements vscode.WebviewViewProvider {
               case "insertAtCursor": {
                 this.handleInsertAtCursorRequest(message);
                 break;
+              }
+              case "updateConfiguration": {
+                await vscode.workspace
+                  .getConfiguration()
+                  .update(
+                    message.section,
+                    message.value,
+                    message.configurationTarget
+                  );
               }
             }
         }
