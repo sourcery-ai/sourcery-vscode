@@ -104,6 +104,14 @@
 						]
 					},
 					{
+						"id": "sourcery.codeReviews",
+						"title": "Review Your PRs with Sourcery",
+						"description": "Add Sourcery to your GitHub repos to get instant, in depth code reviews on every pull request.",
+						"media": {
+							"markdown": "walkthrough/code_reviews.md"
+						}
+					},					
+					{
 						"id": "sourcery.acceptRecommendation",
 						"title": "Use Sourcery's In-Line Suggestions",
 						"description": "Sourcery suggests ways to improve your code quality while you work. Put your cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n To see this in action scroll down to the `refactoring_example` function and take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
