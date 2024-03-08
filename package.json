@@ -106,7 +106,7 @@
 					{
 						"id": "sourcery.codeReviews",
 						"title": "Review Your PRs with Sourcery",
-						"description": "Add Sourcery to your GitHub repos to get instant, in depth code reviews on every pull request.",
+						"description": "Add Sourcery to your GitHub repos to get instant, in depth code reviews on every pull request.\n[Add to GitHub](https://github.com/apps/sourcery-ai/installations/new)\n",
 						"media": {
 							"markdown": "walkthrough/code_reviews.md"
 						}
