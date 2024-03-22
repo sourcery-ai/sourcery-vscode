@@ -8,7 +8,7 @@
 		"url": "https://github.com/sourcery-ai/public/issues"
 	},
 	"license": "MIT",
-	"version": "1.15.1-dev.1",
+	"version": "1.16.0",
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
@@ -110,7 +110,7 @@
 						"media": {
 							"markdown": "walkthrough/code_reviews.md"
 						}
-					},					
+					},
 					{
 						"id": "sourcery.acceptRecommendation",
 						"title": "Use Sourcery's In-Line Suggestions",
