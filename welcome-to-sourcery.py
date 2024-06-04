@@ -5,12 +5,12 @@
 # (the hexagon) on your VS Code sidebar and click the login button, or open
 # the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: Login`.
 
-# Sourcery works in 2 ways:
-# 1. A cloud-based AI powered coding assistant allowing you to ask it
-#    questions, write new code, and interact with existing code. To get 
-#    started opt in via the Sourcery sidebar.
-# 2. Local analysis to give you instant suggestions for improving your
-#    Python, JavaScript, and TypeScript code.
+# Let's start with the coding assistant - to get started, opt in via the Sourcery sidebar.
+
+# The `Review` tab allows you to get a code review straight away in your IDE.
+# You can choose between reviewing your current uncommitted changes and reviewing
+# the changes between your current branch and the default branch.
+# (Note that this will only work on code that is under Git version control).
 
 def days_between_dates(date1, date2):
     d1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
@@ -18,7 +18,7 @@ def days_between_dates(date1, date2):
     delta = d2 - d1
     return delta.days
 
-# Let's start with the coding assistant:
+# Now let's move on to the `Chat` tab.
 # Above each function you'll see a few commands - these are Code Lenses that
 # you can use to interact with Sourcery. Try clicking on "Ask Sourcery" and
 # asking it to update the code to use `dateutil`. The answer will appear in
