@@ -95,7 +95,7 @@
 					{
 						"id": "sourcery.openWelcomeFile",
 						"title": "Explore Sourcery",
-						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n Ask Sourcery a question to improve your code. \n You can enable or disable the Sourcery Code Lenses above code for easy access. \n[Toggle Code Lens](command:sourcery.chat.toggleCodeLens)\n",
+						"description": "Get started by opening our tutorial \n[Open tutorial](command:toSide:sourcery.welcome.open)\n This will show you how to get code reviews straight in your IDE, as well as use the chat to ask questions \n You can enable or disable the Sourcery Code Lenses above code for easy access. \n[Toggle Code Lens](command:sourcery.chat.toggleCodeLens)\n",
 						"media": {
 							"markdown": "walkthrough/view_welcome_file.md"
 						},
