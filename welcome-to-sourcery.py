@@ -5,7 +5,7 @@
 # (the hexagon) on your VS Code sidebar and click the login button, or open
 # the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: Login`.
 
-# Let's start looking at how your can get a code review from Sourcery.
+# Let's start looking at how you can get a code review from Sourcery.
 
 # The `Review` tab allows you to get a code review straight away in your IDE.
 # You can choose between reviewing your current uncommitted changes and reviewing
