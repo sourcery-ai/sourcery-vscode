@@ -28,7 +28,7 @@ Here are some of the features Sourcery offers to help improve your code:
 - [Code reviews anytime, in IDE](#code-reviews-on-demand)
 - [GitHub & GitLab Pull Request reviews](#github-pull-request-review)
 - [Real-time refactoring suggestions](#real-time-refactoring-suggestions)
-- [Set up your own rules - or use public rulesets](#set-up-your-own-rules---or-use-pulic-rulesets)
+- [Set up your own rules - or use public rulesets](#set-up-your-own-rules---or-use-public-rulesets)
 - [Continuous code quality feedback](#continuous-code-quality-feedback)
 
 
