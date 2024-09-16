@@ -5,12 +5,22 @@
 # (the hexagon) on your VS Code sidebar and click the login button, or open
 # the command palette (Ctrl/Cmd+Shift+P) and execute `Sourcery: Login`.
 
-# Let's start with the coding assistant - to get started, opt in via the Sourcery sidebar.
+# Let's start looking at how your can get a code review from Sourcery.
 
 # The `Review` tab allows you to get a code review straight away in your IDE.
 # You can choose between reviewing your current uncommitted changes and reviewing
 # the changes between your current branch and the default branch.
 # (Note that this will only work on code that is under Git version control).
+
+# If you want reviews when you open a PR, you can add Sourcery to your GitHub or GitLab repos.
+
+
+# Now let's move on to the `Chat` tab.
+
+# Above each function you'll see a few commands - these are Code Lenses that
+# you can use to interact with Sourcery. Try clicking on "Ask Sourcery" and
+# asking it to update the code to use `dateutil`. The answer will appear in
+# the Sourcery sidebar chat.
 
 def days_between_dates(date1, date2):
     d1 = datetime.datetime.strptime(date1, '%Y-%m-%d').date()
@@ -18,11 +28,6 @@ def days_between_dates(date1, date2):
     delta = d2 - d1
     return delta.days
 
-# Now let's move on to the `Chat` tab.
-# Above each function you'll see a few commands - these are Code Lenses that
-# you can use to interact with Sourcery. Try clicking on "Ask Sourcery" and
-# asking it to update the code to use `dateutil`. The answer will appear in
-# the Sourcery sidebar chat.
 
 # With the Ask Sourcery command or the chat in the sidebar you can ask Sourcery
 # questions, have it write new code for you, or update existing code.

@@ -1,7 +1,7 @@
 {
 	"name": "sourcery",
 	"displayName": "Sourcery",
-	"description": "Refactor Python instantly with Sourcery",
+	"description": "Instant Code Reviews in your IDE",
 	"author": "Sourcery AI",
 	"repository": "https://github.com/sourcery-ai/sourcery-vscode",
 	"bugs": {
@@ -14,6 +14,8 @@
 	"keywords": [
 		"ai",
 		"copilot",
+		"code review",
+		"code quality",
 		"tabnine",
 		"python",
 		"javascript",
@@ -23,12 +25,14 @@
 		"node",
 		"refactor",
 		"refactoring",
+		"review",
 		"typescript"
 	],
 	"engines": {
 		"vscode": "^1.76.0"
 	},
 	"categories": [
+		"AI",
 		"Linters",
 		"Machine Learning",
 		"Other",
@@ -104,23 +108,20 @@
 						]
 					},
 					{
-						"id": "sourcery.codeReviews",
-						"title": "Review Your PRs with Sourcery",
-						"description": "Add Sourcery to your GitHub repos to get instant, in depth code reviews on every pull request.\n[Add to GitHub](https://github.com/apps/sourcery-ai/installations/new)\n",
+						"id": "sourcery.acceptRecommendation",
+						"title": "Get Feedback on Your Current Changes",
+						"description": "Get an instant code review of your current branch or your uncommitted changes to get the type of feedback you expect from a peer review in seconds.",
 						"media": {
 							"markdown": "walkthrough/code_reviews.md"
 						}
-					},
+					},					
 					{
-						"id": "sourcery.acceptRecommendation",
-						"title": "Use Sourcery's In-Line Suggestions",
-						"description": "Sourcery suggests ways to improve your code quality while you work. Put your cursor on an underline, then click the lightbulb or use the quick fix hotkey to show the code actions.\n To see this in action scroll down to the `refactoring_example` function and take the `Sourcery - Convert for loop into list comprehension` option to accept the change.\n",
+						"id": "sourcery.githubCodeReviews",
+						"title": "Review Your PRs with Sourcery",
+						"description": "Add Sourcery to your GitHub repos to get instant, in depth code reviews on every pull request.\n[Add to GitHub](https://github.com/apps/sourcery-ai/installations/new)\n",
 						"media": {
-							"markdown": "walkthrough/accept_recommendation.md"
-						},
-						"completionEvents": [
-							"onContext:acceptRecommendationContextKey"
-						]
+							"markdown": "walkthrough/github_code_reviews.md"
+						}
 					},
 					{
 						"id": "sourcery.configuration",
@@ -232,6 +233,11 @@
 			{
 				"command": "sourcery.effects.disable",
 				"title": "Hide Effects",
+				"category": "Sourcery"
+			},
+			{
+				"command": "sourcery.review",
+				"title": "Review",
 				"category": "Sourcery"
 			}
 		],
