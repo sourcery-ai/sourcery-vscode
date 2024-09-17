@@ -21,17 +21,16 @@ Sourcery is the pair programmer who will help you improve your code. It revie
 
 ## Sourcery
 
-Sourcery is a VS Code extension to help make all of your code cleaner and more readable. Quickly find areas **where your code could be refactored**, see **instant suggestions for improvement**, and understand how new changes impact your **code quality**. 
+Sourcery is a VS Code extension to help you move faster and ship code with confidence. Sourcery gives you code reviews anytime you want, so you can get feedback before you need to open a PR. Plus Sourcery's coding assistant helps you speed up repetitive tasks while you work.
 
 Here are some of the features Sourcery offers to help improve your code:
 
+- [Code reviews anytime, in IDE](#code-reviews-on-demand)
+- [GitHub & GitLab Pull Request reviews](#github-pull-request-review)
 - [Real-time refactoring suggestions](#real-time-refactoring-suggestions)
-- [Set up your own rules - or use public rulesets](#set-up-your-own-rules---or-use-pulic-rulesets)
+- [Set up your own rules - or use public rulesets](#set-up-your-own-rules---or-use-public-rulesets)
 - [Continuous code quality feedback](#continuous-code-quality-feedback)
-- [Multi-file analysis](#multi-file-analysis)
-- [Duplicate code detection](#duplicate-code-detection)
-- [Sourcery CLI, CI, & Pre-Commit Hook options](#sourcery-cli)
-- [GitHub Pull Request reviews](#github-pull-request-review)
+
 
 
 To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/getting-started/).
@@ -45,6 +44,22 @@ To use Sourcery on non open sourced projects you'll need a Sourcery Pro or Sourc
 ---
 
 ## Features
+
+### Code reviews on demand
+
+![Sourcery Code Reviews](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/code_review.png)
+
+Get feedback on your code anytime you want. Sourcery can review your code directly in your IDE, looking at the branch you're currently on or the uncommitted changes you have.
+
+
+
+### GitHub & GitLab Pull Request Review
+
+![Sourcery Reviewing GitHub PRs](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Code_Review.gif)
+
+Sourcery can help you speed up code reviews and clean up every new commit by automatically reviewing each of your GitHub pull requests.
+
+To get started, add [Sourcery to your GitHub repo](https://github.com/apps/sourcery-ai/installations/new) or [GitLab project](https://app.sourcery.ai/login?connection=gitlab). Sourcery will then start reviewing every new pull request automatically!
 
 ### Real-time refactoring suggestions
 
@@ -111,34 +126,6 @@ Sourcery can help you find duplicate code and near-duplicate code across your wh
 Right-click on any item in the Explorer window and select "Sourcery → Detect Clones". Sourcery will show you a notification when it's done scanning for clones & will show you all of the instances of duplication it found in the Problems window.
 
 By default, Sourcery will flag items where at least 3 lines are duplicates or near-duplicates that occur at least twice in the scanned files.
-
-### Sourcery CLI
-
-If you want to clean up a bigger portion of legacy code, Sourcery CLI comes in handy.
-
-- Get started with `pip install sourcery-cli`
-- With the `sourcery review` command, you can scan multiple files or directories for refactorings.
-- With the `-in-place` option, you can apply the suggested refactorings immediately.
-
-![Sourcery CLI](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/sourcery-cli.gif)
-
-With Sourcery CLI, you can also integrate Sourcery with your favorite tools.
-
-#### CI / Pre-Commit Hook options: 
-
-You can use Sourcery to review every new bit of code you and your team are working on by adding Sourcery into your CI or running it as a Pre-Commit Hook.
-
-Sourcery will review every new change and you can set it up to either automatically make changes to your code when it detects opportunities to refactor, or you can just have it notify you when it finds refactorings.
-
-Sourcery is fully free for Open Source projects, the CI and Pre-Commit Hook options require a Sourcery Team subscription for private projects. **[You can sign up for a Team plan here](https://sourcery.ai/team/)**.
-
-### GitHub Pull Request Review
-
-![Sourcery Reviewing GitHub PRs](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_GitHub-Refactor-Branch.gif)
-
-Sourcery can help you speed up code reviews and clean up every new commit by automatically reviewing each of your GitHub pull requests.
-
-To get started, add [Sourcery to your GitHub repo](https://github.com/apps/sourcery-ai/installations/new). Sourcery will then start reviewing every new pull request automatically!
 
 ---
 
@@ -309,10 +296,6 @@ def __getstate__(self):
 
 Copy these examples into a Python file to see how Sourcery would handle them.
 
-
-## Privacy / Security
-
-All of the analysis we do on your code is done fully locally. We never see any of your code or pass it back to our servers in any way. The only thing we collect is some basic analytics about the types of suggestions we make, and information about exceptions in Sourcery. 
 
 ---
 

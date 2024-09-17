@@ -1,10 +1,20 @@
-## Using Sourcery as Your Pair Programmer
+## Sourcery - Your Code Reviewer & Coding Assistant
 
 Sourcery works in 2 ways:
-1. Gives you instant suggestions for improvements and refactorings to your Python, JavaScript, and TypeScript code.
+1. Gives you code reviews while you work. Anytime you want a review just ask Sourcery and it will give you feedback like you'd expect from a peer review.
 2. Acts as an AI powered pair programmer allowing you to ask it questions, write new code, and interact with existing code
 
 Let's take a look at how you can interact with it in VS Code
+
+### Code reviews
+
+Sourcery can review your code directly in your IDE anytime you'd like some feedback. 
+
+Click the Sourcery logo in the sidebar to open the coding assistant and bring up the code review panel.
+
+Then choose the context of the code you want to review, click review, and wait for Sourcery's feedback.
+
+To make the most of Sourcery's reviews you can also add Sourcery to your GitHub or GitLab repos.
 
 ### In the tutorial
 

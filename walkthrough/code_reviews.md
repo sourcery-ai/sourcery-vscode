@@ -1,13 +1,12 @@
-You can add Sourcery to your GitHub or GitLab repos to get immediate code review feedback on every pull/merge request.
+Sourcery can review your code directly in your IDE.
 
-![Sourcery Code Reviews](Sourcery_Code_Review.gif)
+![Sourcery Code Reviews](Sourcery_Code_Review.png)
 
-## GitHub Code Reviews
-You can [directly add the Sourcery GitHub integration](https://github.com/apps/sourcery-ai/installations/new ) to any repo.
+Click the Sourcery logo in the sidebar to open the coding assistant and bring up the code review panel.
 
+Choose the context of the code you want to review.
 
-## GitLab Code Reviews
-You can run Sourcery code reviews as part of your CI to get reviews on every GitLab MR. [Follow the instructions in our documentation](https://docs.sourcery.ai/Code-Review/Getting-Started/GitLab/) to set up Sourcery for GitLab.
+You can choose to review your current branch or your uncommitted changes.
 
-## Code Reviews for Other Platforms
-Sourcery is not yet available for Bitbucket or other platforms, but you can [sign up for our waitlist](https://research.typeform.com/to/GoVM9jYf) to get early access when it's available. 
+Then click review and Sourcery will get to work, giving you feedback.
+
