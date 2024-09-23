@@ -8,7 +8,7 @@
 		"url": "https://github.com/sourcery-ai/public/issues"
 	},
 	"license": "MIT",
-	"version": "1.22.1-dev.1",
+	"version": "1.23.0",
 	"publisher": "sourcery",
 	"icon": "sourcery-icon.png",
 	"keywords": [
@@ -114,7 +114,7 @@
 						"media": {
 							"markdown": "walkthrough/code_reviews.md"
 						}
-					},					
+					},
 					{
 						"id": "sourcery.githubCodeReviews",
 						"title": "Review Your PRs with Sourcery",
