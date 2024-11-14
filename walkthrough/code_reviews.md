@@ -6,7 +6,7 @@ Click the Sourcery logo in the sidebar to open the coding assistant and bring up
 
 Choose the context of the code you want to review.
 
-You can choose to review your current branch or your uncommitted changes.
+You can choose to review your current branch, your uncommitted changes, or the current file.
 
 Then click review and Sourcery will get to work, giving you feedback.
 
