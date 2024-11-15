@@ -7,10 +7,10 @@
 
 # Let's start looking at how you can get a code review from Sourcery.
 
-# The `Review` tab allows you to get a code review straight away in your IDE.
-# You can choose between reviewing your current uncommitted changes and reviewing
-# the changes between your current branch and the default branch.
-# (Note that this will only work on code that is under Git version control).
+# The `Review` tab allows you to get a code review straight away in your IDE
+# - You can always get a review of the current file
+# - If in Git you can review your current set of uncommitted changes, 
+#   or your current branch compared to the default branch
 
 # If you want reviews when you open a PR, you can add Sourcery to your GitHub or GitLab repos.
 
