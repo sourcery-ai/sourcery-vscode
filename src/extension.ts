@@ -60,16 +60,9 @@ function createLangServer(): LanguageClient {
   const clientOptions: LanguageClientOptions = {
     diagnosticCollectionName: "sourcery",
     documentSelector: [
-      { language: "python", scheme: "file" },
-      { language: "javascript", scheme: "file" },
-      { language: "typescript", scheme: "file" },
-      { language: "javascriptreact", scheme: "file" },
-      { language: "typescriptreact", scheme: "file" },
-      { language: "python", scheme: "untitled" },
-      { language: "python", scheme: "vscode-notebook-cell" },
-      { language: "yaml", pattern: "**/.sourcery.yaml" },
-      { language: "yaml", pattern: "**/sourcery.yaml" },
-      { language: "yaml", pattern: "**/.sourcery/rules/*.yaml" },
+      { language: "*", scheme: "file" },
+      { language: "*", scheme: "untitled" },
+      { language: "*", scheme: "vscode-notebook-cell" },
     ],
     synchronize: {
       configurationSection: "sourcery",
