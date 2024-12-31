@@ -470,11 +470,10 @@ function registerCommands(
   // This is activated from the status bar (see below)
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.start", async () => {
-      env.openExternal(
-        Uri.parse(
-          "https://app.sourcery.ai/dashboard/subscription?utm_source=status_bar&utm_medium=status_bar&utm_campaign=status_bar"
-        )
-      );
+      languageClient.sendRequest(ExecuteCommandRequest.type, {
+        command: "sourcery.openHub",
+        arguments: [],
+      });
     })
   );
 }
