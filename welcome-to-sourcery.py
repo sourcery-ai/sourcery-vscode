@@ -54,9 +54,9 @@ def calculate_weighted_moving_average(prices, weights):
 
 # Now try clicking Generate Tests or Explain Code for the same function!
 
-# There are also recipes for Optimizing Performance and Simplifying Code.
-# You can access these by clicking Ask Sourcery and choosing them from the 
-# dropdown or by selecting a section of code and clicking the recipe button 
+# There is also a recipe for generating diagrams.
+# You can access this by clicking Ask Sourcery and choosing it from the 
+# dropdown or by selecting a section of code and clicking the recipes button 
 # in the sidebar.
 
 # In your code you'll also see sections start to get underlined.
