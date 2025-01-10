@@ -8,7 +8,26 @@ on:
         required: true
 
 jobs:
-  publish-vsix:
+  package-vsix:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            arch: x64
+            target: win32-x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+            target: linux-x64
+          - os: macos-latest
+            platform: mac
+            arch: x64
+            target: darwin-x64
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+            target: darwin-arm64
     runs-on: ubuntu-latest
 
     steps:
@@ -25,17 +44,29 @@ jobs:
     - name: Update binaries
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
+        mkdir -p sourcery_binaries/install
+        rm -rf sourcery_binaries/install/*
+        mv downloaded_binaries/${{matrix.platform}}-${{matrix.arch}} sourcery_binaries/install/${{matrix.platform}}
 
     - name: Package VSCode extension
-      run: yarn run vsce package
+      run: yarn run vsce package --target ${{matrix.target}}
 
     - name: Rename packaged VSIX file
-      run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}.vsix
+      run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
 
     - name: Upload archive
       uses: actions/upload-artifact@v3
       with:
-        path: sourcery-${{ github.event.inputs.version }}.vsix
+        path: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        merge-multiple: true
 
     - name: Create release
       uses: ncipollo/release-action@v1
@@ -44,7 +75,7 @@ jobs:
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
         prerelease: true
-        artifacts: sourcery-${{ github.event.inputs.version }}.vsix
+        artifacts: sourcery-${{ github.event.inputs.version }}-win32-x64.vsix,sourcery-${{ github.event.inputs.version }}-linux-x64.vsix,sourcery-${{ github.event.inputs.version }}-darwin-x64.vsix,sourcery-${{ github.event.inputs.version }}-darwin-arm64.vsix
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
