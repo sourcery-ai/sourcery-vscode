@@ -77,7 +77,7 @@ jobs:
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
         prerelease: true
-        artifacts: *.vsix
+        artifacts: "*.vsix"
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
