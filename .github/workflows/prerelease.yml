@@ -60,6 +60,7 @@ jobs:
         path: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
 
   release:
+    needs: package-vsix
     runs-on: ubuntu-latest
 
     steps:
