@@ -21,8 +21,8 @@ mkdir -p sourcery_binaries/install/{linux,mac,win}
 rm -rf sourcery_binaries/install/{linux,mac,win}/*
 
 # Download the binaries into here
-mkdir -p downloaded_binaries/{linux,mac-arm64,mac-x64,win}
-rm -rf downloaded_binaries/{linux,mac-arm64,mac-x64,win}/*
+mkdir -p downloaded_binaries/{linux-x64,mac-arm64,mac-x64,win-x64}
+rm -rf downloaded_binaries/{linux-x64,mac-arm64,mac-x64,win-x64}/*
 
 
 echo Downloading linux binary
@@ -30,7 +30,7 @@ curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-li
   | tar -xz -C downloaded_binaries/linux-x64
 
 echo Downloading mac intel binary
-curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac-x64.tar.gz\") | .browser_download_url" ) \
+curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac.tar.gz\") | .browser_download_url" ) \
   | tar -xz -C downloaded_binaries/mac-x64
 
 echo Downloading mac arm64 binary
