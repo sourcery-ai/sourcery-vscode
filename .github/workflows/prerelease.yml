@@ -69,15 +69,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         merge-multiple: true
-        path: zipped-artifacts
-
-    - name: Unzip artifacts
-      run: |
-        cd zipped-artifacts
-        for f in *.zip; do
-          unzip "$f"
-        done
-        cd ..
+        path: artifacts
 
     - name: Create release
       uses: ncipollo/release-action@v1
@@ -86,7 +78,7 @@ jobs:
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
         prerelease: true
-        artifacts: 'zipped-artifacts/*.vsix'
+        artifacts: 'artifacts/*.vsix'
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
