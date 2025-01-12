@@ -77,7 +77,7 @@ jobs:
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
         prerelease: true
-        artifacts: sourcery-${{ github.event.inputs.version }}-win32-x64.vsix,sourcery-${{ github.event.inputs.version }}-linux-x64.vsix,sourcery-${{ github.event.inputs.version }}-darwin-x64.vsix,sourcery-${{ github.event.inputs.version }}-darwin-arm64.vsix
+        artifacts: *.vsix
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
