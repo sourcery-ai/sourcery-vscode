@@ -58,6 +58,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         path: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
+        name: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
 
   release:
     needs: package-vsix
