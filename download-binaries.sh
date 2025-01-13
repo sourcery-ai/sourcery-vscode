@@ -16,19 +16,28 @@ if [[ -z $ASSETS ]]; then
   exit 1
 fi
 
-# Delete existing binaries
+# This is where we will build the package from
 mkdir -p sourcery_binaries/install/{linux,mac,win}
 rm -rf sourcery_binaries/install/{linux,mac,win}/*
 
+# Download the binaries into here
+mkdir -p downloaded_binaries/{linux-x64,mac-arm64,mac-x64,win-x64}
+rm -rf downloaded_binaries/{linux-x64,mac-arm64,mac-x64,win-x64}/*
+
+
 echo Downloading linux binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-linux.tar.gz\") | .browser_download_url" ) \
-  | tar -xz -C sourcery_binaries/install/linux
+  | tar -xz -C downloaded_binaries/linux-x64
 
-echo Downloading mac binary
+echo Downloading mac intel binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac.tar.gz\") | .browser_download_url" ) \
-  | tar -xz -C sourcery_binaries/install/mac
+  | tar -xz -C downloaded_binaries/mac-x64
+
+echo Downloading mac arm64 binary
+curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac-arm64.tar.gz\") | .browser_download_url" ) \
+  | tar -xz -C downloaded_binaries/mac-arm64
 
 echo Downloading windows binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-win.zip\") | .browser_download_url" ) -o temp.zip
-unzip temp.zip -d sourcery_binaries/install/win/
+unzip temp.zip -d downloaded_binaries/win-x64/
 rm temp.zip
