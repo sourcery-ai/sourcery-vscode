@@ -57,7 +57,7 @@ jobs:
     - name: Upload archive
       uses: actions/upload-artifact@v4
       with:
-        path: *.vsix
+        path: '*.vsix'
         name: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}
 
   release:
