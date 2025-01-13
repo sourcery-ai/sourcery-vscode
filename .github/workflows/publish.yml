@@ -107,9 +107,9 @@ jobs:
     - name: Debug - List VSIX files
       run: find . -iname *.vsix -ls
 
-    - name: Package and publish VSCode extension
-      run: |
-        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }} --pre-release
+ #   - name: Package and publish VSCode extension
+ #     run: |
+ #       yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }} --pre-release
 
     # TODO: Make this release not pre-release once tested.
  #   - name: Create release
