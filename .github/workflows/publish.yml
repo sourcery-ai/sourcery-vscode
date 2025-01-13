@@ -52,8 +52,8 @@ jobs:
         rm -rf sourcery_binaries/install/*
         mv downloaded_binaries/${{matrix.platform}}-${{matrix.arch}} sourcery_binaries/install/${{matrix.platform}}
 
-    - name: Update version number
-      run: yarn run bump ${{ github.event.inputs.version }}
+ #   - name: Update version number
+ #     run: yarn run bump ${{ github.event.inputs.version }}
 
     - name: Package VSCode extension
       run: yarn run vsce package --target ${{matrix.target}}
@@ -83,8 +83,8 @@ jobs:
 
     - run: yarn install --frozen-lockfile
 
-    - name: Update version number
-      run: yarn run bump ${{ github.event.inputs.version }}
+  #  - name: Update version number
+  #    run: yarn run bump ${{ github.event.inputs.version }}
 
   #  - name: Commit to main, create tag, and push
   #    run: |
