@@ -103,17 +103,19 @@ jobs:
         merge-multiple: true
         path: artifacts
 
+    # TODO: Make this release not pre-release once tested.
     - name: Package and publish VSCode extension
       run: |
-        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }}
+        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }} --pre-release
 
+    # TODO: Make this release not pre-release once tested.
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         tag: v${{ github.event.inputs.version }}
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
-        prerelease: false
+        prerelease: true
         artifacts: 'artifacts/*.vsix'
         artifactContentType: raw
         artifactErrorsFailBuild: true
