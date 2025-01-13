@@ -12,7 +12,26 @@ permissions:
   actions: read
 
 jobs:
-  publish-vsix:
+  package-vsix:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            arch: x64
+            target: win32-x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+            target: linux-x64
+          - os: macos-latest
+            platform: mac
+            arch: x64
+            target: darwin-x64
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+            target: darwin-arm64
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +48,40 @@ jobs:
     - name: Update binaries
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
+        mkdir -p sourcery_binaries/install
+        rm -rf sourcery_binaries/install/*
+        mv downloaded_binaries/${{matrix.platform}}-${{matrix.arch}} sourcery_binaries/install/${{matrix.platform}}
+
+    - name: Update version number
+      run: yarn run bump ${{ github.event.inputs.version }}
+
+    - name: Package VSCode extension
+      run: yarn run vsce package --target ${{matrix.target}}
+
+    - name: Rename packaged VSIX file
+      run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
+
+    - name: Upload archive
+      uses: actions/upload-artifact@v4
+      with:
+        path: '*.vsix'
+        name: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}
+
+
+  publish-vsix:
+    runs-on: ubuntu-latest
+    needs: package-vsix
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: latest
+
+    - run: yarn install --frozen-lockfile
 
     - name: Update version number
       run: yarn run bump ${{ github.event.inputs.version }}
@@ -44,24 +97,28 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        merge-multiple: true
+        path: artifacts
+
+    # TODO: Make this release not pre-release once tested.
+
+
     - name: Package and publish VSCode extension
       run: |
-        yarn run vsce package
-        yarn run vsce publish -p ${{ secrets.VSCE_TOKEN }}
+        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }} --pre-release
 
-    - name: Upload archive
-      uses: actions/upload-artifact@v3
-      with:
-        path: sourcery-${{ github.event.inputs.version }}.vsix
-
+    # TODO: Make this release not pre-release once tested.
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         tag: v${{ github.event.inputs.version }}
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
-        prerelease: false
-        artifacts: sourcery-${{ github.event.inputs.version }}.vsix
+        prerelease: true
+        artifacts: 'artifacts/*.vsix'
         artifactContentType: raw
         artifactErrorsFailBuild: true
         token: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
