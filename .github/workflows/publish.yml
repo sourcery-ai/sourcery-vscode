@@ -55,8 +55,9 @@ jobs:
     - name: Update version number
       run: yarn run bump ${{ github.event.inputs.version }}
 
+    # TODO: Make this release not pre-release once tested.
     - name: Package VSCode extension
-      run: yarn run vsce package --target ${{matrix.target}}
+      run: yarn run vsce package --target ${{matrix.target}} --pre-release
 
     - name: Rename packaged VSIX file
       run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
