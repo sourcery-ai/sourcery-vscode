@@ -55,9 +55,8 @@ jobs:
     - name: Update version number
       run: yarn run bump ${{ github.event.inputs.version }}
 
-    # TODO: Make this release not pre-release once tested.
     - name: Package VSCode extension
-      run: yarn run vsce package --target ${{matrix.target}} --pre-release
+      run: yarn run vsce package --target ${{matrix.target}}
 
     - name: Rename packaged VSIX file
       run: mv sourcery-*.vsix sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}.vsix
@@ -104,21 +103,18 @@ jobs:
         merge-multiple: true
         path: artifacts
 
-    # TODO: Make this release not pre-release once tested.
-
 
     - name: Package and publish VSCode extension
       run: |
-        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }} --pre-release
+        yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }}
 
-    # TODO: Make this release not pre-release once tested.
     - name: Create release
       uses: ncipollo/release-action@v1
       with:
         tag: v${{ github.event.inputs.version }}
         name: Sourcery ${{ github.event.inputs.version }}
         body: v${{ github.event.inputs.version }}
-        prerelease: true
+        prerelease: false
         artifacts: 'artifacts/*.vsix'
         artifactContentType: raw
         artifactErrorsFailBuild: true
