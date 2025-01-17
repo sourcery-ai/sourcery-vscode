@@ -32,7 +32,6 @@ Here are some of the features Sourcery offers to help improve your code:
 - [Continuous code quality feedback](#continuous-code-quality-feedback)
 
 
-
 To start using Sourcery on your code, check out our [Getting Started guide](https://docs.sourcery.ai/getting-started/).
 
 Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more information on how to use Sourcery.
@@ -59,7 +58,8 @@ Sourcery Chat comes with in-built recipes to:
 
 ![Sourcery Code Reviews](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/code_review.png)
 
-Get feedback on your code anytime you want. Sourcery can review your code directly in your IDE, looking at the branch you're currently on or the uncommitted changes you have.
+Get feedback on your code anytime you want. Sourcery can review your code directly in your IDE and give you instant actionable feedback.
+Review your current file, your uncommitted changes, or compare any two Git branches. Individual review comments are shown inline in your code, along with suggested fixes if applicable.
 
 
 ### GitHub & GitLab Pull Request Review
