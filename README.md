@@ -25,10 +25,10 @@ Sourcery is a VS Code extension to help you move faster and ship code with confi
 
 Here are some of the features Sourcery offers to help improve your code:
 
+- [Chat with an AI that knows about your code](#chat)
 - [Code reviews anytime, in IDE](#code-reviews-on-demand)
 - [GitHub & GitLab Pull Request reviews](#github-pull-request-review)
 - [Real-time refactoring suggestions](#real-time-refactoring-suggestions)
-- [Set up your own rules - or use public rulesets](#set-up-your-own-rules---or-use-public-rulesets)
 - [Continuous code quality feedback](#continuous-code-quality-feedback)
 
 
@@ -39,11 +39,21 @@ Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more inform
 
 Sourcery is free to use for open source projects. 
 
-To use Sourcery on non open sourced projects you'll need a Sourcery Pro or Sourcery Team subscription. To get a 14 day free trial to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?product=prod_pro&utm_source=VS-Code)**.
+To use Sourcery on non open-sourced projects you'll need a Sourcery Pro subscription. To get a 14 day free trial to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?product=prod_pro&utm_source=VS-Code)**.
 
 ---
 
 ## Features
+
+### Chat
+
+Talk with an AI that knows about your code. Select code to add it to context and ask questions or ask for improvements.
+
+Sourcery Chat comes with in-built recipes to:
+- Generate diagrams
+- Generate Tests
+- Generate docstrings
+- Explain code
 
 ### Code reviews on demand
 
@@ -52,12 +62,11 @@ To use Sourcery on non open sourced projects you'll need a Sourcery Pro or Sourc
 Get feedback on your code anytime you want. Sourcery can review your code directly in your IDE, looking at the branch you're currently on or the uncommitted changes you have.
 
 
-
 ### GitHub & GitLab Pull Request Review
 
 ![Sourcery Reviewing GitHub PRs](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Code_Review.gif)
 
-Sourcery can help you speed up code reviews and clean up every new commit by automatically reviewing each of your GitHub pull requests.
+Sourcery can help you speed up code reviews and clean up every new commit by automatically reviewing each of your GitHub pull requests. This also gives you a PR summary, can generate PR titles, and posts a reviewers guide to the PR, including diagrams and a breakdown of the changes.
 
 To get started, add [Sourcery to your GitHub repo](https://github.com/apps/sourcery-ai/installations/new) or [GitLab project](https://app.sourcery.ai/login?connection=gitlab). Sourcery will then start reviewing every new pull request automatically!
 
@@ -109,136 +118,6 @@ Sourcery gives each of your functions a quality score ranging from 0% (bad) - 10
 
 Sourcery will warn you if your overall quality score for a function falls below 25%.
 
-### Multi-File Analysis
-
-![Multi-File Analysis & Refactoring in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Example_Full_Project_Scan_VS_Code.gif)
-
-You can use Sourcery to review a single file, a folder, or your whole project at once.
-
-Right-click on any item in the Explorer window and select "Sourcery → Scan for Refactorings". Sourcery will show you a notification when the scan is done & will show all of the suggestions it found in the Problems window.
-
-### Duplicate Code Detection
-
-![Duplicate Code Detection in Sourcery](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_Example_Duplicates_VS_Code.gif)
-
-Sourcery can help you find duplicate code and near-duplicate code across your whole project.
-
-Right-click on any item in the Explorer window and select "Sourcery → Detect Clones". Sourcery will show you a notification when it's done scanning for clones & will show you all of the instances of duplication it found in the Problems window.
-
-By default, Sourcery will flag items where at least 3 lines are duplicates or near-duplicates that occur at least twice in the scanned files.
-
----
-
-## Configuring Sourcery
-
-Not everyone's coding style is the same, so we know you won't always want to accept every refactoring Sourcery suggests.
-
-Sourcery reads [configuration settings from two sources](https://docs.sourcery.ai/Reference/Configuration/Sources/#configuration-sources):
-
-- a [`.sourcery.yaml` file](https://docs.sourcery.ai/Reference/Configuration/sourcery-yaml/) in the project directory; and
-- a [user-specific config file](https://docs.sourcery.ai/Reference/Configuration/Sources/#user-configuration-file-system-locations).
-
-You can use the project-specific config file to set project-specific settings, and the user-specific config file to set settings that apply to all projects. The project-specific configuration takes precedence over the user configuration.
-
-The config file uses YAML syntax. If you are new to YAML check out "[Learn YAML in 5 minutes](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)".
-
-Here is the default set of values set for the file. If a config file isn't set or if a setting isn't specified then Sourcery will use these values:
-
-```yaml
-ignore: []
-
-rule_settings:
-  enable: [default]
-  disable: []
-  rule_types:
-    - refactoring
-    - suggestion
-    - comment
-  python_version: '3.9'
-
-rules: []
-
-metrics:
-  quality_threshold: 25.0
-
-github:
-  labels: []
-  ignore_labels:
-    - sourcery-ignore
-  request_review: author
-  sourcery_branch: sourcery/{base_branch}
-
-clone_detection:
-  min_lines: 3
-  min_duplicates: 2
-  identical_clones_only: false
-
-proxy:
-  no_ssl_verify: false
-```
-
-You can easily configure Sourcery to:
-
-- [Only show certain types of suggestions](#choosing-which-rules-to-be-shown)
-- [Not show suggestions on certain files, paths, or functions](#skip-suggestions)
-
-### Choosing which rules to be shown
-
-You can choose to have Sourcery never show you a specific type of rule by adding it to a list under the `refactor: skip` section of the .sourcery.yaml file. Just add in the rule ID for the rule you don't want to see and Sourcery will stop suggesting it.
-
-Individual ids are displayed in the plugin suggestions and GitHub Bot comments for easy lookup or you can find a full list in the [refactorings section](https://docs.sourcery.ai/refactorings/) of the docs.
-
-For example:
-
-```
-refactor:
-  skip:
-    - assign-if-exp
-    - de-morgan
-```
-
-Would mean that the Assign If Expression & De Morgan's Identity refactorings are never shown.
-
-To make this even easier, we’ve set up the Sourcery Hub. Click on the Sourcery button in the status bar to bring up the Hub, click on settings, and you can toggle on and off individual types of suggestions
-
-### Skip suggestions
-
-You can also choose to have Sourcery not review specific files, paths, or individual functions.
-
-To ignore a path or a file, add the paths or files as items in a list underneath the `ignore` setting in the `.sourcery.yaml` file.
-
-For example:
-
-```
-ignore:
-  - data/*
-  - .venv/*
-  - '*_test.py'  # Note that any strings beginning with * must be quoted
-```
-
-If you want to just ignore a specific function you can add a `# sourcery skip` comment next to the line declaring the function and Sourcery will ignore that function.
-
-```
-def func(a,b): #sourcery skip
-    if a < b:
-        min_value = a
-    else: 
-        min_value = b
-    c = min_value ** 2
-    return c
-```
-
-If you want to ignore specific refactorings in a function you can add in `# sourcery skip: <refactoring id 1>, <refactoring id 2>` where each ID is from our list of available refactorings. 
-
-```
-def func(a,b):
-    if a < b: #sourcery skip: inline-immediately-returned-variable
-        min_value = a
-    else: 
-        min_value = b
-    c = min_value ** 2
-    return c
-```
 
 
 ---
