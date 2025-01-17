@@ -13,7 +13,7 @@
 
 **[WEBSITE](https://sourcery.ai/) | [DOCS](https://docs.sourcery.ai/Welcome/) | [BUGS](https://github.com/sourcery-ai/sourcery/issues)**
 
-Sourcery is the pair programmer who will help you improve your code. It reviews and improves your code automatically so you can spend more time focused on writing new code and less time cleaning things up.
+Sourcery is your pair programmer that reviews and enhances your code in real-time. With intelligent code reviews and an AI chat assistant that understands your code, you can ship better code faster.
 
 ![Sourcery in VS Code](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/Sourcery_VS_Code_Example.gif)
 
