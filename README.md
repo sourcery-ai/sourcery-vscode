@@ -38,7 +38,7 @@ Check out our [documentation](https://docs.sourcery.ai/Welcome/) for more inform
 
 Sourcery is free to use for open source projects. 
 
-To use Sourcery on non open-sourced projects you'll need a Sourcery Pro subscription. To get a 14 day free trial to Sourcery Pro, **[sign up for an account on the Sourcery site](https://sourcery.ai/signup/?product=prod_pro&utm_source=VS-Code)**.
+To use Sourcery on non open-sourced projects you'll need a Sourcery Pro subscription. To get a 14 day free trial to Sourcery Pro, **[sign up for an account on the Sourcery site](https://app.sourcery.ai/dashboard/subscription?utm_source=vscode_marketplace&utm_medium=web&utm_campaign=vscode_marketplace)**.
 
 ---
 
