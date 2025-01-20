@@ -46,13 +46,15 @@ To use Sourcery on non open-sourced projects you'll need a Sourcery Pro subscrip
 
 ### Chat
 
-Talk with an AI that knows about your code. Select code to add it to context and ask questions or ask for improvements.
+![Generating documentation](https://raw.githubusercontent.com/sourcery-ai/sourcery-vscode/main/assets/docstring_generation.png)
+
+Talk with an AI that knows about your code. Select code to add it to context and ask questions or ask for improvements. Apply code changes with a single click.
 
 Sourcery Chat comes with in-built recipes to:
-- Generate diagrams
-- Generate Tests
-- Generate docstrings
-- Explain code
+- Generate diagrams: No need to spend hours manually creating diagrams. Sourcery can generate them for you in Mermaid format - grab the code or view it as an image.
+- Generate Tests: Generate comprehensive unit tests for your code.
+- Generate docstrings: Sourcery can generate docstrings for your code, copying the style from your existing docstrings. Add them to your code with a single click.
+- Explain code: Sourcery can explain your code, point out how it works and anything unusual or not idiomatic.
 
 ### Code reviews on demand
 
@@ -117,63 +119,6 @@ Sourcery gives each of your functions a quality score ranging from 0% (bad) - 10
 **Working Memory** is a measure of the number of variables that need to be kept in your working memory as you read through the code.
 
 Sourcery will warn you if your overall quality score for a function falls below 25%.
-
-
-
----
-
-## Example Code
-
-We've put together a handful of examples if you want to play around with Sourcery and see a bit more what it can do:
-
-```
-def list_comprehension(list, filter, func):
-    new_list = list()
-    for i in list:
-        if filter(i):
-            new_list.append(func(i))
-    return new_list
-
-
-def augmented_assignment():
-    a = 0
-    a = a + 1
-    print(a)
-
-
-def sort_out_return():
-    if something == other_thing:
-        return True
-    return False
-
-
-def dictionary_get():
-    dictionary = {}
-    data = ""
-    if "message" in dictionary:
-        data = dictionary["message"]
-```
-
-Here is an example where Sourcery would chain together multiple refactorings:
-
-```
-def enable_local(self, opt):
-  if opt == ECHO:
-    return True
-  elif opt == SGA:
-    return True
-  else:
-    return False
-
-
-def __getstate__(self):
-  state = {}
-  state['min'] = self.min
-  state['max'] = self.max
-  return state
-```
-
-Copy these examples into a Python file to see how Sourcery would handle them.
 
 
 ---
