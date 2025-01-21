@@ -368,6 +368,11 @@
 					"default": true,
 					"description": "Show code lens for Sourcery's coding assistant."
 				},
+				"sourcery.lintingFixes": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show linting fixes for all problems."
+				},
 				"sourcery.ruleType.refactorings": {
 					"type": "boolean",
 					"default": true,
