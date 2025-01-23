@@ -57,6 +57,9 @@ function createLangServer(): LanguageClient {
   };
 
   const clientOptions: LanguageClientOptions = {
+    markdown: {
+      isTrusted: true,
+    },
     diagnosticCollectionName: "sourcery",
     documentSelector: [
       { language: "*", scheme: "file" },
