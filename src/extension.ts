@@ -40,6 +40,9 @@ function createLangServer(): LanguageClient {
     .getConfiguration("sourcery")
     .get<boolean>("codeLens");
 
+  const suggestFixes = workspace
+    .getConfiguration("sourcery")
+    .get<boolean>("suggestFixes");
   const packageJson = extensions.getExtension("sourcery.sourcery").packageJSON;
   const extensionVersion = packageJson.version;
 
@@ -72,6 +75,7 @@ function createLangServer(): LanguageClient {
       extension_version: extensionVersion,
       telemetry_enabled: env.isTelemetryEnabled,
       show_code_lens: showCodeLens,
+      suggest_ai_fixes: suggestFixes,
     },
   };
 
