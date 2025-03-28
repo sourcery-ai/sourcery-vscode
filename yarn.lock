@@ -97,93 +97,105 @@
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
-"@esbuild/android-arm64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.18.10.tgz#a416286e6271a8f050869df76ecfc4b822103bbe"
+"@esbuild/aix-ppc64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.25.0.tgz#499600c5e1757a524990d5d92601f0ac3ce87f64"
 
-"@esbuild/android-arm@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/android-arm/-/android-arm-0.18.10.tgz#aff8cfebd2ed3a52f4d4a923360e7abd0817c34c"
+"@esbuild/android-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.25.0.tgz#b9b8231561a1dfb94eb31f4ee056b92a985c324f"
 
-"@esbuild/android-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/android-x64/-/android-x64-0.18.10.tgz#f3b1f52fd6bfdf79d5b9b5965798ff3a8afa584d"
+"@esbuild/android-arm@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/android-arm/-/android-arm-0.25.0.tgz#ca6e7888942505f13e88ac9f5f7d2a72f9facd2b"
 
-"@esbuild/darwin-arm64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/darwin-arm64/-/darwin-arm64-0.18.10.tgz#70644fc5f41bfe90079df449506de2a568f4c08f"
+"@esbuild/android-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/android-x64/-/android-x64-0.25.0.tgz#e765ea753bac442dfc9cb53652ce8bd39d33e163"
 
-"@esbuild/darwin-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/darwin-x64/-/darwin-x64-0.18.10.tgz#a8a8466559af303db881c7a760553bfc00593a62"
+"@esbuild/darwin-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/darwin-arm64/-/darwin-arm64-0.25.0.tgz#fa394164b0d89d4fdc3a8a21989af70ef579fa2c"
 
-"@esbuild/freebsd-arm64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/freebsd-arm64/-/freebsd-arm64-0.18.10.tgz#eda518b8d9b38b6c17c2c58600f8b97ff7acd73b"
+"@esbuild/darwin-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/darwin-x64/-/darwin-x64-0.25.0.tgz#91979d98d30ba6e7d69b22c617cc82bdad60e47a"
 
-"@esbuild/freebsd-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/freebsd-x64/-/freebsd-x64-0.18.10.tgz#e96ba0a380ec38055fd4654dd7a96c90e32e4bbb"
+"@esbuild/freebsd-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/freebsd-arm64/-/freebsd-arm64-0.25.0.tgz#b97e97073310736b430a07b099d837084b85e9ce"
 
-"@esbuild/linux-arm64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-arm64/-/linux-arm64-0.18.10.tgz#63255f396ab465081bf37e4751bfade9578a8ff0"
+"@esbuild/freebsd-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/freebsd-x64/-/freebsd-x64-0.25.0.tgz#f3b694d0da61d9910ec7deff794d444cfbf3b6e7"
 
-"@esbuild/linux-arm@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-arm/-/linux-arm-0.18.10.tgz#9a589ffb96837b7536cfa6739dd2e666cc5e548e"
+"@esbuild/linux-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-arm64/-/linux-arm64-0.25.0.tgz#f921f699f162f332036d5657cad9036f7a993f73"
 
-"@esbuild/linux-ia32@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-ia32/-/linux-ia32-0.18.10.tgz#291aba2de93e8cdf77d607f54e554ce4ffd2f5ef"
+"@esbuild/linux-arm@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-arm/-/linux-arm-0.25.0.tgz#cc49305b3c6da317c900688995a4050e6cc91ca3"
 
-"@esbuild/linux-loong64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.18.10.tgz#ff0fe68c137dc165277b559a747c5debe6a8baec"
+"@esbuild/linux-ia32@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-ia32/-/linux-ia32-0.25.0.tgz#3e0736fcfab16cff042dec806247e2c76e109e19"
 
-"@esbuild/linux-mips64el@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-mips64el/-/linux-mips64el-0.18.10.tgz#99801b17fe2bffcce5cf9375731adf3025e7aee9"
+"@esbuild/linux-loong64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.25.0.tgz#ea2bf730883cddb9dfb85124232b5a875b8020c7"
 
-"@esbuild/linux-ppc64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-ppc64/-/linux-ppc64-0.18.10.tgz#b5d179a6271d123b20694402364162bfa583b35b"
+"@esbuild/linux-mips64el@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-mips64el/-/linux-mips64el-0.25.0.tgz#4cababb14eede09248980a2d2d8b966464294ff1"
 
-"@esbuild/linux-riscv64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-riscv64/-/linux-riscv64-0.18.10.tgz#c34b55bcc71d07685e4b836659f299cd4f6889ec"
+"@esbuild/linux-ppc64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-ppc64/-/linux-ppc64-0.25.0.tgz#8860a4609914c065373a77242e985179658e1951"
 
-"@esbuild/linux-s390x@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/linux-s390x/-/linux-s390x-0.18.10.tgz#84318e86ee1e377c603c7b5359f5f67771eddd99"
+"@esbuild/linux-riscv64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-riscv64/-/linux-riscv64-0.25.0.tgz#baf26e20bb2d38cfb86ee282dff840c04f4ed987"
 
-"@esbuild/linux-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.18.10.tgz"
+"@esbuild/linux-s390x@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-s390x/-/linux-s390x-0.25.0.tgz#8323afc0d6cb1b6dc6e9fd21efd9e1542c3640a4"
 
-"@esbuild/netbsd-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/netbsd-x64/-/netbsd-x64-0.18.10.tgz#436c8c8590eb7638e9d811ce5aae5e44b7dd2e45"
+"@esbuild/linux-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/linux-x64/-/linux-x64-0.25.0.tgz#08fcf60cb400ed2382e9f8e0f5590bac8810469a"
 
-"@esbuild/openbsd-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/openbsd-x64/-/openbsd-x64-0.18.10.tgz#69945ceeecfb30c20b64068d14a2cf9853254035"
+"@esbuild/netbsd-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/netbsd-arm64/-/netbsd-arm64-0.25.0.tgz#935c6c74e20f7224918fbe2e6c6fe865b6c6ea5b"
 
-"@esbuild/sunos-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/sunos-x64/-/sunos-x64-0.18.10.tgz#2ad291b87225f82490d3ffd7c8b643e45fe0d616"
+"@esbuild/netbsd-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/netbsd-x64/-/netbsd-x64-0.25.0.tgz#414677cef66d16c5a4d210751eb2881bb9c1b62b"
 
-"@esbuild/win32-arm64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/win32-arm64/-/win32-arm64-0.18.10.tgz#f12fcff13b9dbd3e80481f4cb6282708ce7794bb"
+"@esbuild/openbsd-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/openbsd-arm64/-/openbsd-arm64-0.25.0.tgz#8fd55a4d08d25cdc572844f13c88d678c84d13f7"
 
-"@esbuild/win32-ia32@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/win32-ia32/-/win32-ia32-0.18.10.tgz#e369e9bedf6b548a62b284320c6de08982d045da"
+"@esbuild/openbsd-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/openbsd-x64/-/openbsd-x64-0.25.0.tgz#0c48ddb1494bbc2d6bcbaa1429a7f465fa1dedde"
 
-"@esbuild/win32-x64@0.18.10":
-  version "0.18.10"
-  resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.18.10.tgz#141d8e73b74252eef46a5433f69d15890d82b5e3"
+"@esbuild/sunos-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/sunos-x64/-/sunos-x64-0.25.0.tgz#86ff9075d77962b60dd26203d7352f92684c8c92"
+
+"@esbuild/win32-arm64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/win32-arm64/-/win32-arm64-0.25.0.tgz#849c62327c3229467f5b5cd681bf50588442e96c"
+
+"@esbuild/win32-ia32@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/win32-ia32/-/win32-ia32-0.25.0.tgz#f62eb480cd7cca088cb65bb46a6db25b725dc079"
+
+"@esbuild/win32-x64@0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.25.0.tgz#c8e119a30a7c8d60b9d2e22d2073722dde3b710b"
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.2.0"
@@ -1052,32 +1064,35 @@ es-set-tostringtag@^2.1.0:
     has-tostringtag "^1.0.2"
     hasown "^2.0.2"
 
-esbuild@^0.18.10:
-  version "0.18.10"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.18.10.tgz"
+esbuild@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.25.0.tgz#0de1787a77206c5a79eeb634a623d39b5006ce92"
   optionalDependencies:
-    "@esbuild/android-arm" "0.18.10"
-    "@esbuild/android-arm64" "0.18.10"
-    "@esbuild/android-x64" "0.18.10"
-    "@esbuild/darwin-arm64" "0.18.10"
-    "@esbuild/darwin-x64" "0.18.10"
-    "@esbuild/freebsd-arm64" "0.18.10"
-    "@esbuild/freebsd-x64" "0.18.10"
-    "@esbuild/linux-arm" "0.18.10"
-    "@esbuild/linux-arm64" "0.18.10"
-    "@esbuild/linux-ia32" "0.18.10"
-    "@esbuild/linux-loong64" "0.18.10"
-    "@esbuild/linux-mips64el" "0.18.10"
-    "@esbuild/linux-ppc64" "0.18.10"
-    "@esbuild/linux-riscv64" "0.18.10"
-    "@esbuild/linux-s390x" "0.18.10"
-    "@esbuild/linux-x64" "0.18.10"
-    "@esbuild/netbsd-x64" "0.18.10"
-    "@esbuild/openbsd-x64" "0.18.10"
-    "@esbuild/sunos-x64" "0.18.10"
-    "@esbuild/win32-arm64" "0.18.10"
-    "@esbuild/win32-ia32" "0.18.10"
-    "@esbuild/win32-x64" "0.18.10"
+    "@esbuild/aix-ppc64" "0.25.0"
+    "@esbuild/android-arm" "0.25.0"
+    "@esbuild/android-arm64" "0.25.0"
+    "@esbuild/android-x64" "0.25.0"
+    "@esbuild/darwin-arm64" "0.25.0"
+    "@esbuild/darwin-x64" "0.25.0"
+    "@esbuild/freebsd-arm64" "0.25.0"
+    "@esbuild/freebsd-x64" "0.25.0"
+    "@esbuild/linux-arm" "0.25.0"
+    "@esbuild/linux-arm64" "0.25.0"
+    "@esbuild/linux-ia32" "0.25.0"
+    "@esbuild/linux-loong64" "0.25.0"
+    "@esbuild/linux-mips64el" "0.25.0"
+    "@esbuild/linux-ppc64" "0.25.0"
+    "@esbuild/linux-riscv64" "0.25.0"
+    "@esbuild/linux-s390x" "0.25.0"
+    "@esbuild/linux-x64" "0.25.0"
+    "@esbuild/netbsd-arm64" "0.25.0"
+    "@esbuild/netbsd-x64" "0.25.0"
+    "@esbuild/openbsd-arm64" "0.25.0"
+    "@esbuild/openbsd-x64" "0.25.0"
+    "@esbuild/sunos-x64" "0.25.0"
+    "@esbuild/win32-arm64" "0.25.0"
+    "@esbuild/win32-ia32" "0.25.0"
+    "@esbuild/win32-x64" "0.25.0"
 
 escalade@^3.1.1:
   version "3.1.1"
