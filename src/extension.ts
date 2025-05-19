@@ -29,7 +29,6 @@ import {
   ServerOptions,
   URI,
 } from "vscode-languageclient/node";
-import { getHubSrc } from "./hub";
 import { RuleInputProvider } from "./rule-search";
 import { ScanResultProvider } from "./rule-search-results";
 import { ChatProvider } from "./chat";
