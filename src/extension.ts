@@ -100,8 +100,8 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
   // Create the status bar
   const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
   myStatusBarItem.command = "sourcery.hub.start";
-  myStatusBarItem.text = "Sourcery";
-  myStatusBarItem.tooltip = "Manage Sourcery settings";
+  myStatusBarItem.text = "Sourcery Analytics";
+  myStatusBarItem.tooltip = "See analytics for your repo";
   context.subscriptions.push(myStatusBarItem);
   myStatusBarItem.show();
 }
@@ -479,38 +479,13 @@ function registerCommands(
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.start", async () => {
       // Instruct the language server to start the hub server
-      // See `core/hub/app` and `core/binary/lsp/sourcery_ls`
-
       languageClient.sendRequest(ExecuteCommandRequest.type, {
         command: "sourcery.startHub",
         arguments: [],
       });
 
-      // reopen the hub panel if it exists
-      // otherwise create it
-      if (hubWebviewPanel) {
-        hubWebviewPanel.reveal();
-      } else {
-        // Open a webview panel and fill it with a static empty page
-        // The iframe handles loading the actual content
-        hubWebviewPanel = window.createWebviewPanel(
-          "sourceryhub",
-          "Sourcery Hub",
-          ViewColumn.Active,
-          {
-            enableScripts: true,
-          }
-        );
-
-        hubWebviewPanel.webview.html = getHubSrc();
-        hubWebviewPanel.onDidDispose(
-          () => {
-            hubWebviewPanel = undefined;
-          },
-          null,
-          context.subscriptions
-        );
-      }
+      // Create or show the chat panel
+      await chatProvider.createOrShowWebviewPanel();
     })
   );
 }

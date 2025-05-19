@@ -61,6 +61,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private _extensionUri: vscode.Uri;
   private _assetsUri: vscode.Uri;
+  private _panel?: vscode.WebviewPanel; // Track the current panel
 
   public recipes: Recipe[] = []; // this data is used in the "Ask Sourcery" command prompt, so can't be removed
 
@@ -131,6 +132,77 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     );
   }
 
+  /**
+   * Creates a new webview panel with chat functionality or reveals an existing one
+   */
+  public async createOrShowWebviewPanel(): Promise<vscode.WebviewPanel> {
+    if (this._panel) {
+      // If panel already exists, reveal it
+      this._panel.reveal();
+      return this._panel;
+    }
+
+    // Create a new panel
+    const panel = vscode.window.createWebviewPanel(
+      "sourceryChatPanel", // Unique identifier
+      "Analytics", // Title
+      vscode.ViewColumn.Active,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true,
+        localResourceRoots: [this._extensionUri, this._assetsUri],
+      }
+    );
+
+    // Set the panel's HTML content
+    panel.webview.html = await this._getHtmlForWebview(panel.webview);
+
+    // Set up message handling
+    panel.webview.onDidReceiveMessage(
+      async ({ message, ...rest }: { message: OutboundMessage }) => {
+        switch (message.target) {
+          case "languageServer":
+            vscode.commands.executeCommand("sourcery.coding_assistant", {
+              message,
+              ...rest,
+            });
+            break;
+          case "extension":
+            switch (message.request) {
+              case "openLink":
+                this.handleOpenLinkRequest(message);
+                break;
+              case "copyToClipboard": {
+                this.handleCopyToClipboardRequest(message);
+                break;
+              }
+              case "insertAtCursor": {
+                this.handleInsertAtCursorRequest(message);
+                break;
+              }
+              case "updateConfiguration": {
+                await vscode.workspace
+                  .getConfiguration()
+                  .update(
+                    message.section,
+                    message.value,
+                    message.configurationTarget
+                  );
+              }
+            }
+        }
+      }
+    );
+
+    // Track this panel and handle disposal
+    this._panel = panel;
+    panel.onDidDispose(() => {
+      this._panel = undefined;
+    });
+
+    return panel;
+  }
+
   public postCommand(command: any) {
     // Intercept the addRecipes command
     // The "Ask Sourcery" user interface needs to have the recipes available
@@ -142,7 +214,22 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         break;
       }
     }
-    this._view.webview.postMessage(command);
+
+    // Send to the sidebar view if it exists
+    if (this._view?.webview) {
+      this._view.webview.postMessage(command);
+    }
+
+    // Also send to the panel if it exists
+    if (this._panel?.webview) {
+      switch (command.command) {
+        case "context/update": {
+          command["updates"]["isAnalyticsPanel"] = true;
+          break;
+        }
+      }
+      this._panel.webview.postMessage(command);
+    }
   }
 
   private handleOpenLinkRequest({
