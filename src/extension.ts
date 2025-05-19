@@ -99,8 +99,8 @@ function showSourceryStatusBarItem(context: ExtensionContext) {
   // Create the status bar
   const myStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
   myStatusBarItem.command = "sourcery.hub.start";
-  myStatusBarItem.text = "Sourcery";
-  myStatusBarItem.tooltip = "Manage Sourcery account";
+  myStatusBarItem.text = "Sourcery Analytics";
+  myStatusBarItem.tooltip = "See analytics for your repo";
   context.subscriptions.push(myStatusBarItem);
   myStatusBarItem.show();
 }
@@ -477,10 +477,14 @@ function registerCommands(
   // This is activated from the status bar (see below)
   context.subscriptions.push(
     commands.registerCommand("sourcery.hub.start", async () => {
+      // Instruct the language server to start the hub server
       languageClient.sendRequest(ExecuteCommandRequest.type, {
-        command: "sourcery.openHub",
+        command: "sourcery.startHub",
         arguments: [],
       });
+
+      // Create or show the chat panel
+      await chatProvider.createOrShowWebviewPanel();
     })
   );
 }

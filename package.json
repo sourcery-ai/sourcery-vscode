@@ -156,7 +156,7 @@
 			},
 			{
 				"command": "sourcery.hub.start",
-				"title": "Manage Sourcery account",
+				"title": "Open Sourcery Analytics",
 				"category": "Sourcery"
 			},
 			{
