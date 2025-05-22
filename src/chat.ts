@@ -145,7 +145,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     // Create a new panel
     const panel = vscode.window.createWebviewPanel(
       "sourceryChatPanel", // Unique identifier
-      "Analytics", // Title
+      "Sourcery Analytics", // Title
       vscode.ViewColumn.Active,
       {
         enableScripts: true,
