@@ -9,7 +9,7 @@ if [[ -z "$VERSION" ]]; then
 fi
 
 # Get release asset json
-RELEASES_URL=https://api.github.com/repos/sourcery-ai/sourcery/releases
+RELEASES_URL=https://api.github.com/repos/sourcery-ai/sourcery/releases?per_page=100
 ASSETS=$( curl -s $RELEASES_URL | jq ".[] | select(.tag_name == \"v$VERSION\") | .assets" )
 if [[ -z $ASSETS ]]; then
   echo Could not find version $VERSION in $RELEASES_URL
