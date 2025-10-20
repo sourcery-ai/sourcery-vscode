@@ -107,7 +107,7 @@ jobs:
     - name: Package and publish VSCode extension
       run: |
         yarn run vsce publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.VSCE_TOKEN }}
-        yarn run ovsx publish -p ${{ secrets.OPEN_VSX_TOKEN }}
+        yarn run ovsx publish --packagePath $(find . -iname *.vsix) -p ${{ secrets.OPEN_VSX_TOKEN }}
 
     - name: Create release
       uses: ncipollo/release-action@v1
