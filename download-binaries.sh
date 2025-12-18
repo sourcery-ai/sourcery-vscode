@@ -29,13 +29,13 @@ echo Downloading linux binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-linux.tar.gz\") | .browser_download_url" ) \
   | tar -xz -C downloaded_binaries/linux-x64
 
-echo Downloading mac intel binary
-curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac.tar.gz\") | .browser_download_url" ) \
-  | tar -xz -C downloaded_binaries/mac-x64
-
 echo Downloading mac arm64 binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac-arm64.tar.gz\") | .browser_download_url" ) \
   | tar -xz -C downloaded_binaries/mac-arm64
+
+echo Downloading mac intel binary
+curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-mac-x86_64.tar.gz\") | .browser_download_url" ) \
+  | tar -xz -C downloaded_binaries/mac-x64
 
 echo Downloading windows binary
 curl -s -L $( echo $ASSETS | jq -r ".[] | select(.name == \"sourcery-$VERSION-win.zip\") | .browser_download_url" ) -o temp.zip
