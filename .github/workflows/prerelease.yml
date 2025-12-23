@@ -45,6 +45,16 @@ jobs:
 
     - run: yarn install --frozen-lockfile
 
+    - name: Convert version to semver format
+      id: convert_version
+      run: |
+        VERSION="${{ github.event.inputs.version }}"
+        # Convert Python version format (e.g., 1.40.1b56) to semver format (e.g., 1.40.1-beta.56)
+        SEMVER_VERSION=$(echo "$VERSION" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+)b([0-9]+)/\1-beta.\2/')
+        echo "original_version=$VERSION" >> $GITHUB_OUTPUT
+        echo "semver_version=$SEMVER_VERSION" >> $GITHUB_OUTPUT
+        echo "Converted version: $VERSION -> $SEMVER_VERSION"
+
     - name: Update binaries
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
@@ -53,7 +63,8 @@ jobs:
         mv downloaded_binaries/${{matrix.platform}}-${{matrix.arch}} sourcery_binaries/install/${{matrix.platform}}
 
     - name: Update version number
-      run: yarn run bump ${{ github.event.inputs.version }}
+      run: |
+        yarn run bump ${{ steps.convert_version.outputs.semver_version }}
 
     - name: Package VSCode extension
       run: yarn run vsce package --target ${{matrix.target}}
