@@ -421,7 +421,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
 		"@vscode/vsce": "^2.18.0",
-		"esbuild": "^0.18.10",
+		"esbuild": "^0.25.0",
 		"eslint": "^8.36.0",
 		"mocha": "^10.2.0",
 		"ovsx": "^0.8.0",
