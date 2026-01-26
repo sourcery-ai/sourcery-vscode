@@ -25,11 +25,11 @@ jobs:
             arch: x64
             target: linux-x64
           - os: macos-latest
-            platform: mac
+            platform: mac-x86_64
             arch: x64
             target: darwin-x64
           - os: macos-latest
-            platform: mac
+            platform: mac-arm64
             arch: arm64
             target: darwin-arm64
     runs-on: ubuntu-latest

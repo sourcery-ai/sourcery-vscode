@@ -58,7 +58,8 @@ export function getExecutablePath(): string {
     if (process.platform == "win32") {
       return path.join(sourcery_binaries, "install/win/sourcery.exe");
     } else if (process.platform == "darwin") {
-      return path.join(sourcery_binaries, "install/mac/sourcery");
+      const macDir = process.arch == "arm64" ? "mac-arm64" : "mac-x86_64";
+      return path.join(sourcery_binaries, "install", macDir, "sourcery");
     } else {
       // Assume everything else is linux compatible
       return path.join(sourcery_binaries, "install/linux/sourcery");
