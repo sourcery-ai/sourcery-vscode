@@ -16,22 +16,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
-            platform: win
-            arch: x64
-            target: win32-x64
-          - os: ubuntu-latest
-            platform: linux
-            arch: x64
-            target: linux-x64
-          - os: macos-latest
-            platform: mac
-            arch: x64
-            target: darwin-x64
-          - os: macos-latest
-            platform: mac
-            arch: arm64
-            target: darwin-arm64
+          - target: win32-x64
+            dir: win
+          - target: linux-x64
+            dir: linux
+          - target: darwin-x64
+            dir: mac-x86_64
+          - target: darwin-arm64
+            dir: mac-arm64
     runs-on: ubuntu-latest
 
     steps:
@@ -59,8 +51,7 @@ jobs:
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
         mkdir -p sourcery_binaries/install
-        rm -rf sourcery_binaries/install/*
-        mv downloaded_binaries/${{matrix.platform}}-${{matrix.arch}} sourcery_binaries/install/${{matrix.platform}}
+        mv downloaded_binaries/${{matrix.dir}} sourcery_binaries/install/
 
     - name: Update version number
       run: |
