@@ -1,7 +1,11 @@
 "use strict";
 
 import * as path from "path";
-import { getExecutablePath } from "./executable";
+import {
+  getExecutablePath,
+  getUnsupportedPlatform,
+  UnsupportedPlatform,
+} from "./executable";
 
 import * as vscode from "vscode";
 import {
@@ -489,7 +493,35 @@ function registerCommands(
   );
 }
 
+const UNSUPPORTED_ARCH_WARNING_KEY = "sourcery.unsupportedArchWarningShown";
+
+function warnUnsupportedPlatform(
+  context: ExtensionContext,
+  unsupported: UnsupportedPlatform
+): void {
+  const archKey = `${unsupported.platform}-${unsupported.arch}`;
+  console.warn(
+    `Sourcery: unsupported platform ${archKey}; not starting language server.`
+  );
+  const lastShown = context.globalState.get<string>(
+    UNSUPPORTED_ARCH_WARNING_KEY
+  );
+  if (lastShown === archKey) {
+    return;
+  }
+  window.showWarningMessage(
+    `Sourcery does not support ${unsupported.platform} on ${unsupported.arch} and will stay idle on this machine.`
+  );
+  context.globalState.update(UNSUPPORTED_ARCH_WARNING_KEY, archKey);
+}
+
 export function activate(context: ExtensionContext) {
+  const unsupported = getUnsupportedPlatform();
+  if (unsupported) {
+    warnUnsupportedPlatform(context, unsupported);
+    return;
+  }
+
   const languageClient = createLangServer();
   let hubWebviewPanel: WebviewPanel | undefined = undefined;
 
