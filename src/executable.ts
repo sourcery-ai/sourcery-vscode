@@ -3,6 +3,32 @@
 import * as path from "path";
 import * as fs from "fs";
 
+const SUPPORTED_ARCHS: Partial<
+  Record<NodeJS.Platform, ReadonlyArray<NodeJS.Architecture>>
+> = {
+  win32: ["x64"],
+  darwin: ["x64", "arm64"],
+  linux: ["x64"],
+};
+
+export type UnsupportedPlatform = {
+  platform: NodeJS.Platform;
+  arch: NodeJS.Architecture;
+};
+
+export function getUnsupportedPlatform(): UnsupportedPlatform | null {
+  // SOURCERY_EXECUTABLE points at a custom binary (development, custom builds);
+  // if it's set we trust the caller and skip the arch check.
+  if (process.env.SOURCERY_EXECUTABLE) {
+    return null;
+  }
+  const archs = SUPPORTED_ARCHS[process.platform];
+  if (archs && archs.includes(process.arch)) {
+    return null;
+  }
+  return { platform: process.platform, arch: process.arch };
+}
+
 export function getCodingAssistantAssetsPath(): string {
   // Allow complete local override
   if (process.env.SOURCERY_CODING_ASSISTANT_ASSETS_PATH) {
