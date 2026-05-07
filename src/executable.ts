@@ -12,8 +12,8 @@ const SUPPORTED_ARCHS: Partial<
 };
 
 export type UnsupportedPlatform = {
-  platform: string;
-  arch: string;
+  platform: NodeJS.Platform;
+  arch: NodeJS.Architecture;
 };
 
 export function getUnsupportedPlatform(): UnsupportedPlatform | null {
