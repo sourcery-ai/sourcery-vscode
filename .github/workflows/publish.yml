@@ -82,9 +82,18 @@ jobs:
         git add .
         git config --global user.name ${{ github.actor }}
         git config --global user.email ${{ github.actor }}@users.noreply.github.com
-        git commit -m 'Update version number to v${{ github.event.inputs.version }}'
-        git tag v${{ github.event.inputs.version }}
-        git push origin main v${{ github.event.inputs.version }}
+        if git diff --cached --quiet; then
+          echo "Version files unchanged - skipping commit on re-run"
+        else
+          git commit -m 'Update version number to v${{ github.event.inputs.version }}'
+        fi
+        if git ls-remote --exit-code --tags origin v${{ github.event.inputs.version }} > /dev/null; then
+          echo "Tag v${{ github.event.inputs.version }} already exists - pushing main only"
+          git push origin main
+        else
+          git tag v${{ github.event.inputs.version }}
+          git push origin main v${{ github.event.inputs.version }}
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
@@ -115,8 +124,12 @@ jobs:
     - name: Update version number to dev
       run: |
         yarn run bump prepatch --preid dev
-        git commit -am 'Bump version to dev'
-        git push origin main
+        if git diff --quiet; then
+          echo "Version files unchanged - skipping commit on re-run"
+        else
+          git commit -am 'Bump version to dev'
+          git push origin main
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.SOURCERY_RELEASE_TOKEN }}
 
