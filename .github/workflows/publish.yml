@@ -76,6 +76,9 @@ jobs:
         # always the current branch tip, so a job re-run after a partial
         # failure sees any bump commit the previous attempt already pushed
         ref: main
+        # full history so the tag-ancestry check below can resolve the
+        # existing tag's commit
+        fetch-depth: 0
 
     - uses: actions/setup-node@v3
       with:
@@ -100,11 +103,11 @@ jobs:
         fi
         TAG_SHA=$(git ls-remote --tags origin "refs/tags/v${VERSION}" | cut -f1)
         if [ -n "$TAG_SHA" ]; then
-          if [ "$TAG_SHA" != "$(git rev-parse HEAD)" ]; then
-            echo "Tag v${VERSION} already exists but points at ${TAG_SHA}, not the release commit $(git rev-parse HEAD) - move or delete the tag before re-running"
+          if ! git merge-base --is-ancestor "$TAG_SHA" HEAD; then
+            echo "Tag v${VERSION} already exists but points at ${TAG_SHA}, which is not on main - move or delete the tag before re-running"
             exit 1
           fi
-          echo "Tag v${VERSION} already exists - pushing main only"
+          echo "Tag v${VERSION} already exists on main - pushing main only"
           git push origin main
         else
           git tag "v${VERSION}"
