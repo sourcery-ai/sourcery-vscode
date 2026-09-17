@@ -10,7 +10,18 @@ fi
 
 # Get release asset json
 RELEASES_URL=https://api.github.com/repos/sourcery-ai/sourcery/releases?per_page=100
-ASSETS=$( curl -s $RELEASES_URL | jq ".[] | select(.tag_name == \"v$VERSION\") | .assets" )
+AUTH=()
+if [[ -n "$GITHUB_TOKEN" ]]; then
+  AUTH=(-H "Authorization: Bearer $GITHUB_TOKEN")
+fi
+RELEASES=$( curl -s "${AUTH[@]}" $RELEASES_URL )
+if ! echo "$RELEASES" | jq -e 'type == "array"' > /dev/null; then
+  echo Unexpected response from $RELEASES_URL:
+  echo "$RELEASES" | head -c 300
+  echo
+  exit 1
+fi
+ASSETS=$( echo "$RELEASES" | jq ".[] | select(.tag_name == \"v$VERSION\") | .assets" )
 if [[ -z $ASSETS ]]; then
   echo Could not find version $VERSION in $RELEASES_URL
   exit 1

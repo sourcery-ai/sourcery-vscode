@@ -48,6 +48,8 @@ jobs:
         echo "Converted version: $VERSION -> $SEMVER_VERSION"
 
     - name: Update binaries
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       run: |
         ./download-binaries.sh ${{ github.event.inputs.version }}
         mkdir -p sourcery_binaries/install
