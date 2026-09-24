@@ -423,7 +423,7 @@
 		"@vscode/vsce": "^2.18.0",
 		"esbuild": "^0.18.10",
 		"eslint": "^8.36.0",
-		"mocha": "^10.2.0",
+		"mocha": "^10.8.2",
 		"ovsx": "^0.8.0",
 		"prettier": "^2.7.1",
 		"typescript": "^4.9.5",
