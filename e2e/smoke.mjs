@@ -14,7 +14,6 @@ import {
 import { _electron as electron } from "playwright-core";
 
 const STEP_TIMEOUT_MS = 180_000;
-const WELCOME_TIMEOUT_MS = 20_000;
 const ARTIFACTS_DIR = path.resolve("e2e-artifacts");
 
 const EXAMPLE_PY = `def double_all(numbers):
@@ -78,10 +77,48 @@ async function run() {
   const vscodeExecutable = await downloadAndUnzipVSCode("stable");
   installExtension(vscodeExecutable, path.resolve(vsixPath));
 
+  // The binary decides "first run" from an init count in its own database, so a
+  // first launch opens the welcome file. Its analysis would abort example.py's
+  // (PRD-84), so test the first run and the review in separate launches.
+  const firstRun = !fs.existsSync(binaryDatabasePath());
+  if (firstRun) {
+    await withVSCode(vscodeExecutable, "first-run", async (page) => {
+      await waitForTab(page, "welcome-to-sourcery.py");
+      log("First run opened the welcome file");
+      await runCommand(page, "View: Focus Problems");
+      await waitForSourceryDiagnostic(page, "welcome-to-sourcery.py", /Ln \d+/);
+      // Nothing restored into the next launch, so example.py is analysed alone.
+      await runCommand(page, "View: Close All Editors");
+    });
+  } else if (process.env.CI) {
+    throw new Error(
+      `${binaryDatabasePath()} already exists, so the first run can't be tested`
+    );
+  } else {
+    log("Sourcery has run on this machine before: skipping the first-run launch");
+  }
+
+  await withVSCode(vscodeExecutable, "signed-in", async (page) => {
+    await openFile(page, "example.py");
+    await runCommand(page, "View: Focus Problems");
+    await waitForSourceryDiagnostic(page, "example.py", /Ln 3, Col \d+/);
+
+    // Reload the sidebar so it must get its state through its own request.
+    await openSourcerySidebar(page);
+    await waitForWebviewApp(page);
+    await markWebviewsStale(page);
+    await runCommand(page, "Developer: Reload Webviews");
+    await waitForSignedInChat(page);
+    log("Sourcery sidebar left Loading and shows the signed-in chat");
+  });
+}
+
+async function withVSCode(vscodeExecutable, name, steps) {
   const env = { ...process.env };
   delete env.SOURCERY_EXECUTABLE;
   delete env.SOURCERY_TOKEN;
 
+  log(`Launching VS Code (${name})`);
   const app = await electron.launch({
     executablePath: vscodeExecutable,
     args: [
@@ -103,27 +140,37 @@ async function run() {
   try {
     page = await app.firstWindow({ timeout: STEP_TIMEOUT_MS });
     await page.locator(".monaco-workbench").waitFor({ timeout: STEP_TIMEOUT_MS });
-    log("VS Code is up");
-
-    await waitForSourceryDiagnostic(page);
-    log("Sourcery diagnostic shown in the Problems panel");
-
-    // On a first run the language server focuses the sidebar and pushes it state
-    // unasked, so reload the webview: it must then get state through its own request.
-    await openSourcerySidebar(page);
-    await waitForWebviewApp(page);
-    await markWebviewsStale(page);
-    await runCommand(page, "Developer: Reload Webviews");
-    await waitForSignedInChat(page);
-    log("Sourcery sidebar left Loading and shows the signed-in chat");
-    await saveScreenshot(page, "signed-in");
+    await steps(page);
+    await saveScreenshot(page, name);
   } catch (error) {
-    await saveScreenshot(page, "failure");
+    await saveScreenshot(page, `failure-${name}`);
     await app.close().catch(() => {});
     throw error;
   }
-
   await app.close();
+}
+
+async function waitForTab(page, name) {
+  const tab = page.locator(".editor-group-container .tab", { hasText: name });
+  const deadline = Date.now() + STEP_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    await throwIfServerFailed(page);
+    if ((await tab.count()) > 0) {
+      return;
+    }
+    await sleep(1000);
+  }
+  throw new Error(`${name} never opened`);
+}
+
+function binaryDatabasePath() {
+  const root =
+    process.platform === "win32"
+      ? process.env.LOCALAPPDATA || process.env.APPDATA || ""
+      : process.platform === "darwin"
+      ? path.join(os.homedir(), "Library", "Application Support")
+      : process.env.XDG_DATA_HOME || path.join(os.homedir(), ".local", "share");
+  return path.join(root, "sourcery", "sourcery.db");
 }
 
 function installExtension(executable, vsix) {
@@ -194,58 +241,41 @@ async function markWebviewsStale(page) {
 }
 
 async function runCommand(page, label) {
-  // The chat input can take focus and close the palette, so retry the whole sequence.
-  const input = page.locator(".quick-input-widget input");
-  const row = page
-    .locator(".quick-input-widget .monaco-list-row", { hasText: label })
-    .first();
-  for (let attempt = 1; ; attempt++) {
-    try {
-      await page.keyboard.press("F1");
-      await input.fill(`>${label}`, { timeout: 5000 });
-      await row.waitFor({ timeout: 5000 });
-      await page.keyboard.press("Enter");
-      return;
-    } catch (error) {
-      if (attempt === 3) {
-        throw new Error(`Could not run "${label}": ${error.message}`);
-      }
-      await page.keyboard.press("Escape");
-    }
-  }
+  await quickPick(page, `>${label}`, label);
 }
 
 async function openFile(page, name) {
-  await page.keyboard.press(
-    process.platform === "darwin" ? "Meta+P" : "Control+P"
-  );
-  await page.locator(".quick-input-widget input").fill(name);
-  await page
-    .locator(".quick-input-widget .monaco-list-row", { hasText: name })
-    .first()
-    .waitFor({ timeout: STEP_TIMEOUT_MS });
-  await page.keyboard.press("Enter");
+  // The palette without its ">" prefix is Quick Open.
+  await quickPick(page, name, name);
   await page
     .locator(".editor-group-container .tab.active", { hasText: name })
     .waitFor({ timeout: STEP_TIMEOUT_MS });
 }
 
-async function waitForSourceryDiagnostic(page) {
-  // On a first run the language server opens its welcome file, and starting that
-  // file's analysis aborts any other file's in-flight analysis for good. So let
-  // the welcome file open before opening example.py.
-  await page
-    .locator(".editor-group-container .tab", {
-      hasText: "welcome-to-sourcery.py",
-    })
-    .first()
-    .waitFor({ timeout: WELCOME_TIMEOUT_MS })
-    .then(() => log("First-run welcome file opened"))
-    .catch(() => log("No first-run welcome file"));
-  await openFile(page, "example.py");
-  await page.keyboard.press(
-    process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
-  );
+async function quickPick(page, text, rowText) {
+  // On a first run the sidebar takes focus and closes the palette, so retry.
+  const input = page.locator(".quick-input-widget input");
+  const row = page
+    .locator(".quick-input-widget .monaco-list-row", { hasText: rowText })
+    .first();
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await page.keyboard.press("F1");
+      await input.fill(text, { timeout: 5000 });
+      await row.waitFor({ timeout: 5000 });
+      await page.keyboard.press("Enter");
+      return;
+    } catch (error) {
+      if (attempt === 5) {
+        throw new Error(`Could not pick "${text}": ${error.message}`);
+      }
+      await page.keyboard.press("Escape");
+      await sleep(2000);
+    }
+  }
+}
+
+async function waitForSourceryDiagnostic(page, fileName, linePattern) {
   const deadline = Date.now() + STEP_TIMEOUT_MS;
   let rows = [];
   while (Date.now() < deadline) {
@@ -264,18 +294,18 @@ async function waitForSourceryDiagnostic(page) {
       if (row.level === "1") {
         file = row.text;
       } else if (
-        file.startsWith("example.py") &&
+        file.startsWith(fileName) &&
         /sourcery\W+refactoring:/.test(row.text) &&
-        /Ln 3, Col \d+/.test(row.text)
+        linePattern.test(row.text)
       ) {
-        log(`Diagnostic on example.py: ${row.text}`);
+        log(`Diagnostic on ${fileName}: ${row.text}`);
         return;
       }
     }
     await sleep(1000);
   }
   throw new Error(
-    "No Sourcery refactoring on line 3 of example.py: the language server did not start or did not analyse the file. " +
+    `No Sourcery refactoring on ${fileName} (${linePattern}): the language server did not start or did not analyse the file. ` +
       `Problems panel: ${JSON.stringify(rows)}`
   );
 }
