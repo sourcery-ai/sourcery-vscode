@@ -38,80 +38,93 @@ const extensionsDir = path.join(root, "extensions");
 const workspaceDir = path.join(root, "workspace");
 const examplePath = path.join(workspaceDir, "example.py");
 
-fs.mkdirSync(path.join(userDataDir, "User"), { recursive: true });
-fs.mkdirSync(workspaceDir, { recursive: true });
-fs.writeFileSync(examplePath, EXAMPLE_PY);
-fs.writeFileSync(
-  path.join(userDataDir, "User", "settings.json"),
-  JSON.stringify({
-    ...(process.env.SOURCERY_TOKEN
-      ? { "sourcery.token": process.env.SOURCERY_TOKEN }
-      : {}),
-    "security.workspace.trust.enabled": false,
-    "workbench.startupEditor": "none",
-    "workbench.tips.enabled": false,
-    "extensions.autoUpdate": false,
-    "extensions.ignoreRecommendations": true,
-    "update.mode": "none",
-    "telemetry.telemetryLevel": "off",
-    "chat.disableAIFeatures": true,
-  })
-);
-
-const vscodeExecutable = await downloadAndUnzipVSCode("stable");
-installExtension(vscodeExecutable, path.resolve(vsixPath));
-
-const env = { ...process.env };
-delete env.SOURCERY_EXECUTABLE;
-delete env.SOURCERY_TOKEN;
-
-const app = await electron.launch({
-  executablePath: vscodeExecutable,
-  args: [
-    workspaceDir,
-    examplePath,
-    `--user-data-dir=${userDataDir}`,
-    `--extensions-dir=${extensionsDir}`,
-    "--disable-workspace-trust",
-    "--skip-welcome",
-    "--skip-release-notes",
-    "--disable-telemetry",
-    "--no-sandbox",
-    "--disable-gpu",
-  ],
-  env,
-  timeout: STEP_TIMEOUT_MS,
-});
-
-let page;
+let exitCode = 0;
 try {
-  page = await app.firstWindow({ timeout: STEP_TIMEOUT_MS });
-  await page.locator(".monaco-workbench").waitFor({ timeout: STEP_TIMEOUT_MS });
-  await page
-    .locator(".editor-group-container .tab", { hasText: "example.py" })
-    .first()
-    .waitFor({ timeout: STEP_TIMEOUT_MS });
-  log("VS Code is up with example.py open");
-
-  await waitForSourceryDiagnostic(page);
-  log("Sourcery diagnostic shown in the Problems panel");
-
-  await page
-    .locator('.part.activitybar [aria-label^="Sourcery"]')
-    .first()
-    .click({ timeout: STEP_TIMEOUT_MS });
-  await waitForSignedInChat(page);
-  log("Sourcery sidebar left Loading and shows the signed-in chat");
-  await saveScreenshot(page, "signed-in");
+  await run();
+  log("PASS");
 } catch (error) {
-  await saveScreenshot(page, "failure");
-  await app.close().catch(() => {});
-  fail(error.message);
+  console.error(`[e2e] FAIL: ${error.message}`);
+  exitCode = 1;
 }
+if (!removeProfile()) {
+  exitCode = 1;
+}
+process.exit(exitCode);
 
-await app.close();
-fs.rmSync(root, { recursive: true, force: true });
-log("PASS");
+async function run() {
+  fs.mkdirSync(path.join(userDataDir, "User"), { recursive: true });
+  fs.mkdirSync(workspaceDir, { recursive: true });
+  fs.writeFileSync(examplePath, EXAMPLE_PY);
+  fs.writeFileSync(
+    path.join(userDataDir, "User", "settings.json"),
+    JSON.stringify({
+      ...(process.env.SOURCERY_TOKEN
+        ? { "sourcery.token": process.env.SOURCERY_TOKEN }
+        : {}),
+      "security.workspace.trust.enabled": false,
+      "workbench.startupEditor": "none",
+      "workbench.tips.enabled": false,
+      "extensions.autoUpdate": false,
+      "extensions.ignoreRecommendations": true,
+      "update.mode": "none",
+      "telemetry.telemetryLevel": "off",
+      "chat.disableAIFeatures": true,
+    })
+  );
+
+  const vscodeExecutable = await downloadAndUnzipVSCode("stable");
+  installExtension(vscodeExecutable, path.resolve(vsixPath));
+
+  const env = { ...process.env };
+  delete env.SOURCERY_EXECUTABLE;
+  delete env.SOURCERY_TOKEN;
+
+  const app = await electron.launch({
+    executablePath: vscodeExecutable,
+    args: [
+      workspaceDir,
+      examplePath,
+      `--user-data-dir=${userDataDir}`,
+      `--extensions-dir=${extensionsDir}`,
+      "--disable-workspace-trust",
+      "--skip-welcome",
+      "--skip-release-notes",
+      "--disable-telemetry",
+      "--no-sandbox",
+      "--disable-gpu",
+    ],
+    env,
+    timeout: STEP_TIMEOUT_MS,
+  });
+
+  let page;
+  try {
+    page = await app.firstWindow({ timeout: STEP_TIMEOUT_MS });
+    await page.locator(".monaco-workbench").waitFor({ timeout: STEP_TIMEOUT_MS });
+    await page
+      .locator(".editor-group-container .tab", { hasText: "example.py" })
+      .first()
+      .waitFor({ timeout: STEP_TIMEOUT_MS });
+    log("VS Code is up with example.py open");
+
+    await waitForSourceryDiagnostic(page);
+    log("Sourcery diagnostic shown in the Problems panel");
+
+    await page
+      .locator('.part.activitybar [aria-label^="Sourcery"]')
+      .first()
+      .click({ timeout: STEP_TIMEOUT_MS });
+    await waitForSignedInChat(page);
+    log("Sourcery sidebar left Loading and shows the signed-in chat");
+    await saveScreenshot(page, "signed-in");
+  } catch (error) {
+    await saveScreenshot(page, "failure");
+    await app.close().catch(() => {});
+    throw error;
+  }
+
+  await app.close();
+}
 
 function installExtension(executable, vsix) {
   const [cli, ...defaultArgs] =
@@ -136,7 +149,9 @@ function installExtension(executable, vsix) {
     }
   );
   if (result.status !== 0) {
-    fail(`Installing ${vsix} failed with exit code ${result.status}`);
+    throw new Error(
+      `Installing ${vsix} failed with exit code ${result.status}`
+    );
   }
 }
 
@@ -144,17 +159,37 @@ async function waitForSourceryDiagnostic(page) {
   await page.keyboard.press(
     process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
   );
-  const row = page
-    .locator(".markers-panel .monaco-list-row", { hasText: /sourcery/i })
-    .first();
-  try {
-    await row.waitFor({ timeout: STEP_TIMEOUT_MS });
-  } catch {
-    throw new Error(
-      "No Sourcery diagnostic on example.py: the language server did not start or did not analyse the file"
-    );
+  // The Problems tree is flat in the DOM: a file row at aria-level 1, then its markers.
+  const deadline = Date.now() + STEP_TIMEOUT_MS;
+  let rows = [];
+  while (Date.now() < deadline) {
+    rows = await page
+      .locator(".markers-panel .monaco-list-row")
+      .evaluateAll((elements) =>
+        elements.map((element) => ({
+          level: element.getAttribute("aria-level"),
+          text: element.innerText.replace(/\s+/g, " ").trim(),
+        }))
+      );
+    let file = "";
+    for (const row of rows) {
+      if (row.level === "1") {
+        file = row.text;
+      } else if (
+        file.startsWith("example.py") &&
+        /sourcery\W+refactoring:/.test(row.text) &&
+        /Ln 3, Col \d+/.test(row.text)
+      ) {
+        log(`Diagnostic on example.py: ${row.text}`);
+        return;
+      }
+    }
+    await sleep(1000);
   }
-  log(`Diagnostic: ${(await row.innerText()).replace(/\s+/g, " ")}`);
+  throw new Error(
+    "No Sourcery refactoring on line 3 of example.py: the language server did not start or did not analyse the file. " +
+      `Problems panel: ${JSON.stringify(rows)}`
+  );
 }
 
 async function waitForSignedInChat(page) {
@@ -182,7 +217,7 @@ async function waitForSignedInChat(page) {
         lastState = text.replace(/\s+/g, " ").slice(0, 200);
       }
     }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await sleep(1000);
   }
   throw new Error(
     `Sourcery sidebar never showed the signed-in chat; last state: ${lastState}`
@@ -194,9 +229,31 @@ async function saveScreenshot(page, name) {
     return;
   }
   fs.mkdirSync(ARTIFACTS_DIR, { recursive: true });
-  const file = path.join(ARTIFACTS_DIR, `${name}-${process.platform}.png`);
+  const vsixName = path.basename(vsixPath, ".vsix");
+  const file = path.join(ARTIFACTS_DIR, `${name}-${vsixName}.png`);
   await page.screenshot({ path: file }).catch(() => {});
   log(`Screenshot: ${file}`);
+}
+
+// The profile holds the token, so failing to remove it fails the run.
+function removeProfile() {
+  try {
+    // On Windows the language server can hold files open for a while after VS Code exits.
+    fs.rmSync(root, {
+      recursive: true,
+      force: true,
+      maxRetries: 15,
+      retryDelay: 250,
+    });
+    return true;
+  } catch (error) {
+    console.error(`[e2e] FAIL: could not remove ${root}: ${error.message}`);
+    return false;
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function log(message) {
