@@ -36,6 +36,7 @@ const root = fs.mkdtempSync(path.join(os.tmpdir(), "sourcery-e2e-"));
 const userDataDir = path.join(root, "user-data");
 const extensionsDir = path.join(root, "extensions");
 const workspaceDir = path.join(root, "workspace");
+const homeDir = path.join(root, "home");
 const examplePath = path.join(workspaceDir, "example.py");
 
 let exitCode = 0;
@@ -54,6 +55,14 @@ process.exit(exitCode);
 async function run() {
   fs.mkdirSync(path.join(userDataDir, "User"), { recursive: true });
   fs.mkdirSync(workspaceDir, { recursive: true });
+  for (const dir of [
+    ".config",
+    path.join(".local", "share"),
+    path.join("AppData", "Roaming"),
+    path.join("AppData", "Local"),
+  ]) {
+    fs.mkdirSync(path.join(homeDir, dir), { recursive: true });
+  }
   fs.writeFileSync(examplePath, EXAMPLE_PY);
   fs.writeFileSync(
     path.join(userDataDir, "User", "settings.json"),
@@ -77,26 +86,17 @@ async function run() {
   const vscodeExecutable = await downloadAndUnzipVSCode("stable");
   installExtension(vscodeExecutable, path.resolve(vsixPath));
 
-  // The binary decides "first run" from an init count in its own database, so a
-  // first launch opens the welcome file. Its analysis would abort example.py's
-  // (PRD-84), so test the first run and the review in separate launches.
-  const firstRun = !fs.existsSync(binaryDatabasePath());
-  if (firstRun) {
-    await withVSCode(vscodeExecutable, "first-run", async (page) => {
-      await waitForTab(page, "welcome-to-sourcery.py");
-      log("First run opened the welcome file");
-      await runCommand(page, "View: Focus Problems");
-      await waitForSourceryDiagnostic(page, "welcome-to-sourcery.py", /Ln \d+/);
-      // Nothing restored into the next launch, so example.py is analysed alone.
-      await runCommand(page, "View: Close All Editors");
-    });
-  } else if (process.env.CI) {
-    throw new Error(
-      `${binaryDatabasePath()} already exists, so the first run can't be tested`
-    );
-  } else {
-    log("Sourcery has run on this machine before: skipping the first-run launch");
-  }
+  // The binary counts a first run in its own database, under the home directory the
+  // test gives it, so launch 1 is always a first run and opens the welcome file. That
+  // file's analysis would abort example.py's (PRD-84), so the review gets launch 2.
+  await withVSCode(vscodeExecutable, "first-run", async (page) => {
+    await waitForTab(page, "welcome-to-sourcery.py");
+    log("First run opened the welcome file");
+    await runCommand(page, "View: Focus Problems");
+    await waitForSourceryDiagnostic(page, "welcome-to-sourcery.py", /Ln \d+/);
+    // Nothing restored into the next launch, so example.py is analysed alone.
+    await runCommand(page, "View: Close All Editors");
+  });
 
   await withVSCode(vscodeExecutable, "signed-in", async (page) => {
     await openFile(page, "example.py");
@@ -114,7 +114,15 @@ async function run() {
 }
 
 async function withVSCode(vscodeExecutable, name, steps) {
-  const env = { ...process.env };
+  // Keep the binary's config, login and database inside the test's temp root.
+  const env = {
+    ...process.env,
+    HOME: homeDir,
+    XDG_CONFIG_HOME: path.join(homeDir, ".config"),
+    XDG_DATA_HOME: path.join(homeDir, ".local", "share"),
+    APPDATA: path.join(homeDir, "AppData", "Roaming"),
+    LOCALAPPDATA: path.join(homeDir, "AppData", "Local"),
+  };
   delete env.SOURCERY_EXECUTABLE;
   delete env.SOURCERY_TOKEN;
 
@@ -161,16 +169,6 @@ async function waitForTab(page, name) {
     await sleep(1000);
   }
   throw new Error(`${name} never opened`);
-}
-
-function binaryDatabasePath() {
-  const root =
-    process.platform === "win32"
-      ? process.env.LOCALAPPDATA || process.env.APPDATA || ""
-      : process.platform === "darwin"
-      ? path.join(os.homedir(), "Library", "Application Support")
-      : process.env.XDG_DATA_HOME || path.join(os.homedir(), ".local", "share");
-  return path.join(root, "sourcery", "sourcery.db");
 }
 
 function installExtension(executable, vsix) {
