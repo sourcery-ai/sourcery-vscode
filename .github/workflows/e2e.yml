@@ -120,7 +120,7 @@ jobs:
     - name: Show the language server log
       if: always()
       run: |
-        # The log records LSP requests, whose settings carry the token: drop those lines.
+        # Requests are logged with the token masked; dropping token lines is belt and braces.
         find "$HOME" -maxdepth 6 -name sourcery.log 2>/dev/null | while read -r log; do
           echo "== $log"
           grep -iv token "$log" | grep -E "Authenticated|Product:|didOpen|Publishing|ERROR|WARNING|showWelcomeFile|initialized" | cut -c1-300 | tail -n 80
