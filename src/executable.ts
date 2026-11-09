@@ -85,7 +85,12 @@ export function getExecutablePath(): string {
       return path.join(sourcery_binaries, "install/win/sourcery-missing.exe");
     } else if (process.platform == "darwin") {
       const macDir = process.arch == "arm64" ? "mac-arm64" : "mac-x86_64";
-      return path.join(sourcery_binaries, "install", macDir, "sourcery-missing");
+      return path.join(
+        sourcery_binaries,
+        "install",
+        macDir,
+        "sourcery-missing"
+      );
     } else {
       // Assume everything else is linux compatible
       return path.join(sourcery_binaries, "install/linux/sourcery-missing");
