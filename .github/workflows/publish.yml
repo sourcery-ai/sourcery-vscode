@@ -66,9 +66,16 @@ jobs:
         name: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}
 
 
+  e2e:
+    needs: package-vsix
+    uses: ./.github/workflows/e2e.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+    secrets: inherit
+
   publish-vsix:
     runs-on: ubuntu-latest
-    needs: package-vsix
+    needs: [package-vsix, e2e]
 
     steps:
     - uses: actions/checkout@v3

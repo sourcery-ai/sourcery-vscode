@@ -411,7 +411,8 @@
 		"esbuild-base": "esbuild ./src/extension.ts ./src/uninstall.ts --bundle --outdir=out --external:vscode --format=cjs --platform=node",
 		"esbuild": "npm run esbuild-base -- --sourcemap",
 		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-		"test-compile": "tsc -p ./"
+		"test-compile": "tsc -p ./",
+		"e2e": "node e2e/smoke.mjs"
 	},
 	"devDependencies": {
 		"@types/marked": "^5.0.0",
@@ -420,11 +421,13 @@
 		"@types/vscode": "^1.76.0",
 		"@typescript-eslint/eslint-plugin": "^5.55.0",
 		"@typescript-eslint/parser": "^5.55.0",
+		"@vscode/test-electron": "^3.1.0",
 		"@vscode/vsce": "^2.18.0",
 		"esbuild": "^0.18.10",
 		"eslint": "^8.36.0",
 		"mocha": "^10.2.0",
 		"ovsx": "^0.8.0",
+		"playwright-core": "^1.65.0",
 		"prettier": "^2.7.1",
 		"typescript": "^4.9.5",
 		"version-bump-prompt": "^6.1.0",

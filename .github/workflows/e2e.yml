@@ -1,0 +1,115 @@
+name: End-to-end test
+
+# Installs each packaged VSIX into VS Code on its own OS, signs in with
+# SOURCERY_TOKEN, waits for a Sourcery diagnostic and the signed-in sidebar chat.
+# prerelease.yml and publish.yml call this between packaging and release; on a
+# pull request it packages the extension with the latest released binary first.
+
+on:
+  pull_request:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version whose sourcery-<version>-<target> artifacts to test'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  package-vsix:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    strategy:
+      matrix:
+        include:
+          - target: win32-x64
+            dir: win
+          - target: linux-x64
+            dir: linux
+          - target: darwin-x64
+            dir: mac-x86_64
+          - target: darwin-arm64
+            dir: mac-arm64
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 26
+
+    - run: yarn install --frozen-lockfile
+
+    - name: Download the latest released binaries
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        VERSION=$(gh release view --repo sourcery-ai/sourcery --json tagName -q .tagName | sed 's/^v//')
+        ./download-binaries.sh "$VERSION"
+        mkdir -p sourcery_binaries/install
+        mv downloaded_binaries/${{ matrix.dir }} sourcery_binaries/install/
+
+    - name: Package VSCode extension
+      run: yarn run vsce package --target ${{ matrix.target }}
+
+    - uses: actions/upload-artifact@v4
+      with:
+        path: '*.vsix'
+        name: sourcery-pr-${{ matrix.target }}
+
+  e2e:
+    needs: package-vsix
+    if: ${{ !cancelled() && (needs.package-vsix.result == 'success' || github.event_name != 'pull_request') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux-x64
+            os: ubuntu-latest
+          - target: darwin-arm64
+            os: macos-latest
+          - target: darwin-x64
+            os: macos-15-intel
+          - target: win32-x64
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 26
+
+    - run: yarn install --frozen-lockfile
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: sourcery-${{ inputs.version || 'pr' }}-${{ matrix.target }}
+        path: vsix
+
+    - name: Run end-to-end test
+      env:
+        SOURCERY_TOKEN: ${{ secrets.SOURCERY_TOKEN }}
+      run: |
+        VSIX=$(ls vsix/*.vsix)
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          xvfb-run -a node e2e/smoke.mjs "$VSIX"
+        else
+          node e2e/smoke.mjs "$VSIX"
+        fi
+
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: e2e-screenshots-${{ matrix.target }}
+        path: e2e-artifacts/
+        if-no-files-found: ignore
