@@ -95,6 +95,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(
       async ({ message, ...rest }: { message: OutboundMessage }) => {
+        if ((message as any).request === "context") {
+          return;
+        }
         switch (message.target) {
           case "languageServer":
             // Language server requests are passed onwards without further changes.
