@@ -133,3 +133,42 @@ jobs:
         name: e2e-screenshots-${{ matrix.target }}
         path: e2e-artifacts/
         if-no-files-found: ignore
+
+  # PRD-85: the language server can hang when the project is a git repository on
+  # Windows. Reported, not required, until that lands.
+  e2e-git-windows:
+    needs: package-vsix
+    if: ${{ !cancelled() && needs.package-vsix.result == 'success' }}
+    runs-on: windows-latest
+    continue-on-error: true
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 26
+
+    - run: yarn install --frozen-lockfile
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: sourcery-pr-win32-x64
+        path: vsix
+
+    - name: Run end-to-end test in a git repository
+      env:
+        SOURCERY_TOKEN: ${{ secrets.SOURCERY_TOKEN }}
+        E2E_GIT_WORKSPACE: '1'
+      run: node e2e/smoke.mjs "$(ls vsix/*.vsix)"
+
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: e2e-screenshots-git-win32-x64
+        path: e2e-artifacts/
+        if-no-files-found: ignore

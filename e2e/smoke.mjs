@@ -73,6 +73,9 @@ async function run() {
     fs.mkdirSync(path.join(homeDir, dir), { recursive: true });
   }
   fs.writeFileSync(examplePath, EXAMPLE_PY);
+  if (process.env.E2E_GIT_WORKSPACE) {
+    initGitRepository(workspaceDir);
+  }
   fs.writeFileSync(
     path.join(userDataDir, "User", "settings.json"),
     JSON.stringify({
@@ -180,6 +183,20 @@ async function waitForTab(page, name) {
     await sleep(1000);
   }
   throw new Error(`${name} never opened`);
+}
+
+function initGitRepository(dir) {
+  for (const args of [
+    ["init", "-q"],
+    ["add", "."],
+    ["-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-qm", "init"],
+  ]) {
+    const result = spawnSync("git", ["-C", dir, ...args], { stdio: "inherit" });
+    if (result.status !== 0) {
+      throw new Error(`git ${args.join(" ")} failed`);
+    }
+  }
+  log("Workspace is a git repository");
 }
 
 function installExtension(executable, vsix) {
