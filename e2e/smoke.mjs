@@ -14,6 +14,7 @@ import {
 import { _electron as electron } from "playwright-core";
 
 const STEP_TIMEOUT_MS = 180_000;
+const RUN_TIMEOUT_MS = 15 * 60_000;
 const ARTIFACTS_DIR = path.resolve("e2e-artifacts");
 
 const EXAMPLE_PY = `def double_all(numbers):
@@ -39,6 +40,13 @@ const workspaceDir = path.join(root, "workspace");
 const homeDir = path.join(root, "home");
 const examplePath = path.join(workspaceDir, "example.py");
 
+// A hung Electron or Playwright call never reaches a step timeout, so cap the run.
+const watchdog = setTimeout(() => {
+  console.error(`[e2e] FAIL: no result after ${RUN_TIMEOUT_MS / 60_000} minutes`);
+  removeProfile();
+  process.exit(1);
+}, RUN_TIMEOUT_MS);
+
 let exitCode = 0;
 try {
   await run();
@@ -50,6 +58,7 @@ try {
 if (!removeProfile()) {
   exitCode = 1;
 }
+clearTimeout(watchdog);
 process.exit(exitCode);
 
 async function run() {
@@ -139,6 +148,8 @@ async function withVSCode(vscodeExecutable, name, steps) {
       "--disable-telemetry",
       "--no-sandbox",
       "--disable-gpu",
+      // The temporary HOME has no login keychain; macOS would block on finding one.
+      "--use-mock-keychain",
     ],
     env,
     timeout: STEP_TIMEOUT_MS,
