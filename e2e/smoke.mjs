@@ -85,7 +85,6 @@ async function run() {
     executablePath: vscodeExecutable,
     args: [
       workspaceDir,
-      examplePath,
       `--user-data-dir=${userDataDir}`,
       `--extensions-dir=${extensionsDir}`,
       "--disable-workspace-trust",
@@ -103,19 +102,16 @@ async function run() {
   try {
     page = await app.firstWindow({ timeout: STEP_TIMEOUT_MS });
     await page.locator(".monaco-workbench").waitFor({ timeout: STEP_TIMEOUT_MS });
-    await page
-      .locator(".editor-group-container .tab", { hasText: "example.py" })
-      .first()
-      .waitFor({ timeout: STEP_TIMEOUT_MS });
-    log("VS Code is up with example.py open");
+    log("VS Code is up");
 
     await waitForSourceryDiagnostic(page);
     log("Sourcery diagnostic shown in the Problems panel");
 
-    await page
-      .locator('.part.activitybar [aria-label^="Sourcery"]')
-      .first()
-      .click({ timeout: STEP_TIMEOUT_MS });
+    // On a first run the language server focuses the sidebar and pushes it state
+    // unasked, so reload the webview: it must then get state through its own request.
+    await openSourcerySidebar(page);
+    await markWebviewsStale(page);
+    await runCommand(page, "Developer: Reload Webviews");
     await waitForSignedInChat(page);
     log("Sourcery sidebar left Loading and shows the signed-in chat");
     await saveScreenshot(page, "signed-in");
@@ -157,14 +153,74 @@ function installExtension(executable, vsix) {
   }
 }
 
-async function waitForSourceryDiagnostic(page) {
-  await page.keyboard.press(
-    process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
+async function openSourcerySidebar(page) {
+  // Signing in can open the sidebar itself, and clicking an open container closes it.
+  const open = page.locator(
+    '.part.activitybar .action-item.checked [aria-label^="Sourcery"]'
   );
-  // The Problems tree is flat in the DOM: a file row at aria-level 1, then its markers.
+  if ((await open.count()) === 0) {
+    await page
+      .locator('.part.activitybar [aria-label^="Sourcery"]')
+      .first()
+      .click({ timeout: STEP_TIMEOUT_MS });
+  }
+}
+
+async function markWebviewsStale(page) {
+  for (const frame of page.frames()) {
+    await frame
+      .evaluate(() => {
+        window.__sourceryE2eStale = true;
+      })
+      .catch(() => {});
+  }
+}
+
+async function runCommand(page, label) {
+  await page.keyboard.press("F1");
+  await page.locator(".quick-input-widget input").fill(`>${label}`);
+  await page
+    .locator(".quick-input-widget .monaco-list-row", { hasText: label })
+    .first()
+    .waitFor({ timeout: STEP_TIMEOUT_MS });
+  await page.keyboard.press("Enter");
+}
+
+async function openFile(page, name) {
+  await page.keyboard.press(
+    process.platform === "darwin" ? "Meta+P" : "Control+P"
+  );
+  await page.locator(".quick-input-widget input").fill(name);
+  await page
+    .locator(".quick-input-widget .monaco-list-row", { hasText: name })
+    .first()
+    .waitFor({ timeout: STEP_TIMEOUT_MS });
+  await page.keyboard.press("Enter");
+  await page
+    .locator(".editor-group-container .tab.active", { hasText: name })
+    .waitFor({ timeout: STEP_TIMEOUT_MS });
+}
+
+async function waitForSourceryDiagnostic(page) {
+  // A file opened before the first sign-in finishes is not analysed, so reopen it
+  // until the language server is ready.
   const deadline = Date.now() + STEP_TIMEOUT_MS;
   let rows = [];
+  let reopenAt = 0;
   while (Date.now() < deadline) {
+    await throwIfServerFailed(page);
+    if (Date.now() >= reopenAt) {
+      if (reopenAt) {
+        log("No diagnostic on example.py yet; reopening it");
+      }
+      await closeAllEditors(page);
+      await openFile(page, "example.py");
+      await page.keyboard.press(
+        process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
+      );
+      reopenAt = Date.now() + 20_000;
+    }
+    // The Problems tree is flat in the DOM: a file row at aria-level 1, then its markers.
     rows = await page
       .locator(".markers-panel .monaco-list-row")
       .evaluateAll((elements) =>
@@ -199,6 +255,9 @@ async function waitForSignedInChat(page) {
   let lastState = "webview not found";
   while (Date.now() < deadline) {
     for (const frame of page.frames()) {
+      if (await frame.evaluate(() => window.__sourceryE2eStale).catch(() => true)) {
+        continue;
+      }
       const appRoot = frame.locator('[data-testid="app"]');
       if ((await appRoot.count().catch(() => 0)) === 0) {
         continue;
@@ -224,6 +283,23 @@ async function waitForSignedInChat(page) {
   throw new Error(
     `Sourcery sidebar never showed the signed-in chat; last state: ${lastState}`
   );
+}
+
+async function throwIfServerFailed(page) {
+  const serverError = page.locator(".notification-toast", {
+    hasText: "couldn't create connection to server",
+  });
+  if ((await serverError.count()) > 0) {
+    throw new Error(
+      `Sourcery language server failed to start: ${(
+        await serverError.first().innerText()
+      ).replace(/\s+/g, " ")}`
+    );
+  }
+}
+
+async function closeAllEditors(page) {
+  await runCommand(page, "View: Close All Editors");
 }
 
 async function saveScreenshot(page, name) {
