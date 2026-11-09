@@ -14,6 +14,7 @@ import {
 import { _electron as electron } from "playwright-core";
 
 const STEP_TIMEOUT_MS = 180_000;
+const WELCOME_TIMEOUT_MS = 20_000;
 const ARTIFACTS_DIR = path.resolve("e2e-artifacts");
 
 const EXAMPLE_PY = `def double_all(numbers):
@@ -110,6 +111,7 @@ async function run() {
     // On a first run the language server focuses the sidebar and pushes it state
     // unasked, so reload the webview: it must then get state through its own request.
     await openSourcerySidebar(page);
+    await waitForWebviewApp(page);
     await markWebviewsStale(page);
     await runCommand(page, "Developer: Reload Webviews");
     await waitForSignedInChat(page);
@@ -166,6 +168,21 @@ async function openSourcerySidebar(page) {
   }
 }
 
+async function waitForWebviewApp(page) {
+  const deadline = Date.now() + STEP_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    for (const frame of page.frames()) {
+      if ((await frame.locator('[data-testid="app"]').count().catch(() => 0)) > 0) {
+        // Let the app finish mounting and focusing its input before the reload.
+        await sleep(3000);
+        return;
+      }
+    }
+    await sleep(1000);
+  }
+  throw new Error("The Sourcery sidebar webview never loaded");
+}
+
 async function markWebviewsStale(page) {
   for (const frame of page.frames()) {
     await frame
@@ -177,13 +194,25 @@ async function markWebviewsStale(page) {
 }
 
 async function runCommand(page, label) {
-  await page.keyboard.press("F1");
-  await page.locator(".quick-input-widget input").fill(`>${label}`);
-  await page
+  // The chat input can take focus and close the palette, so retry the whole sequence.
+  const input = page.locator(".quick-input-widget input");
+  const row = page
     .locator(".quick-input-widget .monaco-list-row", { hasText: label })
-    .first()
-    .waitFor({ timeout: STEP_TIMEOUT_MS });
-  await page.keyboard.press("Enter");
+    .first();
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await page.keyboard.press("F1");
+      await input.fill(`>${label}`, { timeout: 5000 });
+      await row.waitFor({ timeout: 5000 });
+      await page.keyboard.press("Enter");
+      return;
+    } catch (error) {
+      if (attempt === 3) {
+        throw new Error(`Could not run "${label}": ${error.message}`);
+      }
+      await page.keyboard.press("Escape");
+    }
+  }
 }
 
 async function openFile(page, name) {
@@ -202,24 +231,25 @@ async function openFile(page, name) {
 }
 
 async function waitForSourceryDiagnostic(page) {
-  // A file opened before the first sign-in finishes is not analysed, so reopen it
-  // until the language server is ready.
+  // On a first run the language server opens its welcome file, and starting that
+  // file's analysis aborts any other file's in-flight analysis for good. So let
+  // the welcome file open before opening example.py.
+  await page
+    .locator(".editor-group-container .tab", {
+      hasText: "welcome-to-sourcery.py",
+    })
+    .first()
+    .waitFor({ timeout: WELCOME_TIMEOUT_MS })
+    .then(() => log("First-run welcome file opened"))
+    .catch(() => log("No first-run welcome file"));
+  await openFile(page, "example.py");
+  await page.keyboard.press(
+    process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
+  );
   const deadline = Date.now() + STEP_TIMEOUT_MS;
   let rows = [];
-  let reopenAt = 0;
   while (Date.now() < deadline) {
     await throwIfServerFailed(page);
-    if (Date.now() >= reopenAt) {
-      if (reopenAt) {
-        log("No diagnostic on example.py yet; reopening it");
-      }
-      await closeAllEditors(page);
-      await openFile(page, "example.py");
-      await page.keyboard.press(
-        process.platform === "darwin" ? "Meta+Shift+M" : "Control+Shift+M"
-      );
-      reopenAt = Date.now() + 20_000;
-    }
     // The Problems tree is flat in the DOM: a file row at aria-level 1, then its markers.
     rows = await page
       .locator(".markers-panel .monaco-list-row")
@@ -296,10 +326,6 @@ async function throwIfServerFailed(page) {
       ).replace(/\s+/g, " ")}`
     );
   }
-}
-
-async function closeAllEditors(page) {
-  await runCommand(page, "View: Close All Editors");
 }
 
 async function saveScreenshot(page, name) {
