@@ -109,7 +109,6 @@ jobs:
     - name: Run end-to-end test
       env:
         SOURCERY_TOKEN: ${{ secrets.SOURCERY_TOKEN }}
-        DEBUG: pw:browser
       run: |
         VSIX=$(ls vsix/*.vsix)
         if [ "$RUNNER_OS" = "Linux" ]; then
