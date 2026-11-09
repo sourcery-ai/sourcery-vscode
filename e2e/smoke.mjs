@@ -63,6 +63,8 @@ async function run() {
         : {}),
       "security.workspace.trust.enabled": false,
       "workbench.startupEditor": "none",
+      // Signing in opens the welcome file, which would replace example.py's preview tab.
+      "workbench.editor.enablePreview": false,
       "workbench.tips.enabled": false,
       "extensions.autoUpdate": false,
       "extensions.ignoreRecommendations": true,
