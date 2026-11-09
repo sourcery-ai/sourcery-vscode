@@ -43,6 +43,7 @@ const examplePath = path.join(workspaceDir, "example.py");
 // A hung Electron or Playwright call never reaches a step timeout, so cap the run.
 const watchdog = setTimeout(() => {
   console.error(`[e2e] FAIL: no result after ${RUN_TIMEOUT_MS / 60_000} minutes`);
+  printServerLog();
   removeProfile();
   process.exit(1);
 }, RUN_TIMEOUT_MS);
@@ -53,6 +54,7 @@ try {
   log("PASS");
 } catch (error) {
   console.error(`[e2e] FAIL: ${error.message}`);
+  printServerLog();
   exitCode = 1;
 }
 if (!removeProfile()) {
@@ -393,6 +395,41 @@ async function saveScreenshot(page, name) {
   const file = path.join(ARTIFACTS_DIR, `${name}-${vsixName}.png`);
   await page.screenshot({ path: file }).catch(() => {});
   log(`Screenshot: ${file}`);
+}
+
+// The binary logs into the temporary home, which cleanup removes, so print the
+// lines that show startup, sign-in and analysis first.
+function printServerLog() {
+  const pattern =
+    /Authenticated|Product:|didOpen|Publishing|cancelled|ERROR|WARNING|initialized/;
+  for (const file of findFiles(homeDir, "sourcery.log")) {
+    console.error(`[e2e] Language server log ${file}:`);
+    const lines = fs
+      .readFileSync(file, "utf-8")
+      .split("\n")
+      .filter((line) => pattern.test(line) && !/token/i.test(line))
+      .map((line) => line.replace(/'text': '.*?'(?=[,}])/, "'text': …"))
+      .slice(-80);
+    for (const line of lines) {
+      console.error(line.slice(0, 300));
+    }
+  }
+}
+
+function findFiles(dir, name) {
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  return entries.flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      return findFiles(full, name);
+    }
+    return entry.name === name ? [full] : [];
+  });
 }
 
 // The profile holds the token, so failing to remove it fails the run.
