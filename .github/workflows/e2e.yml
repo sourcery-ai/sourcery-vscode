@@ -117,6 +117,15 @@ jobs:
           node e2e/smoke.mjs "$VSIX"
         fi
 
+    - name: Show the language server log
+      if: always()
+      run: |
+        # The log records LSP requests, whose settings carry the token: drop those lines.
+        find "$HOME" -maxdepth 6 -name sourcery.log 2>/dev/null | while read -r log; do
+          echo "== $log"
+          grep -iv token "$log" | grep -E "Authenticated|Product:|didOpen|Publishing|ERROR|WARNING|showWelcomeFile|initialized" | cut -c1-300 | tail -n 80
+        done
+
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
