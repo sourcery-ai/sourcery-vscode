@@ -19,8 +19,19 @@ permissions:
   actions: read
 
 jobs:
-  package-vsix:
+  latest-binary:
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.latest.outputs.version }}
+    steps:
+    - id: latest
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: echo "version=$(gh release view --repo sourcery-ai/sourcery --json tagName -q .tagName | sed 's/^v//')" >> "$GITHUB_OUTPUT"
+
+  package-vsix:
+    needs: latest-binary
     strategy:
       matrix:
         include:
@@ -46,9 +57,8 @@ jobs:
     - name: Download the latest released binaries
       env:
         GITHUB_TOKEN: ${{ github.token }}
-        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ needs.latest-binary.outputs.version }}
       run: |
-        VERSION=$(gh release view --repo sourcery-ai/sourcery --json tagName -q .tagName | sed 's/^v//')
         ./download-binaries.sh "$VERSION"
         mkdir -p sourcery_binaries/install
         mv downloaded_binaries/${{ matrix.dir }} sourcery_binaries/install/

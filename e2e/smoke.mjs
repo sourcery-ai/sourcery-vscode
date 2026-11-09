@@ -37,6 +37,7 @@ const userDataDir = path.join(root, "user-data");
 const extensionsDir = path.join(root, "extensions");
 const workspaceDir = path.join(root, "workspace");
 const examplePath = path.join(workspaceDir, "example.py");
+process.on("exit", () => fs.rmSync(root, { recursive: true, force: true }));
 
 fs.mkdirSync(path.join(userDataDir, "User"), { recursive: true });
 fs.mkdirSync(workspaceDir, { recursive: true });
@@ -110,7 +111,6 @@ try {
 }
 
 await app.close();
-fs.rmSync(root, { recursive: true, force: true });
 log("PASS");
 
 function installExtension(executable, vsix) {
