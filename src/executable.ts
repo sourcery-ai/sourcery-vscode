@@ -82,13 +82,13 @@ export function getExecutablePath(): string {
     }
   } else {
     if (process.platform == "win32") {
-      return path.join(sourcery_binaries, "install/win/sourcery.exe");
+      return path.join(sourcery_binaries, "install/win/sourcery-missing.exe");
     } else if (process.platform == "darwin") {
       const macDir = process.arch == "arm64" ? "mac-arm64" : "mac-x86_64";
-      return path.join(sourcery_binaries, "install", macDir, "sourcery");
+      return path.join(sourcery_binaries, "install", macDir, "sourcery-missing");
     } else {
       // Assume everything else is linux compatible
-      return path.join(sourcery_binaries, "install/linux/sourcery");
+      return path.join(sourcery_binaries, "install/linux/sourcery-missing");
     }
   }
 }
