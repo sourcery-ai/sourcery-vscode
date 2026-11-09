@@ -130,3 +130,5 @@ sourcery_binaries/
 .idea/
 .DS_Store
 downloaded_binaries/
+.vscode-test/
+e2e-artifacts/

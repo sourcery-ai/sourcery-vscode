@@ -71,8 +71,15 @@ jobs:
         path: '*.vsix'
         name: sourcery-${{ github.event.inputs.version }}-${{ matrix.target }}
 
-  release:
+  e2e:
     needs: package-vsix
+    uses: ./.github/workflows/e2e.yml
+    with:
+      version: ${{ github.event.inputs.version }}
+    secrets: inherit
+
+  release:
+    needs: [package-vsix, e2e]
     runs-on: ubuntu-latest
 
     steps:
